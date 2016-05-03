@@ -131,10 +131,15 @@ class NEURON:
         # Open the figure
         if plot == True:
             fig = plt.figure()
-        
+            scale = 0.1
+            y_min = (1.0-scale)*np.min( \
+                [np.min(np.mean(Rasters[raster_idx],axis=0)/(1e-3*binsize)) for raster_idx in Rasters])
+            y_max = (1.0+scale)*np.max([np.max(np.mean(Rasters[raster_idx],axis=0)/(1e-3*binsize)) for raster_idx in Rasters])
+            legend = ['event']
         # Initialize PSTH
         PSTH = dict()
-    
+
+
         # Compute the PSTH
         for i, r in enumerate(Rasters):
             color = colors[i]
@@ -157,17 +162,27 @@ class NEURON:
                 ax = fig.add_subplot(111)
                 fig.subplots_adjust(top=0.85)
 
-                ax.plot([0,0],[0,np.max(mean_psth)], color='k')
+                ax.plot([0,0],[y_min,y_max], color='k')
 
                 ax.plot(xx, mean_psth, color=color,lw=2)
                 ax.plot(xx, mean_psth+sem_psth, color=color, ls =':')
                 ax.plot(xx, mean_psth-sem_psth, color=color, ls =':')
                 ax.legend(['event'])
-                ax.set_title('%s: Average firing rate %.1f Spks/s' % (self.name, self.firingrate))
+                ax.set_title('%s: average firing rate %.1f spks/s' % (self.name, self.firingrate))
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
                 ax.set_xlabel('time [ms]')
                 ax.set_ylabel('spikes per second [spks/s]') 
+                plt.ylim([y_min, y_max])
+
+                if len(selectors)>0:
+                    aux = [str([j+':'+str(selectors[i][j]) for j in selectors[i]])]
+                else:
+                    aux = 'all'
+
+                legend.append(aux)
+
+        #plt.legend(legend)
             
         return PSTH
         
