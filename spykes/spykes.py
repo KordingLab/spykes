@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-class NEURON:
+class Spyke:
     """
     This class implements several conveniences for 
     visualizing firing activity of single neurons
@@ -32,7 +32,7 @@ class NEURON:
         self.firingrate = (n_spikes/n_seconds)
 
     #-----------------------------------------------------------------------
-    def get_raster(self, events, features=[], selectors=[], \
+    def get_raster(self, events, features=[], conditions=[], \
                    window=[-100, 500], binsize=10, plot=True, sort=True):
         """
         Compute the raster and plot it
@@ -45,8 +45,8 @@ class NEURON:
         """
     
         # Get a set of binary indicators for trials of interest
-        if len(selectors) > 0:
-            trials = self.get_trialtype(features, selectors)
+        if len(conditions) > 0:
+            trials = self.get_trialtype(features, conditions)
         else:
             trials = np.transpose(np.atleast_2d(np.ones(np.size(events)) == 1))
 
@@ -113,7 +113,7 @@ class NEURON:
         return Rasters
              
     #-----------------------------------------------------------------------
-    def get_psth(self, events, features=[], selectors=[], \
+    def get_psth(self, events, features=[], conditions=[], \
                  window=[-100, 500], binsize=10, plot=True, \
                  colors=['#F5A21E','#134B64','#EF3E34','#02A68E','#FF07CD']):
         """
@@ -126,26 +126,17 @@ class NEURON:
         """
         
         # Get all the rasters first
-        Rasters = self.get_raster(events, features, selectors, window, binsize, plot=False)
+        Rasters = self.get_raster(events, features, conditions, window, binsize, plot=False)
         
         # Open the figure
-        if plot == True:
-            fig = plt.figure()
-            scale = 0.1
-            y_min = (1.0-scale)*np.min( \
-                [np.min(np.mean(Rasters[raster_idx],axis=0)/(1e-3*binsize)) for raster_idx in Rasters])
-            y_max = (1.0+scale)*np.max([np.max(np.mean(Rasters[raster_idx],axis=0)/(1e-3*binsize)) for raster_idx in Rasters])
-            legend = ['event']
         # Initialize PSTH
         PSTH = dict()
 
-
         # Compute the PSTH
         for i, r in enumerate(Rasters):
-            color = colors[i]
+            
             PSTH[i] = dict()
             raster = Rasters[r]
-             
             mean_psth = np.mean(raster,axis=0)/(1e-3*binsize)
             std_psth = np.sqrt(np.var(raster,axis=0))/(1e-3*binsize)
             sem_psth = std_psth/np.shape(mean_psth)[0]
@@ -153,20 +144,35 @@ class NEURON:
             PSTH[i]['mean'] = mean_psth
             PSTH[i]['sem'] = sem_psth
             
-            # Visualize the PSTH
-            if plot == True:
+        # Visualize the PSTH
+        if plot == True:
 
-                xx = np.linspace(window[0], window[1], num=np.diff(window)/binsize)
-                
-                fig.suptitle('PSTH', fontsize=14, fontweight='bold')
-                ax = fig.add_subplot(111)
-                fig.subplots_adjust(top=0.85)
+            fig = plt.figure()
 
-                ax.plot([0,0],[y_min,y_max], color='k')
+            scale = 0.1
+            y_min = (1.0-scale)*np.min([np.min( \
+                np.mean(Rasters[raster_idx],axis=0)/(1e-3*binsize)) \
+                for raster_idx in Rasters])
+            y_max = (1.0+scale)*np.max([np.max( \
+                np.mean(Rasters[raster_idx],axis=0)/(1e-3*binsize)) \
+                for raster_idx in Rasters])
 
-                ax.plot(xx, mean_psth, color=color,lw=2)
-                ax.plot(xx, mean_psth+sem_psth, color=color, ls =':')
-                ax.plot(xx, mean_psth-sem_psth, color=color, ls =':')
+            legend = ['Event onset']
+  
+            xx = np.linspace(window[0], window[1], num=np.diff(window)/binsize)
+
+            fig.suptitle('PSTH', fontsize=14, fontweight='bold')
+            ax = fig.add_subplot(111)
+            fig.subplots_adjust(top=0.85)
+            ax.plot([0,0],[y_min,y_max], color='k')
+
+            for i, r in enumerate(Rasters):
+
+                ax.plot(xx, PSTH[i]['mean'], color=colors[i],lw=2)
+
+            for i, r in enumerate(Rasters):
+                ax.plot(xx, PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], ls =':')
+                ax.plot(xx, PSTH[i]['mean']-PSTH[i]['sem'], color=colors[i], ls =':')
                 ax.legend(['event'])
                 ax.set_title('%s: average firing rate %.1f spks/s' % (self.name, self.firingrate))
                 ax.spines['top'].set_visible(False)
@@ -175,19 +181,23 @@ class NEURON:
                 ax.set_ylabel('spikes per second [spks/s]') 
                 plt.ylim([y_min, y_max])
 
-                if len(selectors)>0:
-                    aux = [str([j+':'+str(selectors[i][j]) for j in selectors[i]])]
+                if len(conditions)>0:
+                    aux = [str([j+':'+str(conditions[i][j]) for j in conditions[i]])]
                 else:
                     aux = 'all'
 
-                legend.append(aux)
+                legend.append('Condition %d' % (i+1))
 
-        #plt.legend(legend)
+            plt.legend(legend)
+            plt.show()
+        for cond in conditions:
+            print 'Condition %d: %s' % (cond+1,str(conditions[cond]))
             
         return PSTH
+
         
     #-----------------------------------------------------------------------
-    def get_trialtype(self, features, selectors):
+    def get_trialtype(self, features, conditions):
         """
         For an arbitrary query on features 
         get a subset of trials
@@ -197,18 +207,18 @@ class NEURON:
         features: float, n x p array of features, 
                   n trials, p features 
                   (e.g. stimulus/ behavioral features)
-        selectors: list of intervals on arbitrary features
+        conditions: list of intervals on arbitrary features
         
         Outputs
         -------
         trials: bool, n x 1 array of indicators
         """
         trials = []
-        for r in selectors:
-            selector = selectors[r]
-            trials.append([np.all([np.all((features[r] >= selector[r][0], \
-                                 features[r] <= selector[r][-1]), axis=0) \
-                                 for r in selector], axis=0)])
+        for r in conditions:
+            condition = conditions[r]
+            trials.append([np.all([np.all((features[r] >= condition[r][0], \
+                                 features[r] <= condition[r][-1]), axis=0) \
+                                 for r in condition], axis=0)])
         return np.transpose(np.atleast_2d(np.squeeze(trials)))
         
     #-----------------------------------------------------------------------
@@ -230,4 +240,5 @@ class NEURON:
                                             spiketimes <= events[e] + window[1]), \
                                             axis=0))
         return spikecounts
+
         
