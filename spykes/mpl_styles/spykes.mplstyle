@@ -1,0 +1,8 @@
+
+font.size: 13
+axes.titlesize : 16
+axes.titleweight : bold
+xtick.labelsize : 10
+ytick.labelsize : 10
+legend.fontsize: 12
+

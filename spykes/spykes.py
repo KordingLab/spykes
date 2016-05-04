@@ -113,6 +113,9 @@ class Spyke:
 
                 plt.show()
 
+                if len(conditions)>0:
+                    print 'Condition %d: %s' % (i+1,str(conditions[i]))
+
         # Return all the rasters
         return Rasters
              
