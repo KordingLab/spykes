@@ -82,33 +82,37 @@ class Spyke:
     
         # Show the raster     
         if plot == True:
+            
+            xtics = np.arange(window[0], window[1], binsize*10)
+            xtics = [str(i) for i in xtics]
+            
             for i,r in enumerate(Rasters):
+                
                 raster = Rasters[r]
 
-                
                 if sort == True:
                     # Sorting by total spike count in the duration
                     raster_sorted = raster[np.sum(raster, axis=1).argsort()]
                 else:
                     raster_sorted = raster
+                
                 plt.imshow(raster_sorted, aspect='auto', interpolation='none')
+                plt.axvline((-window[0])/binsize, color='r', linestyle='--')
+
                 plt.ylabel('trials')
                 plt.xlabel('time [ms]')
+                
+                plt.xticks(np.arange(0,(window[1]-window[0])/binsize,10), xtics)
+                plt.title('neuron %s' % self.name)
 
                 ax = plt.gca()
-                xtics = np.arange(window[0], window[1], binsize*10)
-                xtics = [str(i) for i in xtics]
-
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
                 ax.spines['bottom'].set_visible(False)
                 ax.spines['left'].set_visible(False)
-                plt.xticks(np.arange(0,(window[1]-window[0])/binsize,10), xtics)
-                plt.title('%s: Average firing rate %.1f Spks/s' % (self.name, self.firingrate))
-                plt.axvline((-window[0])/binsize, color='r', linestyle='solid')
+
                 plt.show()
 
-    
         # Return all the rasters
         return Rasters
              
@@ -161,41 +165,40 @@ class Spyke:
   
             xx = np.linspace(window[0], window[1], num=np.diff(window)/binsize)
 
-            fig.suptitle('PSTH', fontsize=14, fontweight='bold')
-            ax = fig.add_subplot(111)
-            fig.subplots_adjust(top=0.85)
-            ax.plot([0,0],[y_min,y_max], color='k')
+            plt.plot([0,0],[y_min,y_max], color='k', ls = '--')
 
             for i, r in enumerate(Rasters):
 
-                ax.plot(xx, PSTH[i]['mean'], color=colors[i],lw=2)
+                plt.plot(xx, PSTH[i]['mean'], color=colors[i], lw=2)
 
             for i, r in enumerate(Rasters):
-                ax.plot(xx, PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], ls =':')
-                ax.plot(xx, PSTH[i]['mean']-PSTH[i]['sem'], color=colors[i], ls =':')
-                ax.legend(['event'])
-                ax.set_title('%s: average firing rate %.1f spks/s' % (self.name, self.firingrate))
+                plt.plot(xx, PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], ls =':')
+                plt.plot(xx, PSTH[i]['mean']-PSTH[i]['sem'], color=colors[i], ls =':')
+                plt.legend(['event'])
+                plt.title('neuron %s' % self.name)
+                plt.xlabel('time [ms]')
+                plt.ylabel('spikes per second [spks/s]') 
+                plt.ylim([y_min, y_max])
+
+                ax = plt.gca()
                 ax.spines['top'].set_visible(False)
                 ax.spines['right'].set_visible(False)
-                ax.set_xlabel('time [ms]')
-                ax.set_ylabel('spikes per second [spks/s]') 
-                plt.ylim([y_min, y_max])
 
                 if len(conditions)>0:
                     aux = [str([j+':'+str(conditions[i][j]) for j in conditions[i]])]
+                    legend.append('Condition %d' % (i+1))
                 else:
                     aux = 'all'
-
-                legend.append('Condition %d' % (i+1))
-
+                    legend.append('All')
+                
             plt.legend(legend)
             plt.show()
+
         for cond in conditions:
             print 'Condition %d: %s' % (cond+1,str(conditions[cond]))
             
         return PSTH
 
-        
     #-----------------------------------------------------------------------
     def get_trialtype(self, features, conditions):
         """
