@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 class Spyke:
     """
     This class implements several conveniences for 
@@ -103,7 +104,10 @@ class Spyke:
                 plt.xlabel('time [ms]')
                 
                 plt.xticks(np.arange(0,(window[1]-window[0])/binsize,10), xtics)
-                plt.title('neuron %s' % self.name)
+                if len(conditions)>0:
+                    plt.title('neuron %s: Condition %d' % (self.name, i+1))
+                else:
+                    plt.title('neuron %s' % self.name)
 
                 ax = plt.gca()
                 ax.spines['top'].set_visible(False)
@@ -114,7 +118,7 @@ class Spyke:
                 plt.show()
 
                 if len(conditions)>0:
-                    print 'Condition %d: %s' % (i+1,str(conditions[i]))
+                    print 'Condition %d: %s' % (i+1, str(conditions[i]))
 
         # Return all the rasters
         return Rasters
@@ -146,7 +150,8 @@ class Spyke:
             raster = Rasters[r]
             mean_psth = np.mean(raster,axis=0)/(1e-3*binsize)
             std_psth = np.sqrt(np.var(raster,axis=0))/(1e-3*binsize)
-            sem_psth = std_psth/np.shape(mean_psth)[0]
+
+            sem_psth = std_psth/np.sqrt(float(np.shape(raster)[0]))
 
             PSTH[i]['mean'] = mean_psth
             PSTH[i]['sem'] = sem_psth
@@ -164,7 +169,7 @@ class Spyke:
                 np.mean(Rasters[raster_idx],axis=0)/(1e-3*binsize)) \
                 for raster_idx in Rasters])
 
-            legend = ['Event onset']
+            legend = ['event onset']
   
             xx = np.linspace(window[0], window[1], num=np.diff(window)/binsize)
 
@@ -177,24 +182,23 @@ class Spyke:
             for i, r in enumerate(Rasters):
                 plt.plot(xx, PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], ls =':')
                 plt.plot(xx, PSTH[i]['mean']-PSTH[i]['sem'], color=colors[i], ls =':')
-                plt.legend(['event'])
-                plt.title('neuron %s' % self.name)
-                plt.xlabel('time [ms]')
-                plt.ylabel('spikes per second [spks/s]') 
-                plt.ylim([y_min, y_max])
-
-                ax = plt.gca()
-                ax.spines['top'].set_visible(False)
-                ax.spines['right'].set_visible(False)
 
                 if len(conditions)>0:
-                    aux = [str([j+':'+str(conditions[i][j]) for j in conditions[i]])]
                     legend.append('Condition %d' % (i+1))
                 else:
-                    aux = 'all'
-                    legend.append('All')
-                
+                    legend.append('all')
+            
+            plt.title('neuron %s' % self.name)
+            plt.xlabel('time [ms]')
+            plt.ylabel('spikes per second [spks/s]') 
+            plt.ylim([y_min, y_max])
+
+            ax = plt.gca()
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)  
+
             plt.legend(legend)
+
             plt.show()
 
         for cond in conditions:
