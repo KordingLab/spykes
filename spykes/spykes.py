@@ -177,11 +177,15 @@ class Spyke:
 
             for i, r in enumerate(Rasters):
 
-                plt.plot(xx, PSTH[i]['mean'], color=colors[i], lw=2)
+                plt.plot(xx, PSTH[i]['mean'], color=colors[i], lw=1.5)
 
             for i, r in enumerate(Rasters):
-                plt.plot(xx, PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], ls =':')
-                plt.plot(xx, PSTH[i]['mean']-PSTH[i]['sem'], color=colors[i], ls =':')
+                #plt.plot(xx, PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], ls =':')
+                #plt.plot(xx, PSTH[i]['mean']-PSTH[i]['sem'], color=colors[i], ls =':')
+
+
+
+                plt.fill_between(xx, PSTH[i]['mean']-PSTH[i]['sem'], PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], alpha=0.2)
 
                 if len(conditions)>0:
                     legend.append('Condition %d' % (i+1))
@@ -201,8 +205,8 @@ class Spyke:
 
             plt.show()
 
-        for cond in conditions:
-            print 'Condition %d: %s' % (cond+1,str(conditions[cond]))
+        for i, cond in enumerate(conditions):
+            print 'Condition %d: %s; %d trials' % (cond+1,str(conditions[cond]),np.shape(Rasters[i])[0])
             
         return PSTH
 
