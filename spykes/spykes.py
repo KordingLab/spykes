@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 
 class Spyke:
     """
-    This class implements several conveniences for 
+    This class implements several conveniences for
     visualizing firing activity of single neurons
-    
+
     Parameters
     ----------
     spiketimes: float, array of spike times
-    
-    
+
+
     Methods
     -------
     plot_raster
@@ -21,7 +21,7 @@ class Spyke:
     plot_tuning_curve
     fit_tuning_curve
     """
-    
+
     def __init__(self, spiketimes, name='neuron'):
         """
         Initialize the object
@@ -37,14 +37,14 @@ class Spyke:
                    window=[-100, 500], binsize=10, plot=True, sort=True):
         """
         Compute the raster and plot it
-        
+
         Parameters
         ----------
-        events: float, n x 1 array of event times 
+        events: float, n x 1 array of event times
                 (e.g. stimulus/ trial/ fixation onset, etc.)
 
         """
-    
+
         # Get a set of binary indicators for trials of interest
         if len(conditions) > 0:
             trials = self.get_trialtype(features, conditions)
@@ -71,8 +71,8 @@ class Spyke:
 
             # bin the spikes into time bins
             spike_counts = np.histogram(self.spiketimes, bins)[0]
-             
-            # bin the events into time bins 
+
+            # bin the events into time bins
             event_counts = np.histogram(selected_events, bins)[0]
             event_bins =  np.where(event_counts > 0)[0]
 
@@ -80,15 +80,15 @@ class Spyke:
                                              (i+window[1]/binsize)]) \
                                for i in event_bins])
             Rasters[r] = raster
-    
-        # Show the raster     
+
+        # Show the raster
         if plot == True:
-            
+
             xtics = np.arange(window[0], window[1], binsize*10)
             xtics = [str(i) for i in xtics]
-            
+
             for i,r in enumerate(Rasters):
-                
+
                 raster = Rasters[r]
 
                 if sort == True:
@@ -96,13 +96,13 @@ class Spyke:
                     raster_sorted = raster[np.sum(raster, axis=1).argsort()]
                 else:
                     raster_sorted = raster
-                
+
                 plt.imshow(raster_sorted, aspect='auto', interpolation='none')
                 plt.axvline((-window[0])/binsize, color='r', linestyle='--')
 
                 plt.ylabel('trials')
                 plt.xlabel('time [ms]')
-                
+
                 plt.xticks(np.arange(0,(window[1]-window[0])/binsize,10), xtics)
                 if len(conditions)>0:
                     plt.title('neuron %s: Condition %d' % (self.name, i+1))
@@ -122,30 +122,30 @@ class Spyke:
 
         # Return all the rasters
         return Rasters
-             
+
     #-----------------------------------------------------------------------
     def get_psth(self, events, features=[], conditions=[], \
                  window=[-100, 500], binsize=10, plot=True, \
                  colors=['#F5A21E','#134B64','#EF3E34','#02A68E','#FF07CD']):
         """
         Compute the psth and plot it
-        
+
         Parameters
         ----------
-        events: float, n x 1 array of event times 
+        events: float, n x 1 array of event times
                 (e.g. stimulus/ trial/ fixation onset, etc.)
         """
-        
+
         # Get all the rasters first
         Rasters = self.get_raster(events, features, conditions, window, binsize, plot=False)
-        
+
         # Open the figure
         # Initialize PSTH
         PSTH = dict()
 
         # Compute the PSTH
         for i, r in enumerate(Rasters):
-            
+
             PSTH[i] = dict()
             raster = Rasters[r]
             mean_psth = np.mean(raster,axis=0)/(1e-3*binsize)
@@ -155,7 +155,7 @@ class Spyke:
 
             PSTH[i]['mean'] = mean_psth
             PSTH[i]['sem'] = sem_psth
-            
+
         # Visualize the PSTH
         if plot == True:
 
@@ -170,7 +170,7 @@ class Spyke:
                 for raster_idx in Rasters])
 
             legend = ['event onset']
-  
+
             xx = np.linspace(window[0], window[1], num=np.diff(window)/binsize)
 
             plt.plot([0,0],[y_min,y_max], color='k', ls = '--')
@@ -191,15 +191,15 @@ class Spyke:
                     legend.append('Condition %d' % (i+1))
                 else:
                     legend.append('all')
-            
+
             plt.title('neuron %s' % self.name)
             plt.xlabel('time [ms]')
-            plt.ylabel('spikes per second [spks/s]') 
+            plt.ylabel('spikes per second [spks/s]')
             plt.ylim([y_min, y_max])
 
             ax = plt.gca()
             ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)  
+            ax.spines['right'].set_visible(False)
 
             plt.legend(legend)
 
@@ -207,22 +207,22 @@ class Spyke:
 
         for i, cond in enumerate(conditions):
             print 'Condition %d: %s; %d trials' % (cond+1,str(conditions[cond]),np.shape(Rasters[i])[0])
-            
+
         return PSTH
 
     #-----------------------------------------------------------------------
     def get_trialtype(self, features, conditions):
         """
-        For an arbitrary query on features 
+        For an arbitrary query on features
         get a subset of trials
-        
+
         Parameters
         ----------
-        features: float, n x p array of features, 
-                  n trials, p features 
+        features: float, n x p array of features,
+                  n trials, p features
                   (e.g. stimulus/ behavioral features)
         conditions: list of intervals on arbitrary features
-        
+
         Outputs
         -------
         trials: bool, n x 1 array of indicators
@@ -234,7 +234,7 @@ class Spyke:
                                  features[r] <= condition[r][-1]), axis=0) \
                                  for r in condition], axis=0)])
         return np.transpose(np.atleast_2d(np.squeeze(trials)))
-        
+
     #-----------------------------------------------------------------------
     def get_spikecounts(self, events, window = 1e-3*np.array([50.0, 100.0])):
         """
@@ -243,16 +243,15 @@ class Spyke:
         events: float, n x 1 array of event times
                 (e.g. stimulus onset, trial onset, fixation onset, etc.)
         win: denoting the intervals
-        
+
         Outputs
         -------
         spikecounts: float, n x 1 array of spike counts
         """
-        y = np.zeros(events.shape)
-        for e in len(events):
-            spikecounts[e] = np.sum(np.all((spiketimes >= events[e] + window[0], \
-                                            spiketimes <= events[e] + window[1]), \
+        spiketimes = self.spiketimes
+        spikecounts = np.zeros(events.shape)
+        for e in range(events.shape[0]):
+            spikecounts[e] = np.sum(np.all((spiketimes >= events[e] + window[0],\
+                                            spiketimes <= events[e] + window[1]),\
                                             axis=0))
         return spikecounts
-
-        
