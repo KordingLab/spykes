@@ -1,5 +1,6 @@
 import numpy as np
 from scipy import stats
+from copy import deepcopy
 
 class NeuroPop(object):
     """
@@ -58,7 +59,7 @@ class NeuroPop(object):
 
     def __init__(self, n_neurons=100,
                  preferred_feature=None, Kappa=False, shape=None, gain=None, baseline=None,
-                 learning_rate=1e-3, convergence_threshold=1e-5, maxiter=10000, n_repeats=10,\
+                 learning_rate=1e-3, convergence_threshold=1e-5, maxiter=1000, n_repeats=5,\
                  verbose=False):
         """
         Initialize the object
@@ -240,6 +241,8 @@ class NeuroPop(object):
         x: float, n_samples x 1, feature of interest
         Y: float, n_samples x n_neurons, population activity
         """
+        if(len(Y.shape) == 1):
+            Y = deepcopy(np.expand_dims(Y, axis=1))
 
         learning_rate = self.learning_rate
         convergence_threshold = self.convergence_threshold
