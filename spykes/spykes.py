@@ -97,8 +97,9 @@ class Spyke:
                 else:
                     raster_sorted = raster
 
-                plt.imshow(raster_sorted, aspect='auto', interpolation='none')
+                plt.imshow(raster_sorted, aspect='auto', interpolation='none', cmap=plt.get_cmap('Greys'))
                 plt.axvline((-window[0])/binsize, color='r', linestyle='--')
+
 
                 plt.ylabel('trials')
                 plt.xlabel('time [ms]')
@@ -114,7 +115,16 @@ class Spyke:
                 ax.spines['right'].set_visible(False)
                 ax.spines['bottom'].set_visible(False)
                 ax.spines['left'].set_visible(False)
+                ax.get_yaxis().set_tick_params(direction='out')
+                ax.get_xaxis().set_tick_params(direction='out')
 
+                plt.tick_params(axis='x', which='both', top='off')
+                plt.tick_params(axis='y', which='both', right='off')
+
+                #ax.tick_params(axis='x', colors='red')
+                #ax.tick_params(axis='y', colors='red')
+                
+                
                 plt.show()
 
                 if len(conditions)>0:
@@ -200,8 +210,13 @@ class Spyke:
             ax = plt.gca()
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
+            ax.get_yaxis().set_tick_params(direction='out')
+            ax.get_xaxis().set_tick_params(direction='out')
 
-            plt.legend(legend)
+            plt.tick_params(axis='y', right='off')
+            plt.tick_params(axis='x', top='off')  
+
+            plt.legend(legend, frameon=False)
 
             plt.show()
 
