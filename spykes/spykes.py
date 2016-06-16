@@ -159,69 +159,27 @@ class Spyke(object):
         # Initialize PSTH
         psth = dict()
 
+        psth['window'] = window
+        psth['binsize'] = binsize
+        psth['conditions'] = conditions
+        psth['data']=dict()
+
         # Compute the PSTH
         for i, rast in enumerate(rasters):
 
-            psth[i] = dict()
+            psth['data'][i] = dict()
             raster = rasters[rast]
             mean_psth = np.mean(raster, axis=0)/(1e-3*binsize)
             std_psth = np.sqrt(np.var(raster, axis=0))/(1e-3*binsize)
 
             sem_psth = std_psth/np.sqrt(float(np.shape(raster)[0]))
 
-            psth[i]['mean'] = mean_psth
-            psth[i]['sem'] = sem_psth
+            psth['data'][i]['mean'] = mean_psth
+            psth['data'][i]['sem'] = sem_psth
 
         # Visualize the PSTH
         if plot is True:
-
-            plt.figure()
-
-            scale = 0.1
-            y_min = (1.0-scale)*np.min([np.min( \
-                np.mean(rasters[raster_idx], axis=0)/(1e-3*binsize)) \
-                for raster_idx in rasters])
-            y_max = (1.0+scale)*np.max([np.max( \
-                np.mean(rasters[raster_idx], axis=0)/(1e-3*binsize)) \
-                for raster_idx in rasters])
-
-            legend = ['event onset']
-
-            time_bins = np.append( \
-                np.linspace(window[0], 0, num=np.abs(window[0])/binsize+1), \
-                np.linspace(0, window[1], num=np.abs(window[1])/binsize+1)[1:])
-
-            plt.plot([0, 0], [y_min, y_max], color='k', ls='--')
-
-            for i, rast in enumerate(rasters):
-                plt.plot(time_bins, psth[i]['mean'], color=colors[i], lw=1.5)
-
-            for i, rast in enumerate(rasters):
-                plt.fill_between(time_bins, psth[i]['mean']-psth[i]['sem'], \
-                    psth[i]['mean']+psth[i]['sem'], color=colors[i], alpha=0.2)
-
-                if len(conditions) > 0:
-                    legend.append('Condition %d' % (i+1))
-                else:
-                    legend.append('all')
-
-            plt.title('neuron %s' % self.name)
-            plt.xlabel('time [ms]')
-            plt.ylabel('spikes per second [spks/s]')
-            plt.ylim([y_min, y_max])
-
-            ax = plt.gca()
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
-            ax.get_yaxis().set_tick_params(direction='out')
-            ax.get_xaxis().set_tick_params(direction='out')
-
-            plt.tick_params(axis='y', right='off')
-            plt.tick_params(axis='x', top='off')
-
-            plt.legend(legend, frameon=False)
-
-            plt.show()
+            self.plot_psth(psth)
 
         for i, cond in enumerate(conditions):
             print 'Condition %d: %s; %d trials' % \
@@ -229,6 +187,72 @@ class Spyke(object):
 
         return psth
 
+    #-----------------------------------------------------------------------
+    def plot_psth(self, psth, event_name = 'event_onset', \
+            condition_names=None, \
+            colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']):
+        """
+        Plot psth and plot it
+
+        Parameters
+        ----------
+        psth: dict, output of get_psth method
+
+        """
+
+        plt.figure()
+        window = psth['window']
+        binsize = psth['binsize']
+        conditions = psth['conditions']
+
+        scale = 0.1
+        y_min = (1.0-scale)*np.min([np.min( \
+            psth['data'][psth_idx]['mean']) \
+            for psth_idx in psth['data']])
+        y_max = (1.0+scale)*np.max([np.max( \
+            psth['data'][psth_idx]['mean']) \
+            for psth_idx in psth['data']])
+
+        legend = [event_name]
+
+        time_bins = np.append( \
+            np.linspace(window[0], 0, num=np.abs(window[0])/binsize+1), \
+            np.linspace(0, window[1], num=np.abs(window[1])/binsize+1)[1:])
+
+        plt.plot([0, 0], [y_min, y_max], color='k', ls='--')
+
+        for i in psth['data']:
+            plt.plot(time_bins, psth['data'][i]['mean'], color=colors[i], lw=1.5)
+
+        for i in psth['data']:
+            plt.fill_between(time_bins, psth['data'][i]['mean']-psth['data'][i]['sem'], \
+                psth['data'][i]['mean']+psth['data'][i]['sem'], color=colors[i], alpha=0.2)
+
+            if len(conditions) > 0:
+                if condition_names:
+                    legend.append(condition_names[i])
+                else:
+                    legend.append('Condition %d' % (i+1))
+            else:
+                legend.append('all')
+
+        plt.title('neuron %s' % self.name)
+        plt.xlabel('time [ms]')
+        plt.ylabel('spikes per second [spks/s]')
+        plt.ylim([y_min, y_max])
+
+        ax = plt.gca()
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.get_yaxis().set_tick_params(direction='out')
+        ax.get_xaxis().set_tick_params(direction='out')
+
+        plt.tick_params(axis='y', right='off')
+        plt.tick_params(axis='x', top='off')
+
+        plt.legend(legend, frameon=False)
+
+        plt.show()
     #-----------------------------------------------------------------------
     def get_trialtype(self, features, conditions):
         """
