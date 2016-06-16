@@ -45,6 +45,7 @@ class Spyke:
 
         """
 
+        window = [np.floor(window[0]/binsize)*binsize, np.ceil(window[1]/binsize)*binsize]
         # Get a set of binary indicators for trials of interest
         if len(conditions) > 0:
             trials = self.get_trialtype(features, conditions)
@@ -77,15 +78,16 @@ class Spyke:
             event_bins =  np.where(event_counts > 0)[0]
 
             raster = np.array([(spike_counts[(i+window[0]/binsize): \
-                                             (i+window[1]/binsize)]) \
+                                             (i+window[1]/binsize+1)]) \
                                for i in event_bins])
             Rasters[r] = raster
 
         # Show the raster
         if plot == True:
 
-            xtics = np.arange(window[0], window[1], binsize*10)
+            xtics = [window[0], 0, window[1]]
             xtics = [str(i) for i in xtics]
+            xtics_loc = [0,(-window[0])/binsize,(window[1]-window[0])/binsize]
 
             for i,r in enumerate(Rasters):
 
@@ -104,7 +106,8 @@ class Spyke:
                 plt.ylabel('trials')
                 plt.xlabel('time [ms]')
 
-                plt.xticks(np.arange(0,(window[1]-window[0])/binsize,10), xtics)
+                #plt.xticks(np.arange(0,(window[1]-window[0])/binsize,10), xtics)
+                plt.xticks(xtics_loc,xtics)
                 if len(conditions)>0:
                     plt.title('neuron %s: Condition %d' % (self.name, i+1))
                 else:
@@ -120,10 +123,6 @@ class Spyke:
 
                 plt.tick_params(axis='x', which='both', top='off')
                 plt.tick_params(axis='y', which='both', right='off')
-
-                #ax.tick_params(axis='x', colors='red')
-                #ax.tick_params(axis='y', colors='red')
-                
                 
                 plt.show()
 
@@ -146,6 +145,7 @@ class Spyke:
                 (e.g. stimulus/ trial/ fixation onset, etc.)
         """
 
+        window = [np.floor(window[0]/binsize)*binsize, np.ceil(window[1]/binsize)*binsize]
         # Get all the rasters first
         Rasters = self.get_raster(events, features, conditions, window, binsize, plot=False)
 
@@ -181,7 +181,9 @@ class Spyke:
 
             legend = ['event onset']
 
-            xx = np.linspace(window[0], window[1], num=np.diff(window)/binsize)
+            xx = np.append( \
+                np.linspace(window[0], 0, num=np.abs(window[0])/binsize+1), \
+                np.linspace(0, window[1], num=np.abs(window[1])/binsize+1)[1:])
 
             plt.plot([0,0],[y_min,y_max], color='k', ls = '--')
 
@@ -190,11 +192,7 @@ class Spyke:
                 plt.plot(xx, PSTH[i]['mean'], color=colors[i], lw=1.5)
 
             for i, r in enumerate(Rasters):
-                #plt.plot(xx, PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], ls =':')
-                #plt.plot(xx, PSTH[i]['mean']-PSTH[i]['sem'], color=colors[i], ls =':')
-
-
-
+                
                 plt.fill_between(xx, PSTH[i]['mean']-PSTH[i]['sem'], PSTH[i]['mean']+PSTH[i]['sem'], color=colors[i], alpha=0.2)
 
                 if len(conditions)>0:
