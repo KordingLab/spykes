@@ -40,7 +40,7 @@ class Spyke(object):
     #-----------------------------------------------------------------------
     def get_raster(self, events, features=None, conditions=None, \
                    window=[-100, 500], binsize=10, plot=True, \
-                   figsize=(4,4), sort=True):
+                   figsize=(4,4), sort=False):
         """
         Compute the raster and plot it
 
@@ -68,7 +68,7 @@ class Spyke(object):
         rasters['window'] = window
         rasters['binsize'] = binsize
         rasters['conditions'] = conditions
-        rasters['data']=dict()
+        rasters['data'] = dict()
 
         # Assign time bins
         firstspike = self.spiketimes[0]
@@ -106,7 +106,7 @@ class Spyke(object):
 
     #-----------------------------------------------------------------------
     def plot_raster(self, rasters, condition_names=None, \
-        figsize=(4,4), sort=False):
+        figsize=(4, 4), sort=False):
         """
         Plot rasters
 
@@ -160,8 +160,7 @@ class Spyke(object):
 
     #-----------------------------------------------------------------------
     def get_psth(self, events, features=None, conditions=None, \
-                 window=[-100, 500], binsize=10, plot=True, \
-                 colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']):
+                 window=[-100, 500], binsize=10, plot=True):
         """
         Compute the psth and plot it
 
@@ -188,7 +187,7 @@ class Spyke(object):
         psth['window'] = window
         psth['binsize'] = binsize
         psth['conditions'] = conditions
-        psth['data']=dict()
+        psth['data'] = dict()
 
         # Compute the PSTH
         for r_idx in rasters['data']:
@@ -209,7 +208,7 @@ class Spyke(object):
 
             for i, cond in enumerate(conditions):
                 print 'Condition %d: %s; %d trials' % \
-                    (cond+1, str(conditions[cond]), np.shape(rasters['data'][r_idx])[0])
+                    (cond+1, str(conditions[cond]), np.shape(rasters['data'][i])[0])
 
         return psth
 
@@ -217,7 +216,7 @@ class Spyke(object):
     def plot_psth(self, psth, event_name='event_onset', \
             condition_names=None, ylim=None, xlim=None, \
             colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD'], \
-            figsize = (8,4)):
+            figsize = (8, 4)):
         """
         Plot psth
 
