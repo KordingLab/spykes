@@ -2,6 +2,7 @@ import numpy as np
 from scipy import stats
 from scipy.special import expit
 from copy import deepcopy
+import matplotlib.pyplot as plt
 
 class NeuroPop(object):
     """
@@ -437,8 +438,22 @@ class NeuroPop(object):
 
         return x
     #-----------------------------------------------------------------------
-    def display(self):
+    def display(self, x, Y, Yhat, colors=['k', 'c'], alpha=0.5, ylim=[0, 25],
+            xlabel='direction [radians]', ylabel='firing rate [spk/s]',
+            style='./../spykes/mpl_styles/spykes.mplstyle'):
         """
-        Visualize tuning curves and parameter estimates
+        Visualize data and estimated tuning curves
         """
-        #for
+        plt.style.use(style)
+
+        plt.plot(x, Y, '.', color=colors[0], alpha=alpha)
+        plt.plot(x, Yhat, '.', color=colors[1], alpha=alpha)
+        plt.ylim(ylim)
+        plt.xlabel(xlabel)
+        plt.ylabel(ylabel)
+
+        plt.tick_params(axis='y', right='off')
+        plt.tick_params(axis='x', top='off')
+        ax = plt.gca()
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
