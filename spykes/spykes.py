@@ -106,7 +106,7 @@ class Spyke(object):
 
     #-----------------------------------------------------------------------
     def plot_raster(self, rasters, condition_names=None, \
-        figsize=(4, 4), sort=False):
+        figsize=(4, 4), sort=False, cmap = [plt.get_cmap('Greys')]):
         """
         Plot rasters
 
@@ -135,7 +135,7 @@ class Spyke(object):
 
             plt.figure(figsize=figsize)
             plt.imshow(raster_sorted, aspect='auto', \
-                interpolation='none', cmap=plt.get_cmap('Greys'))
+                interpolation='none', cmap=cmap[r_idx])
             plt.axvline((-window[0])/binsize, color='r', linestyle='--')
             plt.ylabel('trials')
             plt.xlabel('time [ms]')
