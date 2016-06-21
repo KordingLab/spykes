@@ -498,7 +498,7 @@ class NeuroPop(object):
     #-----------------------------------------------------------------------
     def display(self, x, Y, Yhat, colors=['k', 'c'], alpha=0.5, ylim=[0, 25],
             xlabel='direction [radians]', ylabel='firing rate [spk/s]',
-            style='./../spykes/mpl_styles/spykes.mplstyle'):
+            style='../mpl_styles/spykes.mplstyle'):
         """
         Visualize data and estimated tuning curves
         """

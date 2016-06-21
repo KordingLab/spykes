@@ -35,10 +35,10 @@ if __name__ == "__main__":
           ],
           platforms='any',
           packages=[
-              'spykes',
+              'psth',
 	      'neuropop'
           ],
-	  package_dir={'spykes': 'spykes', 
-             	       'neuropop': 'neuropop', 
+	  package_dir={'psth': 'psth',
+             	       'neuropop': 'neuropop',
           }
           )
