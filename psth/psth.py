@@ -106,7 +106,7 @@ class PSTH(object):
 
     #-----------------------------------------------------------------------
     def plot_raster(self, rasters, condition_names=None, \
-        figsize=(4, 4), sort=False, cmap = [plt.get_cmap('Greys')]):
+        figsize=(4, 4), sort=False, cmap=[plt.get_cmap('Greys')]):
         """
         Plot rasters
 
@@ -220,7 +220,7 @@ class PSTH(object):
     def plot_psth(self, psth, event_name='event_onset', \
             condition_names=None, ylim=None, xlim=None, \
             colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD'], \
-            figsize = (8, 4)):
+            figsize=(8, 4)):
         """
         Plot psth
 
