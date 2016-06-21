@@ -38,7 +38,7 @@ See:
 
 ### Dependencies
 
-So far, you only need NumPy >= 1.6.1 and SciPy >= 0.14, which are already distributed with the [Anaconda](https://www.continuum.io/downloads) and [Canopy](https://www.enthought.com/products/canopy/). 
+So far, you only need ```NumPy``` >= 1.6.1 and ```SciPy``` >= 0.14, which are already distributed with [Anaconda](https://www.continuum.io/downloads) and [Canopy](https://www.enthought.com/products/canopy/). 
 
 ### Authors
 
