@@ -254,7 +254,7 @@ class NeuroPop(object):
         return grad_x
 
     #-----------------------------------------------------------------------
-    def simulate(self, n_samples=500, noise_mean=1.0):
+    def simulate(self, n_samples=500, noise_mu=2.0, noise_sigma=1.0):
         """
         Simulates firing rates from a neural population by randomly sampling
         circular variables (feature of interest)
@@ -263,7 +263,8 @@ class NeuroPop(object):
         Parameters
         ----------
         n_samples, int, number of samples required
-
+        noise_mu, float, mean of random Gaussian noise
+        noise_sigma, float, s.d. of random Gaussian noise
         Outputs
         -------
         x: float, n_samples x 1, feature of interest
@@ -307,8 +308,8 @@ class NeuroPop(object):
             # Compute the firing rate under the von Mises model
             Y[:, n] = self._tunefun(x, mu[n], k0[n], k[n], g[n], b[n])
 
-        # Add Poisson noise
-        Y = Y + np.random.poisson(noise_mean, Y.shape)
+        # Add Gaussian noise
+        Y = Y + np.random.normal(loc=noise_mu, scale=noise_sigma, size=Y.shape)
 
         return x, Y, mu, k0, k, g, b
 
