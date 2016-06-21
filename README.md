@@ -28,13 +28,13 @@ $ python setup.py develop install
 ### How to use ```spykes```?
 
 See:
-- [neuron_example.ipynb](http://nbviewer.jupyter.org/github/KordingLab/spykes/blob/master/notebooks/neuron_example.ipynb)
-- [crcns_dataset_example.ipynb](http://nbviewer.jupyter.org/github/KordingLab/spykes/blob/master/notebooks/crcns_dataset_example.ipynb)
+- [neuron_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks/neuron_example.ipynb)
+- [crcns_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks/crcns_dataset_example.ipynb)
 
 ### How to use ```neuropop```?
 
 See:
-- [neuropop_example.ipynb](http://nbviewer.jupyter.org/github/KordingLab/spykes/blob/master/notebooks/neuropop_example.ipynb)
+- [neuropop_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks/neuropop_example.ipynb)
 
 ### Dependencies
 
