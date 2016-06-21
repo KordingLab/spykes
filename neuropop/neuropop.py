@@ -254,6 +254,64 @@ class NeuroPop(object):
         return grad_x
 
     #-----------------------------------------------------------------------
+    def simulate(self, n_samples=500, noise_mean=1.0):
+        """
+        Simulates firing rates from a neural population by randomly sampling
+        circular variables (feature of interest)
+        as well as parameters (mu, k0, k, g, b)
+
+        Parameters
+        ----------
+        n_samples, int, number of samples required
+
+        Outputs
+        -------
+        x: float, n_samples x 1, feature of interest
+        Y: float, n_samples x n_neurons, population activity
+        mu: float,  n_neurons x 1, preferred feature [-pi, pi]
+        k0: float,  n_neurons x 1, baseline
+        k: float,  n_neurons x 1, shape (width)
+        g: float,  n_neurons x 1, gain
+        b: float,  n_neurons x 1, baseline
+        """
+
+        # Sample parameters randomly
+        mu = np.pi*(2.0*np.random.rand(self.n_neurons) - 1.0)
+
+        if self.tunemodel == 'glm':
+            k0 = np.random.rand(self.n_neurons)
+        else:
+            k0 = np.zeros(self.n_neurons)
+
+        if self.fit_k is True:
+            k = np.random.rand(self.n_neurons)
+        else:
+            k = np.ones(self.n_neurons)
+
+        if self.tunemodel == 'georgopulos':
+            g = 5.0*np.random.rand(self.n_neurons)
+        else:
+            g = np.ones(self.n_neurons)
+
+        if self.tunemodel == 'georgopulos':
+            b = 10.0*np.random.rand(self.n_neurons)
+        else:
+            b = np.zeros(self.n_neurons)
+
+        # Sample features of interest randomly [-pi, pi]
+        x = 2.0*np.pi*np.random.rand(n_samples) - np.pi
+
+        # Calculate firing rates under the desired model
+        Y = np.zeros([n_samples, self.n_neurons])
+        for n in range(0, self.n_neurons):
+            # Compute the firing rate under the von Mises model
+            Y[:, n] = self._tunefun(x, mu[n], k0[n], k[n], g[n], b[n])
+
+        # Add Poisson noise
+        Y = Y + np.random.poisson(noise_mean, Y.shape)
+
+        return x, Y, mu, k0, k, g, b
+
     def predict(self, x):
         """
         Compute the firing rates for the population
