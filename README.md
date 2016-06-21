@@ -36,6 +36,10 @@ See:
 See:
 - [neuropop_example.ipynb](http://nbviewer.jupyter.org/github/KordingLab/spykes/blob/master/notebooks/neuropop_example.ipynb)
 
+### Dependencies
+
+So far, you only need NumPy >= 1.6.1 and SciPy >= 0.14, which are already distributed with the [Anaconda](https://www.continuum.io/downloads) and [Canopy](https://www.enthought.com/products/canopy/). 
+
 ### Authors
 
 * [Pavan Ramkumar](http:/github.com/pavanramkumar)
