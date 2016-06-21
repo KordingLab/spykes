@@ -6,7 +6,7 @@ Spykes is a collection of Python tools to make the visualization and analysis of
 
 At present, this project comes with two packages:
 - ```psth``` helps you plot beautiful spike rasters and peri-stimulus time histograms
-- ```neuropop``` helps you estimate tuning curves of neural populations and decode preferred stimuli from population vectors using maximum likelihood
+- ```neuropop``` helps you estimate tuning curves of neural populations and decode stimuli from population vectors
 
 Documentation, tutorials and examples are coming soon! Check out the notebooks for now.
 
