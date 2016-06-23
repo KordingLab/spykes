@@ -32,11 +32,13 @@ class NeuroPop(object):
         tunemodel = 'georgopulos'
         Amirikan & Georgopulos (2000):
         http://brain.umn.edu/pdfs/BA118.pdf
-        f(x) = b_ + g_ * log(1+exp(k_ * cos(x - mu_)))
+        f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
+        f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))
 
         tunemodel='glm'
         Poisson-like generalized linear model
-        f(x) = log(1+exp(k0_ + k_ * cos(x - mu_)))
+        f(x) = exp(k0_ + k_ * cos(x - mu_))
+        f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))
 
     n_neurons: float, number of neurons in the population
     random_state: int, seed for numpy.random
@@ -58,7 +60,7 @@ class NeuroPop(object):
     b_: float,  n_neurons x 1, baseline
 
     eta = float, linearizes the exp above eta, default: 4.0
-    learning_rate: float, default: 1e-3
+    learning_rate: float, default: 2e-1
     convergence_threshold: float, default, 1e-5
     maxiter: float, default: 1000
     n_repeats: float, default: 5
@@ -86,7 +88,7 @@ class NeuroPop(object):
     def __init__(self, n_neurons=100, tunemodel='glm', fit_k=True,
                  random_state=1,
                  eta=0.4,
-                 learning_rate=1e-3, convergence_threshold=1e-5,
+                 learning_rate=2e-1, convergence_threshold=1e-5,
                  maxiter=1000, n_repeats=5,
                  verbose=False):
         """
@@ -120,7 +122,25 @@ class NeuroPop(object):
 
     #-----------------------------------------------------------------------
     def set_params(self, tunemodel=None, neurons=None, mu=None, k0=None, k=None, g=None, b=None):
+        """
+        A function that sets tuning curve parameters as specified
 
+        Parameters
+        ----------
+        tunemodel: str, either 'georgopulos' or 'glm'
+        neurons: list,
+            a list of integers which specifies the subset of neurons to set
+            default: all neurons
+
+        mu: float,  len(neurons) x 1, feature of interest
+        k0: float,  len(neurons) x 1, baseline
+        k: float,  len(neurons) x 1, gain
+        g: float,  len(neurons) x 1, gain
+        b: float,  len(neurons) x 1, baseline
+
+        if any of the above are None, it randomly initializes parameters for
+        all neurons
+        """
         if tunemodel is None:
             tunemodel = self.tunemodel
 
@@ -376,7 +396,8 @@ class NeuroPop(object):
     def fit(self, x, Y):
         """
         Estimate the parameters of the tuning curve under the
-        von Mises model, given features and population activity
+        model specified by self.tunemodel,
+        given features and population activity
 
         Parameters
         ----------
@@ -536,16 +557,52 @@ class NeuroPop(object):
 
         return x
     #-----------------------------------------------------------------------
-    def display(self, x, Y, Yhat, colors=['k', 'c'], alpha=0.5, ylim=[0, 25],
-            xlabel='direction [radians]', ylabel='firing rate [spk/s]',
-            style='../mpl_styles/spykes.mplstyle'):
+    def display(self, x, Y, neuron, colors=['k', 'c'], alpha=0.5, ylim=[0, 25],
+                xlabel='direction [radians]', ylabel='firing rate [spk/s]',
+                style='../mpl_styles/spykes.mplstyle',
+                xjitter=False, yjitter=False):
         """
         Visualize data and estimated tuning curves
+
+        Parameters
+        ----------
+        x: float, n_samples x 1, feature of interest
+        Y: float, n_samples x 1, firing rates
+        neuron: int, which neuron's fit to plot from the population?
+        colors: list of str, plot strings that specify color for raw data and fit
+        alpha: float, transparency for raw data
+        ylim: list of float, y axis limits
+        xlabel: str, x label (typically name of the feature)
+        ylabel: str, y label (typically firing rate)
+        style: str, name of the mpl style file to use with path
+        xjitter: bool, whether to add jitter to x variable while plotting
+        ylitter: bool, whether to add jitter to y variable while plotting
         """
+        
         plt.style.use(style)
 
-        plt.plot(x, Y, '.', color=colors[0], alpha=alpha)
-        plt.plot(x, Yhat, '.', color=colors[1], alpha=alpha)
+        if xjitter is True:
+            x_jitter = np.pi/32*np.random.randn(x.shape)
+        else:
+            x_jitter = np.zeros(x.shape)
+
+        if yjitter is True:
+            y_range = np.max(Y) - np.min(Y)
+            Y_jitter = y_range/20.0*np.random.randn(Y.shape)
+        else:
+            Y_jitter = np.zeros(Y.shape)
+
+        plt.plot(x + x_jitter, Y + Y_jitter, '.', color=colors[0], alpha=alpha)
+
+        x_range = np.arange(-np.pi, np.pi, np.pi/32)
+        Yhat_range = self._tunefun(x_range,
+                                    self.k0_[neuron],
+                                    self.k1_[neuron],
+                                    self.k2_[neuron],
+                                    self.g_[neuron],
+                                    self.b_[neuron])
+
+        plt.plot(x_range, Yhat_range, '-', linewidth=4, color=colors[1])
         plt.ylim(ylim)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
