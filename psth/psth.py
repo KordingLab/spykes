@@ -17,14 +17,13 @@ class PSTH(object):
 
     Methods
     -------
-    plot_raster
-    plot_psth
     get_raster
+    plot_raster
     get_psth
+    plot_psth
     get_trialtype
     get_spikecounts
-    plot_tuning_curve
-    fit_tuning_curve
+
     """
 
     def __init__(self, spiketimes, name='neuron'):
@@ -38,16 +37,41 @@ class PSTH(object):
         self.firingrate = (n_spikes/n_seconds)
 
     #-----------------------------------------------------------------------
-    def get_raster(self, events, features=None, conditions=None, \
-                   window=[-100, 500], binsize=10, plot=True, \
-                   figsize=(4,4), sort=False):
+    def get_raster(self, events, features=None, conditions=None,
+                   window=[-100, 500], binsize=10, plot=True,
+                   figsize=(4, 4), sort=False):
         """
         Compute the raster and plot it
 
         Parameters
         ----------
-        events: float, n x 1 array of event times
+        events : float, n x 1 array of event times in milliseconds
                 (e.g. stimulus/ trial/ fixation onset, etc.)
+
+        features : dictionary, each value is a n x 1 array of trial features
+                (e.g. bolean for good trial, reaching angle, etc.)
+
+        conditions : dictionary, each value is either a list of 1 element
+                (e.g. [1] for good trials, [0] for bad trials) or of 2 elements
+                for an interval (e.g reaching angles between [0,90] degrees)
+
+        window :
+            list of 2 elements, the time interval to consider
+
+        binsize : integer, bin size in milliseconds
+
+        plot : boolean,
+
+        figsize :
+            tuple of integers, optional, default: (4,4) width, height in inches.
+
+        Returns
+        -------
+        rasters : dictionary, with keys: 'binsize', 'conditions', 'window',
+            and 'data'. 'data' is a dictionary where each value is a raster
+            for each condition, or only one raster if conditions is not given
+            or empty
+
 
         """
 
@@ -105,14 +129,27 @@ class PSTH(object):
         return rasters
 
     #-----------------------------------------------------------------------
-    def plot_raster(self, rasters, condition_names=None, \
-        figsize=(4, 4), sort=False, cmap=[plt.get_cmap('Greys')]):
+    def plot_raster(self, rasters, condition_names=None,
+        figsize=(4, 4), sort=False, cmap=['Greys']):
         """
         Plot rasters
 
         Parameters
         ----------
-        rasters: dict, output of get_raster method
+        rasters:
+            dict, output of get_raster method
+
+        condition_names:
+            list, legend names for the conditions
+
+        figsize: tuple
+
+        sort:
+            boolean, default is False. True for sorting rasters according
+            to number of spikes.
+
+        cmap:
+            list, colormaps for rasters
 
         """
 
@@ -135,10 +172,10 @@ class PSTH(object):
 
             plt.figure(figsize=figsize)
             if len(cmap) > 1:
-                plt.imshow(raster_sorted, aspect='auto', \
-                    interpolation='none', cmap=cmap[r_idx])
+                plt.imshow(raster_sorted, aspect='auto',
+                    interpolation='none', cmap=plt.get_cmap(cmap[r_idx]))
             else:
-                plt.imshow(raster_sorted, aspect='auto', \
+                plt.imshow(raster_sorted, aspect='auto',
                     interpolation='none', cmap=cmap[0])
             plt.axvline((-window[0])/binsize, color='r', linestyle='--')
             plt.ylabel('trials')
@@ -170,8 +207,34 @@ class PSTH(object):
 
         Parameters
         ----------
-        events: float, n x 1 array of event times
+        events: float, n x 1 array of event times in milliseconds
                 (e.g. stimulus/ trial/ fixation onset, etc.)
+
+        features: dictionary, each value is a n x 1 array of trial features
+                (e.g. bolean for good trial, reaching angle, etc.)
+
+        conditions: dictionary, each value is either a list of 1 element
+                (e.g. [1] for good trials, [0] for bad trials) or of 2 elements
+                for an interval (e.g reaching angles between [0,90] degrees)
+
+        window:
+            list of 2 elements, the time interval to consider in milliseconds
+
+        binsize:
+            integer, bin size in milliseconds
+
+        plot: boolean
+
+        Returns
+        -------
+        psth: dictionary, with keys: 'binsize', 'conditions', 'window',
+            and 'data'. 'data' is a dictionary with as many values as
+            conditions (or only one if conditions is an empty list or not
+            defined). Each value in psth['data'] is itself a dictionary
+            with keys 'mean' and 'sem' that correspond to the mean and sem
+            of the psth for that condition
+
+
         """
 
         if features is None:
@@ -217,10 +280,9 @@ class PSTH(object):
         return psth
 
     #-----------------------------------------------------------------------
-    def plot_psth(self, psth, event_name='event_onset', \
-            condition_names=None, ylim=None, xlim=None, \
-            colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD'], \
-            figsize=(8, 4)):
+    def plot_psth(self, psth, event_name='event_onset',
+            condition_names=None, figsize=(8, 4), xlim=None, ylim=None,
+            colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']):
         """
         Plot psth
 
@@ -228,7 +290,22 @@ class PSTH(object):
         ----------
         psth: dict, output of get_psth method
 
+        event_name: string, legend name for event
+
+        condition_names: list, legend names for the conditions
+
+        figsize:
+            tuple of integers, optional, default: (8, 4) width, height
+            in inches.
+
+        xlim: list
+
+        ylim: list
+
+        colors: list
+
         """
+
         plt.figure(figsize=figsize)
         window = psth['window']
         binsize = psth['binsize']
@@ -301,11 +378,13 @@ class PSTH(object):
         features: float, n x p array of features,
                   n trials, p features
                   (e.g. stimulus/ behavioral features)
+
         conditions: list of intervals on arbitrary features
 
-        Outputs
+        Returns
         -------
         trials: bool, n x 1 array of indicators
+
         """
         trials = []
         for rast in conditions:
@@ -322,11 +401,13 @@ class PSTH(object):
         ----------
         events: float, n x 1 array of event times
                 (e.g. stimulus onset, trial onset, fixation onset, etc.)
+
         win: denoting the intervals
 
-        Outputs
+        Returns
         -------
         spikecounts: float, n x 1 array of spike counts
+
         """
         spiketimes = self.spiketimes
         spikecounts = np.zeros(events.shape)
