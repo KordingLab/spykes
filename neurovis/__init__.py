@@ -1,2 +1,2 @@
-from .neurovis import PSTH
+from .neurovis import NeuroVis
 __version__ = '0.1.dev'
