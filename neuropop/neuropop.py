@@ -4,6 +4,21 @@ from scipy.special import expit
 from copy import deepcopy
 import matplotlib.pyplot as plt
 
+def slow_exp(z, eta):
+    qu = deepcopy(z)
+    slope = np.exp(eta)
+    intercept = (1 - eta) * slope
+    qu[z > eta] = z[z > eta] * slope + intercept
+    qu[z <= eta] = np.exp(z[z <= eta])
+    return qu
+
+def grad_slow_exp(z, eta):
+    dqu_dz = deepcopy(z)
+    slope = np.exp(eta)
+    dqu_dz[z > eta] = slope
+    dqu_dz[z <= eta] = np.exp(z[z <= eta])
+    return dqu_dz
+
 class NeuroPop(object):
     """
     This class implements several conveniences for
@@ -17,7 +32,7 @@ class NeuroPop(object):
         tunemodel = 'georgopulos'
         Amirikan & Georgopulos (2000):
         http://brain.umn.edu/pdfs/BA118.pdf
-        f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
+        f(x) = b_ + g_ * log(1+exp(k_ * cos(x - mu_)))
 
         tunemodel='glm'
         Poisson-like generalized linear model
@@ -37,9 +52,12 @@ class NeuroPop(object):
     mu_: float,  n_neurons x 1, preferred feature [-pi, pi]
     k0_: float,  n_neurons x 1, baseline
     k_: float,  n_neurons x 1, shape (width)
+    k1_: float,  n_neurons x 1, convenience parameter
+    k2_: float,  n_neurons x 1, convenience parameter
     g_: float,  n_neurons x 1, gain
     b_: float,  n_neurons x 1, baseline
 
+    eta = float, linearizes the exp above eta, default: 4.0
     learning_rate: float, default: 1e-3
     convergence_threshold: float, default, 1e-5
     maxiter: float, default: 1000
@@ -47,7 +65,6 @@ class NeuroPop(object):
 
     Callable methods
     ----------------
-    get_params
     set_params
     fit
     predict
@@ -68,6 +85,7 @@ class NeuroPop(object):
 
     def __init__(self, n_neurons=100, tunemodel='glm', fit_k=True,
                  random_state=1,
+                 eta=0.4,
                  learning_rate=1e-3, convergence_threshold=1e-5,
                  maxiter=1000, n_repeats=5,
                  verbose=False):
@@ -80,31 +98,19 @@ class NeuroPop(object):
 
         # Assign random tuning parameters
         #--------------------------------
+        self.mu_ = np.zeros(n_neurons)
+        self.k0_ = np.zeros(n_neurons)
+        self.k_ = np.zeros(n_neurons)
+        self.k1_ = np.zeros(n_neurons)
+        self.k2_ = np.zeros(n_neurons)
+        self.g_ = np.zeros(n_neurons)
+        self.b_ = np.zeros(n_neurons)
         np.random.seed(random_state)
-        self.mu_ = np.pi*(2.0*np.random.rand(self.n_neurons) - 1.0)
-
-        if self.tunemodel == 'glm':
-            self.k0_ = np.random.rand(self.n_neurons)
-        else:
-            self.k0_ = np.zeros(self.n_neurons)
-
-        if self.fit_k is True:
-            self.k_ = np.random.rand(self.n_neurons)
-        else:
-            self.k_ = np.ones(self.n_neurons)
-
-        if self.tunemodel=='georgopulos':
-            self.g_ = 5.0*np.random.rand(self.n_neurons)
-        else:
-            self.g_ = np.ones(self.n_neurons)
-
-        if self.tunemodel=='georgopulos':
-            self.b_ = 10.0*np.random.rand(self.n_neurons)
-        else:
-            self.b_ = np.zeros(self.n_neurons)
+        self.set_params(tunemodel, range(self.n_neurons))
 
         # Assign optimization parameters
         #-------------------------------
+        self.eta = eta
         self.learning_rate = learning_rate
         self.convergence_threshold = convergence_threshold
         self.maxiter = maxiter
@@ -113,41 +119,71 @@ class NeuroPop(object):
         self.verbose = verbose
 
     #-----------------------------------------------------------------------
-    def _reset_params(self, n):
-        # Assign random parameters
-        self.mu_[n] = np.pi*(2.0*np.random.rand(1) - 1.0)
+    def set_params(self, tunemodel=None, neurons=None, mu=None, k0=None, k=None, g=None, b=None):
 
-        if self.tunemodel == 'glm':
-            self.k0_[n] = np.random.rand(1)
-        else:
-            self.k0_[n] = 0.0
+        if tunemodel is None:
+            tunemodel = self.tunemodel
 
-        if self.fit_k is True:
-            self.k_[n] = np.random.rand(1)
-        else:
-            self.k_[n] = 1.0
+        if neurons is None:
+            neurons = range(self.n_neurons)
 
-        if self.tunemodel=='georgopulos':
-            self.g_[n] = 5.0*np.random.rand(1)
+        if isinstance(neurons, list):
+            n_neurons = len(neurons)
         else:
-            self.g_[n] = 1.0
+            n_neurons = 1
 
-        if self.tunemodel=='georgopulos':
-            self.b_[n] = 10.0*np.random.rand(1)
+        # Assign parameters; if None, assign random
+        if mu is None:
+            self.mu_[neurons] = np.pi * (2.0 * np.random.rand(n_neurons) - 1.0)
         else:
-            self.b_[n] = 0.0
+            self.mu_[neurons] = mu
+
+        if k0 is None:
+            if tunemodel == 'glm':
+                self.k0_[neurons] = np.random.rand(n_neurons)
+            else:
+                self.k0_[neurons] = np.zeros(n_neurons)
+        else:
+            self.k0_[neurons] = k0
+
+        if k is None:
+            if self.fit_k is True:
+                self.k_[neurons] = 20.0 * np.random.rand(n_neurons)
+            else:
+                self.k_[neurons] = np.ones(n_neurons)
+        else:
+            self.k_[neurons] = k
+
+        self.k1_[neurons] = self.k_[neurons] * np.cos(self.mu_[neurons])
+        self.k2_[neurons] = self.k_[neurons] * np.sin(self.mu_[neurons])
+
+        if g is None:
+            if tunemodel == 'georgopulos':
+                self.g_[neurons] = 5.0 * np.random.rand(n_neurons)
+            else:
+                self.g_[neurons] = np.ones(n_neurons)
+        else:
+            self.g_[neurons] = g
+
+        if b is None:
+            if tunemodel == 'georgopulos':
+                self.b_[neurons] = 10.0 * np.random.rand(n_neurons)
+            else:
+                self.b_[neurons] = np.zeros(n_neurons)
+        else:
+            self.b_[neurons] = b
 
     #-----------------------------------------------------------------------
-    def _tunefun(self, x, mu, k0, k, g, b):
+    def _tunefun(self, x, k0, k1, k2, g, b):
         """
         The tuning function as specified in self.tunemodel
 
         Parameters
         ----------
         x: float, n_samples x 1, feature of interest
-        mu: float,  n_neurons x 1, preferred feature [-pi, pi]
         k0: float,  n_neurons x 1, baseline
-        k: float,  n_neurons x 1, shape (width)
+        k1: float,  n_neurons x 1, convenience parameter
+        k2: float,  n_neurons x 1, convenience parameter
         g: float,  n_neurons x 1, gain
         b: float,  n_neurons x 1, baseline
 
@@ -155,14 +191,11 @@ class NeuroPop(object):
         -------
         Y: float, n_samples x 1, firing rates
         """
-        if self.tunemodel == 'georgopulos':
-            y = b + g * np.exp(k0 + k * np.cos(x - mu))
-        elif self.tunemodel == 'glm':
-            y = np.log1p(np.exp(k0 + k * np.cos(x - mu)))
+        y = b + g * slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta)
         return y
 
     #-----------------------------------------------------------------------
-    def _loss(self, x, y, mu, k0, k, g, b):
+    def _loss(self, x, y, k0, k1, k2, g, b):
         """
         The loss function: negative Poisson log likelihood function
         under the von mises tuning model
@@ -172,8 +205,9 @@ class NeuroPop(object):
         x: float, n_samples x 1 (encoding) | scalar (decoding), feature of interest
         y: float, n_samples x 1 (encoding) | n_neurons x 1 (decoding), firing rates
         mu: float,  n_neurons x 1, preferred feature [-pi, pi]
-        k: float,  n_neurons x 1, baseline
-        k: float,  n_neurons x 1, shape (width)
+        k0: float,  n_neurons x 1, baseline
+        k1: float,  n_neurons x 1, convenience parameter
+        k2: float,  n_neurons x 1, convenience parameter
         g: float,  n_neurons x 1, gain
         b: float,  n_neurons x 1, baseline
 
@@ -181,13 +215,12 @@ class NeuroPop(object):
         -------
         loss: float, scalar
         """
-        lmb = self._tunefun(x, mu, k0, k, g, b)
-        #lmb = b + g * np.exp(k * np.cos(x - mu))
+        lmb = self._tunefun(x, k0, k1, k2, g, b)
         J = np.sum(lmb) - np.sum(y * lmb)
         return J
 
     #-----------------------------------------------------------------------
-    def _grad_theta_loss(self, x, y, mu, k0, k, g, b):
+    def _grad_theta_loss(self, tunemodel, x, y, k0, k1, k2, g, b):
         """
         The gradient of the loss function:
         wrt parameters of the tuning model (theta)
@@ -196,38 +229,39 @@ class NeuroPop(object):
         ----------
         x: float,  n_samples x 1, feature of interest
         y: float,  n_samples x 1, firing rates
-        mu: float, scalar, preferred feature [-pi, pi]
-        k0: float,  scalar, baseline
-        k: float,  scalar, shape (width)
+        k0: float,  n_neurons x 1, baseline
+        k1: float,  n_neurons x 1, convenience parameter
+        k2: float,  n_neurons x 1, convenience parameter
         g: float,  scalar, gain
         b: float,  scalar, baseline
 
         Outputs
         -------
-        grad_mu: float, scalar
         grad_k0: float, scalar
-        grad_k: float, scalar
+        grad_k1: float, scalar
+        grad_k2: float, scalar
         grad_g: float, scalar
         grad_b: float, scalar
         """
-        lmb = self._tunefun(x, mu, k0, k, g, b)
-        if self.tunemodel == 'georgopulos':
-            grad_mu = np.sum(g * np.exp(k0 + k * np.cos(x - mu)) * k * np.sin(x - mu) * (1 - y/lmb))
-            grad_k0 = 0.0
-            grad_k = np.sum(g * np.exp(k0 + k * np.cos(x - mu)) * np.cos(x - mu) * (1 - y/lmb))
-            grad_g = np.sum(g * np.exp(k0 + k * np.cos(x - mu)) * (1 - y/lmb))
-            grad_b = np.sum((1-y/lmb))
-        elif self.tunemodel == 'glm':
-            grad_mu = np.sum(expit(k0 + k * np.cos(x - mu)) * k * np.sin(x - mu) * (1 - y/lmb))
-            grad_k0 = np.sum(expit(k0 + k * np.cos(x - mu)) * (1 - y/lmb))
-            grad_k = np.sum(expit(k0 + k * np.cos(x - mu)) * np.cos(x - mu) * (1 - y/lmb))
+        lmb = self._tunefun(x, k0, k1, k2, g, b)
+
+        n_samples = np.float(x.shape[0])
+        grad_k1 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * np.cos(x) * (1 - y/lmb))
+        grad_k2 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * np.sin(x) * (1 - y/lmb))
+        if tunemodel == 'glm':
+            grad_k0 = 1./n_samples * np.sum(grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * (1 - y/lmb))
             grad_g = 0.0
             grad_b = 0.0
+        elif tunemodel == 'georgopulos':
+            grad_k0 = 0.0
+            grad_g = 1./n_samples * np.sum(slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * (1 - y/lmb))
+            grad_b = 1./n_samples * np.sum((1-y/lmb))
 
-        return grad_mu, grad_k0, grad_k, grad_g, grad_b
+
+        return grad_k0, grad_k1, grad_k2, grad_g, grad_b
 
     #-----------------------------------------------------------------------
-    def _grad_x_loss(self, x, y, mu, k0, k, g, b):
+    def _grad_x_loss(self, x, y, k0, k1, k2, g, b):
         """
         The gradient of the loss function:
         wrt encoded feature x
@@ -236,9 +270,9 @@ class NeuroPop(object):
         ----------
         x: float, scalar, feature of interest
         y: float, n_neurons x 1, firing rates
-        mu: float,  n_neurons x 1, preferred feature [-pi, pi]
         k0: float,  n_neurons x 1, baseline
-        k: float,  n_neurons x 1, shape (width)
+        k1: float,  n_neurons x 1, convenience parameter
+        k2: float,  n_neurons x 1, convenience parameter
         g: float,  n_neurons x 1, gain
         b: float,  n_neurons x 1, baseline
 
@@ -246,15 +280,15 @@ class NeuroPop(object):
         -------
         grad_x: float, scalar
         """
-        lmb = self._tunefun(x, mu, k0, k, g, b)
-        if self.tunemodel == 'georgopulos':
-            grad_x = -np.sum(g * np.exp(k0 + k * np.cos(x - mu)) * k * np.sin(x - mu) * (1 - y/lmb))
-        elif self.tunemodel == 'glm':
-            grad_x = -np.sum(expit(k0 + k * np.cos(x - mu)) * k * np.sin(x - mu) * (1 - y/lmb))
+        n_neurons = np.float(self.n_neurons)
+
+        lmb = self._tunefun(x, k0, k1, k2, g, b)
+        grad_x = 1./n_neurons * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * \
+                (k2 * np.cos(x) - k1 * np.sin(x)) * (1 - y/lmb))
         return grad_x
 
     #-----------------------------------------------------------------------
-    def simulate(self, n_samples=500, noise_mu=2.0, noise_sigma=1.0):
+    def simulate(self, tunemodel, n_samples=500, noise_mu=2.0, noise_sigma=1.0):
         """
         Simulates firing rates from a neural population by randomly sampling
         circular variables (feature of interest)
@@ -277,36 +311,39 @@ class NeuroPop(object):
         """
 
         # Sample parameters randomly
-        mu = np.pi*(2.0*np.random.rand(self.n_neurons) - 1.0)
+        mu = np.pi * (2.0 * np.random.rand(self.n_neurons) - 1.0)
 
-        if self.tunemodel == 'glm':
+        if tunemodel == 'glm':
             k0 = np.random.rand(self.n_neurons)
         else:
             k0 = np.zeros(self.n_neurons)
 
         if self.fit_k is True:
-            k = np.random.rand(self.n_neurons)
+            k = 20.0 * np.random.rand(self.n_neurons)
         else:
             k = np.ones(self.n_neurons)
 
-        if self.tunemodel == 'georgopulos':
-            g = 5.0*np.random.rand(self.n_neurons)
+        k1 = k * np.cos(mu)
+        k2 = k * np.sin(mu)
+
+        if tunemodel == 'georgopulos':
+            g = 5.0 * np.random.rand(self.n_neurons)
         else:
             g = np.ones(self.n_neurons)
 
-        if self.tunemodel == 'georgopulos':
-            b = 10.0*np.random.rand(self.n_neurons)
+        if tunemodel == 'georgopulos':
+            b = 10.0 * np.random.rand(self.n_neurons)
         else:
             b = np.zeros(self.n_neurons)
 
         # Sample features of interest randomly [-pi, pi]
-        x = 2.0*np.pi*np.random.rand(n_samples) - np.pi
+        x = 2.0 * np.pi * np.random.rand(n_samples) - np.pi
 
         # Calculate firing rates under the desired model
         Y = np.zeros([n_samples, self.n_neurons])
         for n in range(0, self.n_neurons):
             # Compute the firing rate under the von Mises model
-            Y[:, n] = self._tunefun(x, mu[n], k0[n], k[n], g[n], b[n])
+            Y[:, n] = self._tunefun(x, k0[n], k1[n], k2[n], g[n], b[n])
 
         # Add Gaussian noise
         Y = Y + np.random.normal(loc=noise_mu, scale=noise_sigma, size=Y.shape)
@@ -332,7 +369,7 @@ class NeuroPop(object):
         # For each neuron
         for n in range(0, self.n_neurons):
             # Compute the firing rate under the von Mises model
-            Y[:, n] = self._tunefun(x, self.mu_[n], self.k0_[n], self.k_[n], self.g_[n], self.b_[n])
+            Y[:, n] = self._tunefun(x, self.k0_[n], self.k1_[n], self.k2_[n], self.g_[n], self.b_[n])
         return Y
 
     #-----------------------------------------------------------------------
@@ -362,9 +399,9 @@ class NeuroPop(object):
 
             # Repeat several times over random initializations (global optimization)
             for repeat in range(0, n_repeats):
-                self._reset_params(n)
-                fit_params.append({'mu': self.mu_[n], 'k0': self.k_[n],
-                'k': self.k_[n], 'g': self.g_[n], 'b': self.b_[n], 'loss': 0.0})
+                self.set_params(self.tunemodel, n)
+                fit_params.append({'k0': self.k0_[n], 'k1': self.k1_[n],
+                'k2': self.k2_[n], 'g': self.g_[n], 'b': self.b_[n], 'loss': 0.0})
 
                 # Collect loss and delta loss for each iteration
                 L, DL = list(), list()
@@ -375,29 +412,29 @@ class NeuroPop(object):
                     converged = False
 
                     # Compute gradients
-                    grad_mu_, grad_k0_, grad_k_, grad_g_, grad_b_ = \
-                    self._grad_theta_loss(x, Y[:,n],
-                                    fit_params[repeat]['mu'],
+                    grad_k0_, grad_k1_, grad_k2_, grad_g_, grad_b_ = \
+                    self._grad_theta_loss(self.tunemodel, x, Y[:,n],
                                     fit_params[repeat]['k0'],
-                                    fit_params[repeat]['k'],
+                                    fit_params[repeat]['k1'],
+                                    fit_params[repeat]['k2'],
                                     fit_params[repeat]['g'],
                                     fit_params[repeat]['b'])
 
                     # Update parameters
-                    fit_params[repeat]['mu'] = fit_params[repeat]['mu'] - learning_rate*grad_mu_
                     if self.tunemodel == 'glm':
                         fit_params[repeat]['k0'] = fit_params[repeat]['k0'] - learning_rate*grad_k0_
                     if self.fit_k is True:
-                        fit_params[repeat]['k'] = fit_params[repeat]['k'] - learning_rate*grad_k_
+                        fit_params[repeat]['k1'] = fit_params[repeat]['k1'] - learning_rate*grad_k1_
+                        fit_params[repeat]['k2'] = fit_params[repeat]['k2'] - learning_rate*grad_k2_
                     if self.tunemodel == 'georgopulos':
                         fit_params[repeat]['g'] = fit_params[repeat]['g'] - learning_rate*grad_g_
                         fit_params[repeat]['b'] = fit_params[repeat]['b'] - learning_rate*grad_b_
 
                     # Update loss
                     L.append(self._loss(x, Y[:,n],\
-                                        fit_params[repeat]['mu'],\
-                                        fit_params[repeat]['k0'],
-                                        fit_params[repeat]['k'],\
+                                        fit_params[repeat]['k0'],\
+                                        fit_params[repeat]['k1'],
+                                        fit_params[repeat]['k2'],\
                                         fit_params[repeat]['g'],\
                                         fit_params[repeat]['b']))
 
@@ -407,15 +444,15 @@ class NeuroPop(object):
                         if np.abs(DL[-1] / L[-1]) < convergence_threshold:
                             converged = True
 
-                    # Sometimes k is negative but this needs to be corrected
-                    if self.tunemodel == 'georgopulos':
-                        if fit_params[repeat]['k'] < 0:
-                            fit_params[repeat]['k'] = -fit_params[repeat]['k']
-                            fit_params[repeat]['mu'] = fit_params[repeat]['mu'] + np.pi
+                    # Back out gain from k1 and k2
+                    fit_params[repeat]['k'] = np.sqrt(
+                            fit_params[repeat]['k1'] ** 2 + \
+                            fit_params[repeat]['k2'] ** 2)
 
-                    # Make sure mu is between [-pi, pi]
-                    fit_params[repeat]['mu'] = np.arctan2(np.sin(fit_params[repeat]['mu']),\
-                                                          np.cos(fit_params[repeat]['mu']))
+                    # Back out preferred feature (mu) from k1 and k2
+                    fit_params[repeat]['mu'] = \
+                        np.arctan2(fit_params[repeat]['k2'],
+                                    fit_params[repeat]['k1'])
 
                     # Check for convergence
                     if converged is True:
@@ -433,6 +470,8 @@ class NeuroPop(object):
             amin = np.array([d['loss'] for d in fit_params]).argmin()
             self.mu_[n] = fit_params[amin]['mu']
             self.k0_[n] = fit_params[amin]['k0']
+            self.k1_[n] = fit_params[amin]['k1']
+            self.k2_[n] = fit_params[amin]['k2']
             self.k_[n] = fit_params[amin]['k']
             self.g_[n] = fit_params[amin]['g']
             self.b_[n] = fit_params[amin]['b']
@@ -471,14 +510,14 @@ class NeuroPop(object):
 
                 # Compute gradients
                 grad_x_ = self._grad_x_loss(x[s], Y[s,:],
-                         self.mu_, self.k0_, self.k_, self.g_, self.b_)
+                         self.k0_, self.k1_, self.k2_, self.g_, self.b_)
 
                 # Update parameters
                 x[s] = x[s] - learning_rate*grad_x_
 
                 # Update loss
                 L.append(self._loss(x[s], Y[s,:],
-                         self.mu_, self.k0_, self.k_, self.g_, self.b_))
+                         self.k0_, self.k1_, self.k2_, self.g_, self.b_))
 
                 # Update delta loss and check for convergence
                 if t > 1:
