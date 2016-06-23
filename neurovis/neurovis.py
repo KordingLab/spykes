@@ -5,7 +5,7 @@ plt.rc("font", family="Bitstream Vera Sans")
 plt.style.use('../mpl_styles/spykes.mplstyle')
 
 
-class PSTH(object):
+class NeuroVis(object):
     """
     This class implements several conveniences for
     visualizing firing activity of single neurons

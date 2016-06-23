@@ -5,7 +5,7 @@
 Spykes is a collection of Python tools to make the visualization and analysis of neural data easy and reproducible.
 
 At present, this project comes with two packages:
-- ```psth``` helps you plot beautiful spike rasters and peri-stimulus time histograms
+- ```neurovis``` helps you plot beautiful spike rasters and peri-stimulus time histograms
 - ```neuropop``` helps you estimate tuning curves of neural populations and decode stimuli from population vectors
 
 Documentation, tutorials and examples are coming soon! Check out the notebooks for now.
@@ -25,7 +25,7 @@ $ cd spykes
 $ python setup.py develop install
 ```
 
-### How to use ```psth```?
+### How to use ```neurovis```?
 
 See:
 - [neuron_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks/neuron_example.ipynb)
