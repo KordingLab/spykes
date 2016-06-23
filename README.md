@@ -28,13 +28,16 @@ $ python setup.py develop install
 ### How to use ```neurovis```?
 
 See:
-- [neuron_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks/neuron_example.ipynb)
-- [crcns_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks/crcns_dataset_example.ipynb)
+-  [crcns_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/crcns_dataset_example.ipynb)
+-
+[reaching_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/reaching_dataset_example.ipynb)
 
 ### How to use ```neuropop```?
 
 See:
-- [neuropop_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks/neuropop_example.ipynb)
+- [neuropop_simul_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/neuropop_simul_example.ipynb)
+-
+[reaching_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/reaching_dataset_example.ipynb)
 
 ### Dependencies
 
