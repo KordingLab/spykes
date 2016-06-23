@@ -176,7 +176,7 @@ class PSTH(object):
                     interpolation='none', cmap=plt.get_cmap(cmap[r_idx]))
             else:
                 plt.imshow(raster_sorted, aspect='auto',
-                    interpolation='none', cmap=cmap[0])
+                    interpolation='none', cmap=plt.get_cmap(cmap[0]))
             plt.axvline((-window[0])/binsize, color='r', linestyle='--')
             plt.ylabel('trials')
             plt.xlabel('time [ms]')
