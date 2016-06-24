@@ -61,7 +61,7 @@ class NeuroPop(object):
     decode
     display
     score
-    
+
     Class methods
     -------------
     _tunefun
@@ -590,3 +590,41 @@ class NeuroPop(object):
         ax = plt.gca()
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
+
+        #-----------------------------------------------------------------------
+        def score(self, Y, Yhat, Ynull=None, method='circ_corr'):
+            """Score the model.
+            Parameters
+            ----------
+            Y : array, shape (n_samples, [n_neurons])
+                The true firing rates.
+            Yhat : array, shape (n_samples, [n_neurons])
+                The estimated firing rates.
+            Ynull : None | array, shape (n_samples, [n_classes])
+                The labels for the null model. Must be None if method is not 'pseudo_R2'
+            method : str
+                One of 'pseudo_R2' or 'circ_corr' or 'cosine_dist'
+            """
+
+            if method == 'pseudo_R2':
+                if(len(Y.shape) > 1):
+                    # There are many neurons, so calculate and return the score for each neuron
+                    score = list()
+                    for neuron in Y.shape[1]:
+                        L1 = utils.log_likelihood(Y[:, neuron], Yhat[:, neuron], self.distr)
+                        LS = utils.log_likelihood(Y[:, neuron], Y[:, neuron], self.distr)
+                        L0 = utils.log_likelihood(Y[:, neuron], Ynull[:, neuron], self.distr)
+                        score.append(1 - (LS - L1) / (LS - L0))
+                else:
+                    L1 = utils.log_likelihood(Y, Yhat, self.distr)
+                    LS = utils.log_likelihood(Y, Y, self.distr)
+                    L0 = utils.log_likelihood(Y, Ynull, self.distr)
+                    score = 1 - (LS - L1) / (LS - L0)
+
+            elif method == 'circ_corr':
+                score = utils.circ_corr(np.squeeze(Y), np.squeeze(Yhat))
+
+            elif method == 'cosine_dist':
+                score = np.mean(np.cos(np.squeeze(Y)-np.squeeze(Yhat)))
+
+            return score
