@@ -38,7 +38,7 @@ class NeuroVis(object):
     #-----------------------------------------------------------------------
     def get_raster(self, events, features=None, conditions=None,
                    window=[-100, 500], binsize=10, plot=True,
-                   figsize=(4, 4), sort=False):
+                   figsize=(8, 2), sort=False):
         """
         Compute the raster and plot it
 
