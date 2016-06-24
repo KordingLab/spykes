@@ -28,7 +28,7 @@ class NeuroPop(object):
         f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
         f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))
 
-        tunemodel='glm'
+        tunemodel = 'glm'
         Poisson generalized linear model
         f(x) = exp(k0_ + k_ * cos(x - mu_))
         f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))
@@ -74,7 +74,7 @@ class NeuroPop(object):
     _grad_x_loss
     """
 
-    def __init__(self, n_neurons=100, tunemodel='glm', fit_k=True,
+    def __init__(self, n_neurons=100, tunemodel='glm',
                  random_state=1,
                  eta=0.4,
                  learning_rate=2e-1, convergence_threshold=1e-5,
@@ -85,7 +85,6 @@ class NeuroPop(object):
         """
         self.tunemodel = tunemodel
         self.n_neurons = n_neurons
-        self.fit_k = fit_k
 
         # Assign random tuning parameters
         #--------------------------------
@@ -156,10 +155,7 @@ class NeuroPop(object):
             self.k0_[neurons] = k0
 
         if k is None:
-            if self.fit_k is True:
-                self.k_[neurons] = 20.0 * np.random.rand(n_neurons)
-            else:
-                self.k_[neurons] = np.ones(n_neurons)
+            self.k_[neurons] = 20.0 * np.random.rand(n_neurons)
         else:
             self.k_[neurons] = k
 
@@ -327,10 +323,7 @@ class NeuroPop(object):
         else:
             k0 = np.zeros(self.n_neurons)
 
-        if self.fit_k is True:
-            k = 20.0 * np.random.rand(self.n_neurons)
-        else:
-            k = np.ones(self.n_neurons)
+        k = 20.0 * np.random.rand(self.n_neurons)
 
         k1 = k * np.cos(mu)
         k2 = k * np.sin(mu)
@@ -431,11 +424,11 @@ class NeuroPop(object):
                                     fit_params[repeat]['b'])
 
                     # Update parameters
+                    fit_params[repeat]['k1'] = fit_params[repeat]['k1'] - learning_rate*grad_k1_
+                    fit_params[repeat]['k2'] = fit_params[repeat]['k2'] - learning_rate*grad_k2_
+
                     if self.tunemodel == 'glm':
                         fit_params[repeat]['k0'] = fit_params[repeat]['k0'] - learning_rate*grad_k0_
-                    if self.fit_k is True:
-                        fit_params[repeat]['k1'] = fit_params[repeat]['k1'] - learning_rate*grad_k1_
-                        fit_params[repeat]['k2'] = fit_params[repeat]['k2'] - learning_rate*grad_k2_
                     if self.tunemodel == 'gvm':
                         fit_params[repeat]['g'] = fit_params[repeat]['g'] - learning_rate*grad_g_
                         fit_params[repeat]['b'] = fit_params[repeat]['b'] - learning_rate*grad_b_
