@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.rc("font", family="Bitstream Vera Sans")
 plt.style.use('../mpl_styles/spykes.mplstyle')
 
 
@@ -161,43 +160,45 @@ class NeuroVis(object):
         xtics_loc = [0, (-window[0])/binsize, (window[1]-window[0])/binsize]
 
         for r_idx in rasters['data']:
-
             raster = rasters['data'][r_idx]
 
-            if sort is True:
-                # Sorting by total spike count in the duration
-                raster_sorted = raster[np.sum(raster, axis=1).argsort()]
-            else:
-                raster_sorted = raster
+            if len(raster)>0:
+                if sort is True:
+                    # Sorting by total spike count in the duration
+                    raster_sorted = raster[np.sum(raster, axis=1).argsort()]
+                else:
+                    raster_sorted = raster
 
-            plt.figure(figsize=figsize)
-            if len(cmap) > 1:
-                plt.imshow(raster_sorted, aspect='auto',
-                    interpolation='none', cmap=plt.get_cmap(cmap[r_idx]))
+                plt.figure(figsize=figsize)
+                if len(cmap) > 1:
+                    plt.imshow(raster_sorted, aspect='auto',
+                        interpolation='none', cmap=plt.get_cmap(cmap[r_idx]))
+                else:
+                    plt.imshow(raster_sorted, aspect='auto',
+                        interpolation='none', cmap=plt.get_cmap(cmap[0]))
+                plt.axvline((-window[0])/binsize, color='r', linestyle='--')
+                plt.ylabel('trials')
+                plt.xlabel('time [ms]')
+                plt.xticks(xtics_loc, xtics)
+                if len(conditions) > 0:
+                    plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
+                else:
+                    plt.title('neuron %s' % 'self.name')
+
+                ax = plt.gca()
+                ax.spines['top'].set_visible(False)
+                ax.spines['right'].set_visible(False)
+                ax.spines['bottom'].set_visible(False)
+                ax.spines['left'].set_visible(False)
+                plt.tick_params(axis='x', which='both', top='off')
+                plt.tick_params(axis='y', which='both', right='off')
+
+                plt.show()
             else:
-                plt.imshow(raster_sorted, aspect='auto',
-                    interpolation='none', cmap=plt.get_cmap(cmap[0]))
-            plt.axvline((-window[0])/binsize, color='r', linestyle='--')
-            plt.ylabel('trials')
-            plt.xlabel('time [ms]')
-            plt.xticks(xtics_loc, xtics)
+                print 'No trials for condition %d!' % (r_idx+1)
+
             if len(conditions) > 0:
-                plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
-            else:
-                plt.title('neuron %s' % 'self.name')
-
-            ax = plt.gca()
-            ax.spines['top'].set_visible(False)
-            ax.spines['right'].set_visible(False)
-            ax.spines['bottom'].set_visible(False)
-            ax.spines['left'].set_visible(False)
-            plt.tick_params(axis='x', which='both', top='off')
-            plt.tick_params(axis='y', which='both', right='off')
-
-            plt.show()
-
-            if len(conditions) > 0:
-                print 'Condition %d: %s' % (r_idx+1, str(conditions[r_idx]))
+                print 'Condition %d: %s, %d trials' % (r_idx+1, str(conditions[r_idx]), len(raster))
 
     #-----------------------------------------------------------------------
     def get_psth(self, events, features=None, conditions=None, \
@@ -312,10 +313,10 @@ class NeuroVis(object):
         conditions = psth['conditions']
 
         scale = 0.1
-        y_min = (1.0-scale)*np.min([np.min( \
+        y_min = (1.0-scale)*np.nanmin([np.min( \
             psth['data'][psth_idx]['mean']) \
             for psth_idx in psth['data']])
-        y_max = (1.0+scale)*np.max([np.max( \
+        y_max = (1.0+scale)*np.nanmax([np.max( \
             psth['data'][psth_idx]['mean']) \
             for psth_idx in psth['data']])
 
@@ -331,12 +332,13 @@ class NeuroVis(object):
             plt.plot([0, 0], [y_min, y_max], color='k', ls='--')
 
         for i in psth['data']:
-            plt.plot(time_bins, psth['data'][i]['mean'], color=colors[i], lw=1.5)
+            if np.all(np.isnan(psth['data'][i]['mean'])):
+                plt.plot(0,0,alpha=1.0, color=colors[i])
+            else:
+                plt.plot(time_bins, psth['data'][i]['mean'],
+                color=colors[i], lw=1.5)
 
         for i in psth['data']:
-            plt.fill_between(time_bins, psth['data'][i]['mean']-psth['data'][i]['sem'], \
-                psth['data'][i]['mean']+psth['data'][i]['sem'], color=colors[i], alpha=0.2)
-
             if len(conditions) > 0:
                 if condition_names:
                     legend.append(condition_names[i])
@@ -344,6 +346,11 @@ class NeuroVis(object):
                     legend.append('Condition %d' % (i+1))
             else:
                 legend.append('all')
+
+            if not np.all(np.isnan(psth['data'][i]['mean'])):
+                plt.fill_between(time_bins, psth['data'][i]['mean'] - \
+                psth['data'][i]['sem'], psth['data'][i]['mean'] + \
+                psth['data'][i]['sem'], color=colors[i], alpha=0.2)
 
         plt.title('neuron %s' % self.name)
         plt.xlabel('time [ms]')
@@ -364,7 +371,6 @@ class NeuroVis(object):
         plt.tick_params(axis='x', top='off')
 
         plt.legend(legend, frameon=False)
-
 
         plt.show()
     #-----------------------------------------------------------------------
