@@ -99,10 +99,10 @@ class NeuroVis(object):
         bins = np.arange(np.floor(firstspike), np.ceil(lastspike), 1e-3*binsize)
 
         # Loop over each raster
-        for rast in np.arange(trials.shape[1]):
+        for r_idx in np.arange(trials.shape[1]):
 
             # Select events relevant to this raster
-            selected_events = events[trials[:, rast]]
+            selected_events = events[trials[:, r_idx]]
 
             # Eliminate events before the first spike after last spike
             selected_events = selected_events[selected_events > firstspike]
@@ -118,18 +118,23 @@ class NeuroVis(object):
             raster = np.array([(spike_counts[(i+window[0]/binsize): \
                                              (i+window[1]/binsize+1)]) \
                                for i in event_bins])
-            rasters['data'][rast] = raster
+            rasters['data'][r_idx] = raster
+            #if plot is True:
+            #    if len(conditions) > 0:
+            #        print 'Condition %d: %s, %d trials' % \
+            #        (r_idx+1, str(conditions[r_idx]), len(raster))
 
         # Show the raster
         if plot is True:
             self.plot_raster(rasters, figsize=figsize, sort=sort)
+
 
         # Return all the rasters
         return rasters
 
     #-----------------------------------------------------------------------
     def plot_raster(self, rasters, condition_names=None,
-        figsize=(4, 4), sort=False, cmap=['Greys']):
+        figsize=(4, 4), sort=False, cmap=['Greys'], has_title=True):
         """
         Plot rasters
 
@@ -138,8 +143,7 @@ class NeuroVis(object):
         rasters:
             dict, output of get_raster method
 
-        condition_names:
-            list, legend names for the conditions
+        condition_names: list
 
         figsize: tuple
 
@@ -180,10 +184,16 @@ class NeuroVis(object):
                 plt.ylabel('trials')
                 plt.xlabel('time [ms]')
                 plt.xticks(xtics_loc, xtics)
-                if len(conditions) > 0:
-                    plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
-                else:
-                    plt.title('neuron %s' % self.name)
+
+                if has_title:
+                    if len(conditions) > 0:
+                        if condition_names:
+                            plt.title('neuron %s: %s' % \
+                            (self.name, condition_names[r_idx]))
+                        else:
+                            plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
+                    else:
+                        plt.title('neuron %s' % self.name)
 
                 ax = plt.gca()
                 ax.spines['top'].set_visible(False)
@@ -197,8 +207,6 @@ class NeuroVis(object):
             else:
                 print 'No trials for condition %d!' % (r_idx+1)
 
-            if len(conditions) > 0:
-                print 'Condition %d: %s, %d trials' % (r_idx+1, str(conditions[r_idx]), len(raster))
 
     #-----------------------------------------------------------------------
     def get_psth(self, events, features=None, conditions=None, \
