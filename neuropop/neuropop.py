@@ -1,7 +1,10 @@
 import numpy as np
 from scipy import stats
 from copy import deepcopy
+
 import matplotlib.pyplot as plt
+style = '../mpl_styles/spykes.mplstyle'
+plt.style.use(style)
 
 from . import utils
 from numba.decorators import autojit
@@ -17,15 +20,16 @@ class NeuroPop(object):
 
     Parameters
     ----------
-    tunemodel: str, can be either 'georgopulos' or 'glm'
-        tunemodel = 'georgopulos'
+    tunemodel: str, can be either 'gvm' or 'glm'
+        tunemodel = 'gvm'
+        Generalized von Mises model
         Amirikan & Georgopulos (2000):
         http://brain.umn.edu/pdfs/BA118.pdf
         f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
         f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))
 
         tunemodel='glm'
-        Poisson-like generalized linear model
+        Poisson generalized linear model
         f(x) = exp(k0_ + k_ * cos(x - mu_))
         f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))
 
@@ -64,14 +68,10 @@ class NeuroPop(object):
 
     Class methods
     -------------
-    _georgopulos
-    _glm
+    _tunefun
     _loss
     _grad_theta_loss
     _grad_x_loss
-    _reset_params
-    _jointlogL
-
     """
 
     def __init__(self, n_neurons=100, tunemodel='glm', fit_k=True,
@@ -116,7 +116,7 @@ class NeuroPop(object):
 
         Parameters
         ----------
-        tunemodel: str, either 'georgopulos' or 'glm'
+        tunemodel: str, either 'gvm' or 'glm'
         neurons: list,
             a list of integers which specifies the subset of neurons to set
             default: all neurons
@@ -167,7 +167,7 @@ class NeuroPop(object):
         self.k2_[neurons] = self.k_[neurons] * np.sin(self.mu_[neurons])
 
         if g is None:
-            if tunemodel == 'georgopulos':
+            if tunemodel == 'gvm':
                 self.g_[neurons] = 5.0 * np.random.rand(n_neurons)
             else:
                 self.g_[neurons] = np.ones(n_neurons)
@@ -175,7 +175,7 @@ class NeuroPop(object):
             self.g_[neurons] = g
 
         if b is None:
-            if tunemodel == 'georgopulos':
+            if tunemodel == 'gvm':
                 self.b_[neurons] = 10.0 * np.random.rand(n_neurons)
             else:
                 self.b_[neurons] = np.zeros(n_neurons)
@@ -261,7 +261,7 @@ class NeuroPop(object):
             grad_k0 = 1./n_samples * np.sum(grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * (1 - y/lmb))
             grad_g = 0.0
             grad_b = 0.0
-        elif tunemodel == 'georgopulos':
+        elif tunemodel == 'gvm':
             grad_k0 = 0.0
             grad_g = 1./n_samples * np.sum(slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * (1 - y/lmb))
             grad_b = 1./n_samples * np.sum((1-y/lmb))
@@ -335,12 +335,12 @@ class NeuroPop(object):
         k1 = k * np.cos(mu)
         k2 = k * np.sin(mu)
 
-        if tunemodel == 'georgopulos':
+        if tunemodel == 'gvm':
             g = 5.0 * np.random.rand(self.n_neurons)
         else:
             g = np.ones(self.n_neurons)
 
-        if tunemodel == 'georgopulos':
+        if tunemodel == 'gvm':
             b = 10.0 * np.random.rand(self.n_neurons)
         else:
             b = np.zeros(self.n_neurons)
@@ -436,7 +436,7 @@ class NeuroPop(object):
                     if self.fit_k is True:
                         fit_params[repeat]['k1'] = fit_params[repeat]['k1'] - learning_rate*grad_k1_
                         fit_params[repeat]['k2'] = fit_params[repeat]['k2'] - learning_rate*grad_k2_
-                    if self.tunemodel == 'georgopulos':
+                    if self.tunemodel == 'gvm':
                         fit_params[repeat]['g'] = fit_params[repeat]['g'] - learning_rate*grad_g_
                         fit_params[repeat]['b'] = fit_params[repeat]['b'] - learning_rate*grad_b_
 
