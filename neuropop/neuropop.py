@@ -1,23 +1,12 @@
 import numpy as np
 from scipy import stats
-from scipy.special import expit
 from copy import deepcopy
 import matplotlib.pyplot as plt
 
-def slow_exp(z, eta):
-    qu = deepcopy(z)
-    slope = np.exp(eta)
-    intercept = (1 - eta) * slope
-    qu[z > eta] = z[z > eta] * slope + intercept
-    qu[z <= eta] = np.exp(z[z <= eta])
-    return qu
-
-def grad_slow_exp(z, eta):
-    dqu_dz = deepcopy(z)
-    slope = np.exp(eta)
-    dqu_dz[z > eta] = slope
-    dqu_dz[z <= eta] = np.exp(z[z <= eta])
-    return dqu_dz
+from . import utils
+from numba.decorators import autojit
+slow_exp = autojit(utils.slow_exp_python)
+grad_slow_exp = autojit(utils.grad_slow_exp_python)
 
 class NeuroPop(object):
     """
@@ -578,7 +567,7 @@ class NeuroPop(object):
         xjitter: bool, whether to add jitter to x variable while plotting
         ylitter: bool, whether to add jitter to y variable while plotting
         """
-        
+
         plt.style.use(style)
 
         if xjitter is True:

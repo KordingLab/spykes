@@ -41,6 +41,12 @@ See:
 
 So far, you only need ```NumPy``` >= 1.6.1 and ```SciPy``` >= 0.14, which are already distributed with [Anaconda](https://www.continuum.io/downloads) and [Canopy](https://www.enthought.com/products/canopy/).
 
+Some functions are optimized using ```Numba```. We recommend the latest stable version (0.26.0 or later).
+
+```bash
+$ pip install numba
+```
+
 ### Authors
 
 * [Pavan Ramkumar](http:/github.com/pavanramkumar)
