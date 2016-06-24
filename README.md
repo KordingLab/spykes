@@ -47,6 +47,10 @@ Some functions are optimized using ```Numba```. We recommend the latest stable v
 $ pip install numba
 ```
 
+### Datasets
+
+The example notebooks use two real datasets. Instructions for downloading these datasets are included in the notebooks. We recommend [deepdish](https://github.com/uchicago-cs/deepdish) for reading the HDF5 datafile.
+
 ### Authors
 
 * [Pavan Ramkumar](http:/github.com/pavanramkumar)
