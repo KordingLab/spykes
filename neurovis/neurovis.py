@@ -183,7 +183,7 @@ class NeuroVis(object):
                 if len(conditions) > 0:
                     plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
                 else:
-                    plt.title('neuron %s' % 'self.name')
+                    plt.title('neuron %s' % self.name)
 
                 ax = plt.gca()
                 ax.spines['top'].set_visible(False)
