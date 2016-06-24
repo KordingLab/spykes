@@ -55,7 +55,7 @@ class NeuroVis(object):
                 for an interval (e.g reaching angles between [0,90] degrees)
 
         window :
-            list of 2 elements, the time interval to consider
+            list of 2 elements, the time interval to consider (milliseconds)
 
         binsize : integer, bin size in milliseconds
 
@@ -409,14 +409,14 @@ class NeuroVis(object):
         return np.transpose(np.atleast_2d(np.squeeze(trials)))
 
     #-----------------------------------------------------------------------
-    def get_spikecounts(self, events, window=1e-3*np.array([50.0, 100.0])):
+    def get_spikecounts(self, events, window=np.array([50.0, 100.0])):
         """
         Parameters
         ----------
         events: float, n x 1 array of event times
                 (e.g. stimulus onset, trial onset, fixation onset, etc.)
 
-        win: denoting the intervals
+        window: denoting the intervals (milliseconds)
 
         Returns
         -------
@@ -426,7 +426,7 @@ class NeuroVis(object):
         spiketimes = self.spiketimes
         spikecounts = np.zeros(events.shape)
         for eve in range(events.shape[0]):
-            spikecounts[eve] = np.sum(np.all((spiketimes >= events[eve] + window[0],\
-                                            spiketimes <= events[eve] + window[1]),\
+            spikecounts[eve] = np.sum(np.all((spiketimes >= events[eve] + 1e-3*window[0],\
+                                            spiketimes <= events[eve] + 1e-3*window[1]),\
                                             axis=0))
         return spikecounts
