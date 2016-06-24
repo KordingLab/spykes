@@ -35,11 +35,11 @@ class NeuroPop(object):
 
     n_neurons: float, number of neurons in the population
     random_state: int, seed for numpy.random
-    learning_rate: float, default: 1e-3
+    eta: float, linearizes the exp above eta, default: 4.0
+    learning_rate: float, default: 2e-1
     convergence_threshold: float, default, 1e-5
-    maxiter: float, default: 10000
-    n_repeats: float, default: 10
-
+    maxiter: float, default: 1000
+    n_repeats: float, default: 5
     verbose: bool, whether to print convergence / loss, default: False
 
     Internal variables
@@ -52,20 +52,16 @@ class NeuroPop(object):
     g_: float,  n_neurons x 1, gain
     b_: float,  n_neurons x 1, baseline
 
-    eta = float, linearizes the exp above eta, default: 4.0
-    learning_rate: float, default: 2e-1
-    convergence_threshold: float, default, 1e-5
-    maxiter: float, default: 1000
-    n_repeats: float, default: 5
-
     Callable methods
     ----------------
     set_params
+    simulate
     fit
     predict
     decode
     display
-
+    score
+    
     Class methods
     -------------
     _tunefun
@@ -74,11 +70,11 @@ class NeuroPop(object):
     _grad_x_loss
     """
 
-    def __init__(self, n_neurons=100, tunemodel='glm',
+    def __init__(self, tunemodel='glm', n_neurons=100,
                  random_state=1,
                  eta=0.4,
                  learning_rate=2e-1, convergence_threshold=1e-5,
-                 maxiter=1000, n_repeats=5,
+                 maxiter=1000, n_repeats=1,
                  verbose=False):
         """
         Initialize the object
