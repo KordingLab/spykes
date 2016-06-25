@@ -10,6 +10,8 @@ At present, this project comes with two packages:
 
 Documentation, tutorials and examples are coming soon! Check out the notebooks for now.
 
+![](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/figures/psth_PMd_n91.png)
+
 ### Installation
 
 Clone the repository.
