@@ -49,7 +49,7 @@ def grad_slow_exp_python(z, eta):
 def log_likelihood(y, yhat):
     """Helper to compute the log likelihood."""
     eps = np.spacing(1)
-    return np.sum(y * np.log(eps + yhat) - yhat)
+    return np.nansum(y * np.log(eps + yhat) - yhat)
 
 def circ_corr(alpha1, alpha2):
     """Helper to compute the circular correlation."""

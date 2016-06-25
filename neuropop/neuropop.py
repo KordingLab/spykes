@@ -289,7 +289,7 @@ class NeuroPop(object):
         return grad_x
 
     #-----------------------------------------------------------------------
-    def simulate(self, tunemodel, n_samples=500, noise_mu=2.0, noise_sigma=1.0):
+    def simulate(self, tunemodel, n_samples=500, winsize=200):
         """
         Simulates firing rates from a neural population by randomly sampling
         circular variables (feature of interest)
@@ -298,8 +298,7 @@ class NeuroPop(object):
         Parameters
         ----------
         n_samples, int, number of samples required
-        noise_mu, float, mean of random Gaussian noise
-        noise_sigma, float, s.d. of random Gaussian noise
+        winsize, float, time interval in which to simulate spike counts, milliseconds
         Outputs
         -------
         x: float, n_samples x 1, feature of interest
@@ -340,11 +339,11 @@ class NeuroPop(object):
         # Calculate firing rates under the desired model
         Y = np.zeros([n_samples, self.n_neurons])
         for n in range(0, self.n_neurons):
-            # Compute the firing rate under the von Mises model
-            Y[:, n] = self._tunefun(x, k0[n], k1[n], k2[n], g[n], b[n])
+            # Compute the spike count under the tuning model for given window size
+            lam = 1e-3 * winsize * self._tunefun(x, k0[n], k1[n], k2[n], g[n], b[n])
 
-        # Add Gaussian noise
-        Y = Y + np.random.normal(loc=noise_mu, scale=noise_sigma, size=Y.shape)
+            # Sample Poisson distributed spike counts and convert back to firing rate
+            Y[:, n] = 1e3/ winsize * np.random.poisson(lam)
 
         return x, Y, mu, k0, k, g, b
 
@@ -591,40 +590,40 @@ class NeuroPop(object):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-        #-----------------------------------------------------------------------
-        def score(self, Y, Yhat, Ynull=None, method='circ_corr'):
-            """Score the model.
-            Parameters
-            ----------
-            Y : array, shape (n_samples, [n_neurons])
-                The true firing rates.
-            Yhat : array, shape (n_samples, [n_neurons])
-                The estimated firing rates.
-            Ynull : None | array, shape (n_samples, [n_classes])
-                The labels for the null model. Must be None if method is not 'pseudo_R2'
-            method : str
-                One of 'pseudo_R2' or 'circ_corr' or 'cosine_dist'
-            """
+    #-----------------------------------------------------------------------
+    def score(self, Y, Yhat, Ynull=None, method='circ_corr'):
+        """Score the model.
+        Parameters
+        ----------
+        Y : array, shape (n_samples, [n_neurons])
+            The true firing rates.
+        Yhat : array, shape (n_samples, [n_neurons])
+            The estimated firing rates.
+        Ynull : None | array, shape (n_samples, [n_classes])
+            The labels for the null model. Must be None if method is not 'pseudo_R2'
+        method : str
+            One of 'pseudo_R2' or 'circ_corr' or 'cosine_dist'
+        """
 
-            if method == 'pseudo_R2':
-                if(len(Y.shape) > 1):
-                    # There are many neurons, so calculate and return the score for each neuron
-                    score = list()
-                    for neuron in Y.shape[1]:
-                        L1 = utils.log_likelihood(Y[:, neuron], Yhat[:, neuron], self.distr)
-                        LS = utils.log_likelihood(Y[:, neuron], Y[:, neuron], self.distr)
-                        L0 = utils.log_likelihood(Y[:, neuron], Ynull[:, neuron], self.distr)
-                        score.append(1 - (LS - L1) / (LS - L0))
-                else:
-                    L1 = utils.log_likelihood(Y, Yhat, self.distr)
-                    LS = utils.log_likelihood(Y, Y, self.distr)
-                    L0 = utils.log_likelihood(Y, Ynull, self.distr)
-                    score = 1 - (LS - L1) / (LS - L0)
+        if method == 'pseudo_R2':
+            if(len(Y.shape) > 1):
+                # There are many neurons, so calculate and return the score for each neuron
+                score = list()
+                for neuron in range(Y.shape[1]):
+                    L1 = utils.log_likelihood(Y[:, neuron], Yhat[:, neuron])
+                    LS = utils.log_likelihood(Y[:, neuron], Y[:, neuron])
+                    L0 = utils.log_likelihood(Y[:, neuron], Ynull[neuron])
+                    score.append(1 - (LS - L1) / (LS - L0))
+            else:
+                L1 = utils.log_likelihood(Y, Yhat)
+                LS = utils.log_likelihood(Y, Y)
+                L0 = utils.log_likelihood(Y, Ynull)
+                score = 1 - (LS - L1) / (LS - L0)
 
-            elif method == 'circ_corr':
-                score = utils.circ_corr(np.squeeze(Y), np.squeeze(Yhat))
+        elif method == 'circ_corr':
+            score = utils.circ_corr(np.squeeze(Y), np.squeeze(Yhat))
 
-            elif method == 'cosine_dist':
-                score = np.mean(np.cos(np.squeeze(Y)-np.squeeze(Yhat)))
+        elif method == 'cosine_dist':
+            score = np.mean(np.cos(np.squeeze(Y)-np.squeeze(Yhat)))
 
-            return score
+        return score
