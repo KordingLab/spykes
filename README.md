@@ -8,6 +8,8 @@ At present, this project comes with two packages:
 - ```neurovis``` helps you plot beautiful spike rasters and peri-stimulus time histograms
 - ```neuropop``` helps you estimate tuning curves of neural populations and decode stimuli from population vectors
 
+```Spykes``` deliberately does not aim to provide tools for spike sorting or file i/o with popular electrophysiology formats, but only aims to fill the missing niche for neural data analysis and easy visualization. For file i/o, see [Neo](http://neuralensemble.org/neo/) and [OpenElectrophy](http://neuralensemble.org/OpenElectrophy/). For spike sorting, see [Klusta](http://klusta.readthedocs.io/en/latest/).
+
 Documentation, tutorials and examples are coming soon! Check out the notebooks for now.
 
 ![](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/figures/psth_PMd_n91.png)
