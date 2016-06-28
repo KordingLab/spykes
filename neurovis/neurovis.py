@@ -98,36 +98,24 @@ class NeuroVis(object):
         rasters['conditions'] = conditions
         rasters['data'] = dict()
 
-        # Assign time bins
-        firstspike = self.spiketimes[0]
-        lastspike = self.spiketimes[-1]
-        bins = np.arange(np.floor(firstspike), np.ceil(lastspike), 1e-3*binsize)
-
         # Loop over each raster
         for r_idx in np.arange(trials.shape[1]):
 
             # Select events relevant to this raster
             selected_events = events[trials[:, r_idx]]
 
-            # Eliminate events before the first spike after last spike
-            selected_events = selected_events[selected_events > firstspike]
-            selected_events = selected_events[selected_events < lastspike]
+            raster = []
+	    
+            bin_template = 1e-3 * np.arange(window[0],window[1]+binsize,binsize)
+            for event_time in selected_events:
+                bins = event_time + bin_template
 
-            # bin the spikes into time bins
-            spike_counts = np.histogram(self.spiketimes, bins)[0]
+                # bin the spikes into time bins
+                spike_counts = np.histogram(self.spiketimes, bins)[0]
 
-            # bin the events into time bins
-            event_counts = np.histogram(selected_events, bins)[0]
-            event_bins = np.where(event_counts > 0)[0]
+                raster.append(spike_counts)
 
-            raster = np.array([(spike_counts[(i+window[0]/binsize): \
-                                             (i+window[1]/binsize+1)]) \
-                               for i in event_bins])
-            rasters['data'][r_idx] = raster
-            #if plot is True:
-            #    if len(conditions) > 0:
-            #        print 'Condition %d: %s, %d trials' % \
-            #        (r_idx+1, str(conditions[r_idx]), len(raster))
+            rasters['data'][r_idx] = np.array(raster)
 
         # Show the raster
         if plot is True:
@@ -166,7 +154,7 @@ class NeuroVis(object):
         conditions = rasters['conditions']
         xtics = [window[0], 0, window[1]]
         xtics = [str(i) for i in xtics]
-        xtics_loc = [0, (-window[0])/binsize, (window[1]-window[0])/binsize]
+        xtics_loc = [0-0.5, (-window[0])/binsize-0.5, (window[1]-window[0])/binsize-0.5]
 
         for r_idx in rasters['data']:
             raster = rasters['data'][r_idx]
@@ -185,7 +173,7 @@ class NeuroVis(object):
                 else:
                     plt.imshow(raster_sorted, aspect='auto',
                         interpolation='none', cmap=plt.get_cmap(cmap[0]))
-                plt.axvline((-window[0])/binsize, color='r', linestyle='--')
+                plt.axvline((-window[0])/binsize-0.5, color='r', linestyle='--')
                 plt.ylabel('trials')
                 plt.xlabel('time [ms]')
                 plt.xticks(xtics_loc, xtics)
@@ -335,9 +323,7 @@ class NeuroVis(object):
 
         legend = [event_name]
 
-        time_bins = np.append( \
-            np.linspace(window[0], 0, num=np.abs(window[0])/binsize+1), \
-            np.linspace(0, window[1], num=np.abs(window[1])/binsize+1)[1:])
+        time_bins = np.arange(window[0],window[1],binsize) + binsize/2.0
 
         if ylim:
             plt.plot([0, 0], ylim, color='k', ls='--')
