@@ -35,7 +35,7 @@ class NeuroVis(object):
         Initialize the object
         """
         self.name = name
-        self.spiketimes = spiketimes
+        self.spiketimes = np.sort(spiketimes)
         n_seconds = (self.spiketimes[-1]-self.spiketimes[0])
         n_spikes = np.size(spiketimes)
         self.firingrate = (n_spikes/n_seconds)
