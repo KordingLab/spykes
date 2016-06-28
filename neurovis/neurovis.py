@@ -1,7 +1,12 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-plt.style.use('../mpl_styles/spykes.mplstyle')
+plt.style.use(
+    os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        '../mpl_styles/spykes.mplstyle')
+    )
 
 
 class NeuroVis(object):
