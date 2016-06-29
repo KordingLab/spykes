@@ -35,7 +35,7 @@ class NeuroVis(object):
         Initialize the object
         """
         self.name = name
-        self.spiketimes = np.sort(spiketimes)
+        self.spiketimes = np.squeeze(np.sort(spiketimes))
         n_seconds = (self.spiketimes[-1]-self.spiketimes[0])
         n_spikes = np.size(spiketimes)
         self.firingrate = (n_spikes/n_seconds)
@@ -105,13 +105,18 @@ class NeuroVis(object):
             selected_events = events[trials[:, r_idx]]
 
             raster = []
-	    
+
             bin_template = 1e-3 * np.arange(window[0],window[1]+binsize,binsize)
             for event_time in selected_events:
                 bins = event_time + bin_template
 
+                # consider only spikes within window
+                searchsorted_idx = np.searchsorted(self.spiketimes,
+                [event_time+1e-3 * window[0],event_time+1e-3 * window[1]])
+
                 # bin the spikes into time bins
-                spike_counts = np.histogram(self.spiketimes, bins)[0]
+                spike_counts = np.histogram( \
+                    self.spiketimes[searchsorted_idx[0]:searchsorted_idx[1]], bins)[0]
 
                 raster.append(spike_counts)
 
