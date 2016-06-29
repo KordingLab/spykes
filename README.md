@@ -22,11 +22,11 @@ Clone the repository.
 $ git clone http://github.com/KordingLab/spykes
 ```
 
-Install `spykes` using `setup.py` as follows
+Install `spykes` using `pip` as follows
 
 ```bash
 $ cd spykes
-$ python setup.py develop install
+$ pip install -e ./
 ```
 
 ### How to use ```neurovis```?
