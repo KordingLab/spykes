@@ -43,7 +43,7 @@ class NeuroVis(object):
     #-----------------------------------------------------------------------
     def get_raster(self, events, features=None, conditions=None,
                    window=[-100, 500], binsize=10, plot=True,
-                   figsize=(8, 2), sort=False):
+                   sort=False):
         """
         Compute the raster and plot it
 
@@ -65,9 +65,6 @@ class NeuroVis(object):
         binsize : integer, bin size in milliseconds
 
         plot : boolean,
-
-        figsize :
-            tuple of integers, optional, default: (4,4) width, height in inches.
 
         Returns
         -------
@@ -124,15 +121,17 @@ class NeuroVis(object):
 
         # Show the raster
         if plot is True:
-            self.plot_raster(rasters, figsize=figsize, sort=sort)
+            for i in np.arange(len(rasters['data'])):
+                self.plot_raster(rasters, condition=i+1, sort=sort)
+                plt.show()
 
 
         # Return all the rasters
         return rasters
 
     #-----------------------------------------------------------------------
-    def plot_raster(self, rasters, condition_names=None,
-        figsize=(4, 4), sort=False, cmap=['Greys'], has_title=True):
+    def plot_raster(self, rasters, condition = 1, condition_names=None,
+        sort=False, cmap=['Greys'], has_title=True):
         """
         Plot rasters
 
@@ -143,8 +142,6 @@ class NeuroVis(object):
 
         condition_names: list
 
-        figsize: tuple
-
         sort:
             boolean, default is False. True for sorting rasters according
             to number of spikes.
@@ -153,7 +150,7 @@ class NeuroVis(object):
             list, colormaps for rasters
 
         """
-
+        r_idx = condition-1
         window = rasters['window']
         binsize = rasters['binsize']
         conditions = rasters['conditions']
@@ -161,49 +158,46 @@ class NeuroVis(object):
         xtics = [str(i) for i in xtics]
         xtics_loc = [0-0.5, (-window[0])/binsize-0.5, (window[1]-window[0])/binsize-0.5]
 
-        for r_idx in rasters['data']:
-            raster = rasters['data'][r_idx]
+        raster = rasters['data'][r_idx]
 
-            if len(raster)>0:
-                if sort is True:
-                    # Sorting by total spike count in the duration
-                    raster_sorted = raster[np.sum(raster, axis=1).argsort()]
-                else:
-                    raster_sorted = raster
-
-                plt.figure(figsize=figsize)
-                if len(cmap) > 1:
-                    plt.imshow(raster_sorted, aspect='auto',
-                        interpolation='none', cmap=plt.get_cmap(cmap[r_idx]))
-                else:
-                    plt.imshow(raster_sorted, aspect='auto',
-                        interpolation='none', cmap=plt.get_cmap(cmap[0]))
-                plt.axvline((-window[0])/binsize-0.5, color='r', linestyle='--')
-                plt.ylabel('trials')
-                plt.xlabel('time [ms]')
-                plt.xticks(xtics_loc, xtics)
-
-                if has_title:
-                    if len(conditions) > 0:
-                        if condition_names:
-                            plt.title('neuron %s: %s' % \
-                            (self.name, condition_names[r_idx]))
-                        else:
-                            plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
-                    else:
-                        plt.title('neuron %s' % self.name)
-
-                ax = plt.gca()
-                ax.spines['top'].set_visible(False)
-                ax.spines['right'].set_visible(False)
-                ax.spines['bottom'].set_visible(False)
-                ax.spines['left'].set_visible(False)
-                plt.tick_params(axis='x', which='both', top='off')
-                plt.tick_params(axis='y', which='both', right='off')
-
-                plt.show()
+        if len(raster)>0:
+            if sort is True:
+                # Sorting by total spike count in the duration
+                raster_sorted = raster[np.sum(raster, axis=1).argsort()]
             else:
-                print 'No trials for condition %d!' % (r_idx+1)
+                raster_sorted = raster
+
+            if len(cmap) > 1:
+                plt.imshow(raster_sorted, aspect='auto',
+                    interpolation='none', cmap=plt.get_cmap(cmap[r_idx]))
+            else:
+                plt.imshow(raster_sorted, aspect='auto',
+                    interpolation='none', cmap=plt.get_cmap(cmap[0]))
+            plt.axvline((-window[0])/binsize-0.5, color='r', linestyle='--')
+            plt.ylabel('trials')
+            plt.xlabel('time [ms]')
+            plt.xticks(xtics_loc, xtics)
+
+            if has_title:
+                if len(conditions) > 0:
+                    if condition_names:
+                        plt.title('neuron %s: %s' % \
+                        (self.name, condition_names[r_idx]))
+                    else:
+                        plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
+                else:
+                    plt.title('neuron %s' % self.name)
+
+            ax = plt.gca()
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            ax.spines['bottom'].set_visible(False)
+            ax.spines['left'].set_visible(False)
+            plt.tick_params(axis='x', which='both', top='off')
+            plt.tick_params(axis='y', which='both', right='off')
+
+        else:
+            print 'No trials for condition %d!' % (r_idx+1)
 
 
     #-----------------------------------------------------------------------
@@ -280,15 +274,15 @@ class NeuroVis(object):
         if plot is True:
             self.plot_psth(psth)
 
-            for i, cond in enumerate(conditions):
-                print 'Condition %d: %s; %d trials' % \
-                    (cond+1, str(conditions[cond]), np.shape(rasters['data'][i])[0])
+            #for i, cond in enumerate(conditions):
+            #    print 'Condition %d: %s; %d trials' % \
+            #        (cond+1, str(conditions[cond]), np.shape(rasters['data'][i])[0])
 
         return psth
 
     #-----------------------------------------------------------------------
     def plot_psth(self, psth, event_name='event_onset',
-            condition_names=None, figsize=(8, 4), xlim=None, ylim=None,
+            condition_names=None, ylim=None,
             colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']):
         """
         Plot psth
@@ -301,19 +295,12 @@ class NeuroVis(object):
 
         condition_names: list, legend names for the conditions
 
-        figsize:
-            tuple of integers, optional, default: (8, 4) width, height
-            in inches.
-
-        xlim: list
-
         ylim: list
 
         colors: list
 
         """
 
-        plt.figure(figsize=figsize)
         window = psth['window']
         binsize = psth['binsize']
         conditions = psth['conditions']
@@ -360,8 +347,6 @@ class NeuroVis(object):
         plt.xlabel('time [ms]')
         plt.ylabel('spikes per second [spks/s]')
 
-        if xlim:
-            plt.xlim(xlim)
         if ylim:
             plt.ylim(ylim)
         else:
@@ -376,7 +361,6 @@ class NeuroVis(object):
 
         plt.legend(legend, frameon=False)
 
-        plt.show()
     #-----------------------------------------------------------------------
     def get_trialtype(self, features, conditions):
         """
