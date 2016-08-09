@@ -22,7 +22,7 @@ class NeuroVis(object):
     Methods
     -------
     get_raster
-    plot_raster
+    ter
     get_psth
     plot_psth
     get_trialtype
@@ -43,7 +43,7 @@ class NeuroVis(object):
     #-----------------------------------------------------------------------
     def get_raster(self, event, conditions=None, data=None,
                    window=[-100, 500], binsize=10, plot=True,
-                   sort=False):
+                   sort=False, exclude=[np.nan, '']):
         """
         Compute the raster and plot it
 
@@ -84,8 +84,13 @@ class NeuroVis(object):
             #condition_names = []
             trials = dict()
             for condition in np.sort(data[conditions].unique()):
-                condition_names.append(condition)
-                trials[condition] = np.where((data[conditions]==condition).apply(lambda x: (0,1)[x]).values)[0]
+                if exclude:
+                    if condition not in exclude:
+                        condition_names.append(condition)
+                        trials[condition] = np.where((data[conditions]==condition).apply(lambda x: (0,1)[x]).values)[0]
+                else:
+                    condition_names.append(condition)
+                    trials[condition] = np.where((data[conditions]==condition).apply(lambda x: (0,1)[x]).values)[0]
         else:
             trials = dict()
             trials[0] = np.where(np.ones(np.size(data[event])))[0]
@@ -125,8 +130,10 @@ class NeuroVis(object):
 
             rasters['data'][r_idx] = np.array(raster)
 
-        if np.nan in rasters['data']:
-            rasters['data'].pop(np.nan)
+        if exclude:
+            for exc in exclude:
+                if exc in rasters['data']:
+                    rasters['data'].pop(exc)
 
         # Show the raster
         if plot is True:
@@ -139,7 +146,7 @@ class NeuroVis(object):
         return rasters
 
     #-----------------------------------------------------------------------
-    def plot_raster(self, rasters, condition = 0, condition_names=None,
+    def plot_raster(self, rasters, condition=0, condition_names=None,
         sort=False, cmap=['Greys'], has_title=True):
         """
         Plot rasters
@@ -188,7 +195,7 @@ class NeuroVis(object):
             plt.xticks(xtics_loc, xtics)
 
             if has_title:
-                if conditions > 0:
+                if conditions:
                     if condition_names:
                         plt.title('neuron %s: %s' % \
                         (self.name, condition_names))
@@ -210,8 +217,11 @@ class NeuroVis(object):
 
 
     #-----------------------------------------------------------------------
-    def get_psth(self, event, data=None, conditions=None, \
-                 window=[-100, 500], binsize=10, plot=True):
+    def get_psth(self, event=None, data=None, conditions=None,
+                 window=[-100, 500], binsize=10, plot=True,
+                 event_name=None, ylim=None,
+                 colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD'],
+                 exclude=[np.nan, '']):
         """
         Compute the psth and plot it
 
@@ -253,9 +263,9 @@ class NeuroVis(object):
         # Get all the rasters first
         rasters = self.get_raster(event=event, data=data,
                                   conditions=conditions,
-                                  window=window, binsize=binsize, plot=False)
+                                  window=window, binsize=binsize, plot=False,
+                                  exclude=exclude)
 
-        # Open the figure
         # Initialize PSTH
         psth = dict()
 
@@ -277,11 +287,11 @@ class NeuroVis(object):
             psth['data'][r_idx]['mean'] = mean_psth
             psth['data'][r_idx]['sem'] = sem_psth
 
-        #if np.nan in psth['data']:
-        #    psth['data'].pop(np.nan)
-        # Visualize the PSTH
         if plot is True:
-            self.plot_psth(psth)
+            if not event_name:
+                event_name = event
+            self.plot_psth(psth, event_name=event_name, ylim=ylim,
+                           colors=colors)
 
         return psth
 
@@ -343,12 +353,17 @@ class NeuroVis(object):
             else:
                 legend.append('all')
 
+
             if not np.all(np.isnan(psth['data'][cond]['mean'])):
                 plt.fill_between(time_bins, psth['data'][cond]['mean'] - \
                 psth['data'][cond]['sem'], psth['data'][cond]['mean'] + \
                 psth['data'][cond]['sem'], color=colors[i], alpha=0.2)
 
-        plt.title('neuron %s: %s' % (self.name, conditions))
+        if conditions:
+            plt.title('neuron %s: %s' % (self.name, conditions))
+        else:
+            plt.title('neuron %s' % self.name)
+
         plt.xlabel('time [ms]')
         plt.ylabel('spikes per second [spks/s]')
 
@@ -394,7 +409,7 @@ class NeuroVis(object):
         return np.transpose(np.atleast_2d(np.squeeze(trials)))
 
     #-----------------------------------------------------------------------
-    def get_spikecounts(self, events, window=np.array([50.0, 100.0])):
+    def get_spikecounts(self, event, data=None, window=np.array([50.0, 100.0])):
         """
         Parameters
         ----------
@@ -408,10 +423,12 @@ class NeuroVis(object):
         spikecounts: float, n x 1 array of spike counts
 
         """
+        events = data[event].values
         spiketimes = self.spiketimes
         spikecounts = np.zeros(events.shape)
-        for eve in range(events.shape[0]):
-            spikecounts[eve] = np.sum(np.all((spiketimes >= events[eve] + 1e-3*window[0],\
-                                            spiketimes <= events[eve] + 1e-3*window[1]),\
+
+        for i, eve in enumerate(events):
+            spikecounts[i] = np.sum(np.all((spiketimes >= eve + 1e-3*window[0],\
+                                            spiketimes <= eve + 1e-3*window[1]),\
                                             axis=0))
         return spikecounts
