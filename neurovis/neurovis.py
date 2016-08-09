@@ -41,7 +41,7 @@ class NeuroVis(object):
         self.firingrate = (n_spikes/n_seconds)
 
     #-----------------------------------------------------------------------
-    def get_raster(self, events, features=None, conditions=None,
+    def get_raster(self, event, conditions=None, data=None,
                    window=[-100, 500], binsize=10, plot=True,
                    sort=False):
         """
@@ -78,28 +78,34 @@ class NeuroVis(object):
 
         window = [np.floor(window[0]/binsize)*binsize, np.ceil(window[1]/binsize)*binsize]
         # Get a set of binary indicators for trials of interest
-        if features is None:
-            features = list()
-        if conditions is None:
-            conditions = list()
-        if len(conditions) > 0:
-            trials = self.get_trialtype(features, conditions)
+
+        condition_names=[]
+        if conditions:
+            #condition_names = []
+            trials = dict()
+            for condition in np.sort(data[conditions].unique()):
+                condition_names.append(condition)
+                trials[condition] = np.where((data[conditions]==condition).apply(lambda x: (0,1)[x]).values)[0]
         else:
-            trials = np.transpose(np.atleast_2d(np.ones(np.size(events)) == 1))
+            trials = dict()
+            trials[0] = np.where(np.ones(np.size(data[event])))[0]
+
 
         # Initialize rasters
         rasters = dict()
 
         rasters['window'] = window
         rasters['binsize'] = binsize
-        rasters['conditions'] = conditions
+        rasters['conditions'] = condition_names
         rasters['data'] = dict()
 
         # Loop over each raster
-        for r_idx in np.arange(trials.shape[1]):
-
+        #print trials
+        for r_idx in trials:
             # Select events relevant to this raster
-            selected_events = events[trials[:, r_idx]]
+
+            selected_events = data[event][trials[r_idx]]
+            #print selected_events
 
             raster = []
 
@@ -109,7 +115,7 @@ class NeuroVis(object):
 
                 # consider only spikes within window
                 searchsorted_idx = np.searchsorted(self.spiketimes,
-                [event_time+1e-3 * window[0],event_time+1e-3 * window[1]])
+                [event_time+1e-3 * window[0], event_time+1e-3 * window[1]])
 
                 # bin the spikes into time bins
                 spike_counts = np.histogram( \
@@ -119,10 +125,13 @@ class NeuroVis(object):
 
             rasters['data'][r_idx] = np.array(raster)
 
+        if np.nan in rasters['data']:
+            rasters['data'].pop(np.nan)
+
         # Show the raster
         if plot is True:
-            for i in np.arange(len(rasters['data'])):
-                self.plot_raster(rasters, condition=i+1, sort=sort)
+            for r_idx in rasters['data']:
+                self.plot_raster(rasters, condition=r_idx, sort=sort)
                 plt.show()
 
 
@@ -130,7 +139,7 @@ class NeuroVis(object):
         return rasters
 
     #-----------------------------------------------------------------------
-    def plot_raster(self, rasters, condition = 1, condition_names=None,
+    def plot_raster(self, rasters, condition = 0, condition_names=None,
         sort=False, cmap=['Greys'], has_title=True):
         """
         Plot rasters
@@ -150,7 +159,7 @@ class NeuroVis(object):
             list, colormaps for rasters
 
         """
-        r_idx = condition-1
+        r_idx = condition
         window = rasters['window']
         binsize = rasters['binsize']
         conditions = rasters['conditions']
@@ -169,7 +178,7 @@ class NeuroVis(object):
 
             if len(cmap) > 1:
                 plt.imshow(raster_sorted, aspect='auto',
-                    interpolation='none', cmap=plt.get_cmap(cmap[r_idx]))
+                    interpolation='none', cmap=plt.get_cmap(cmap[0]))
             else:
                 plt.imshow(raster_sorted, aspect='auto',
                     interpolation='none', cmap=plt.get_cmap(cmap[0]))
@@ -179,12 +188,12 @@ class NeuroVis(object):
             plt.xticks(xtics_loc, xtics)
 
             if has_title:
-                if len(conditions) > 0:
+                if conditions > 0:
                     if condition_names:
                         plt.title('neuron %s: %s' % \
-                        (self.name, condition_names[r_idx]))
+                        (self.name, condition_names))
                     else:
-                        plt.title('neuron %s: Condition %d' % (self.name, r_idx+1))
+                        plt.title('neuron %s: Condition %s' % (self.name, r_idx))
                 else:
                     plt.title('neuron %s' % self.name)
 
@@ -197,11 +206,11 @@ class NeuroVis(object):
             plt.tick_params(axis='y', which='both', right='off')
 
         else:
-            print 'No trials for condition %d!' % (r_idx+1)
+            print 'No trials for this condition!'
 
 
     #-----------------------------------------------------------------------
-    def get_psth(self, events, features=None, conditions=None, \
+    def get_psth(self, event, data=None, conditions=None, \
                  window=[-100, 500], binsize=10, plot=True):
         """
         Compute the psth and plot it
@@ -238,15 +247,13 @@ class NeuroVis(object):
 
         """
 
-        if features is None:
-            features = []
 
-        if conditions is None:
-            conditions = []
-
-        window = [np.floor(window[0]/binsize)*binsize, np.ceil(window[1]/binsize)*binsize]
+        window = [np.floor(window[0]/binsize)*binsize,
+                  np.ceil(window[1]/binsize)*binsize]
         # Get all the rasters first
-        rasters = self.get_raster(events, features, conditions, window, binsize, plot=False)
+        rasters = self.get_raster(event=event, data=data,
+                                  conditions=conditions,
+                                  window=window, binsize=binsize, plot=False)
 
         # Open the figure
         # Initialize PSTH
@@ -270,13 +277,11 @@ class NeuroVis(object):
             psth['data'][r_idx]['mean'] = mean_psth
             psth['data'][r_idx]['sem'] = sem_psth
 
+        #if np.nan in psth['data']:
+        #    psth['data'].pop(np.nan)
         # Visualize the PSTH
         if plot is True:
             self.plot_psth(psth)
-
-            #for i, cond in enumerate(conditions):
-            #    print 'Condition %d: %s; %d trials' % \
-            #        (cond+1, str(conditions[cond]), np.shape(rasters['data'][i])[0])
 
         return psth
 
@@ -322,28 +327,28 @@ class NeuroVis(object):
         else:
             plt.plot([0, 0], [y_min, y_max], color='k', ls='--')
 
-        for i in psth['data']:
-            if np.all(np.isnan(psth['data'][i]['mean'])):
+        for i, cond in enumerate(psth['data']):
+            if np.all(np.isnan(psth['data'][cond]['mean'])):
                 plt.plot(0,0,alpha=1.0, color=colors[i])
             else:
-                plt.plot(time_bins, psth['data'][i]['mean'],
+                plt.plot(time_bins, psth['data'][cond]['mean'],
                 color=colors[i], lw=1.5)
 
-        for i in psth['data']:
-            if len(conditions) > 0:
+        for i, cond in enumerate(psth['data']):
+            if conditions > 0:
                 if condition_names:
                     legend.append(condition_names[i])
                 else:
-                    legend.append('Condition %d' % (i+1))
+                    legend.append('%s' % str(cond))
             else:
                 legend.append('all')
 
-            if not np.all(np.isnan(psth['data'][i]['mean'])):
-                plt.fill_between(time_bins, psth['data'][i]['mean'] - \
-                psth['data'][i]['sem'], psth['data'][i]['mean'] + \
-                psth['data'][i]['sem'], color=colors[i], alpha=0.2)
+            if not np.all(np.isnan(psth['data'][cond]['mean'])):
+                plt.fill_between(time_bins, psth['data'][cond]['mean'] - \
+                psth['data'][cond]['sem'], psth['data'][cond]['mean'] + \
+                psth['data'][cond]['sem'], color=colors[i], alpha=0.2)
 
-        plt.title('neuron %s' % self.name)
+        plt.title('neuron %s: %s' % (self.name, conditions))
         plt.xlabel('time [ms]')
         plt.ylabel('spikes per second [spks/s]')
 
