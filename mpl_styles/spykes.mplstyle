@@ -3,10 +3,12 @@ font.family: sans-serif
 font.sans-serif: Bitstream Vera Sans
 font.size: 13
 
-axes.titlesize : 11
-axes.titleweight : bold
+axes.titlesize : 12
 xtick.labelsize : 10
 ytick.labelsize : 10
 xtick.direction : out
 ytick.direction : out
+xtick.major.size : 6
+ytick.major.size : 6
+
 legend.fontsize: 11
