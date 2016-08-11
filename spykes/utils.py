@@ -8,12 +8,10 @@ def slow_exp_python(z, eta):
     """
     A slowly rising exponential
     that linearizes above threshold parameter eta
-
     Parameters
     ----------
     z: array
     eta: float, threshold parameter
-
     Returns
     -------
     qu: array, the resulting slow exponential
@@ -29,12 +27,10 @@ def grad_slow_exp_python(z, eta):
     """
     Gradient of a slowly rising exponential
     that linearizes above threshold parameter eta
-
     Parameters
     ----------
     z: array
     eta: float, threshold parameter
-
     Returns
     -------
     dqu_dz: array, the resulting gradient of the slow exponential
