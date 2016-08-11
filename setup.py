@@ -34,11 +34,6 @@ if __name__ == "__main__":
               'Operating System :: MacOS',
           ],
           platforms='any',
-          packages=[
-            'neurovis',
-	        'neuropop'
-          ],
-	  package_dir={'neurovis': 'neurovis',
-             	       'neuropop': 'neuropop',
-          }
+          packages=['spykes'],
+	  package_dir={'spykes': 'spykes'}
           )
