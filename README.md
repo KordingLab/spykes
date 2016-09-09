@@ -43,9 +43,12 @@ See:
 
 ### Dependencies
 
-So far, you only need ```NumPy``` >= 1.6.1 and ```SciPy``` >= 0.14, which are already distributed with [Anaconda](https://www.continuum.io/downloads) and [Canopy](https://www.enthought.com/products/canopy/).
+Already distributed with [Anaconda](https://www.continuum.io/downloads) and [Canopy](https://www.enthought.com/products/canopy/).
+- ```NumPy``` >= 1.6.1
+- ```SciPy``` >= 0.14
+- ```Matplotlib``` >= 1.5
 
-Some functions are optimized using ```Numba```. We recommend the latest stable version (0.26.0 or later).
+We also use ```Numba``` to optimize certain functions. We recommend the latest stable version (>= 0.26.0).
 
 ```bash
 $ pip install numba
