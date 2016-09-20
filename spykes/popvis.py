@@ -18,17 +18,19 @@ class PopVis(object):
     ----------
     neuron_list: list of NeuroVis objects
 
-
     Internal variables
     ------------------
+    neuron_list: list of NeuroVis objects
     n_neurons: int
-    all_psth: dict
-
 
     Callable methods
     ----------------
     get_psths
     plot_heat_map
+
+    Class methods
+    -------------
+    _sort
 
     """
 
@@ -38,14 +40,12 @@ class PopVis(object):
         """
         self.neuron_list = neuron_list
         self.n_neurons = len(neuron_list)
-        
-        self.all_psth = None
-    
+            
     def get_psths(self, event=None, df=None, conditions=None,
                  window=[-100, 500], binsize=10, event_name=None,
                  conditions_names=None, plot=True, cmap=plt.cm.coolwarm):
         """
-        Iterates through all neurons and computes their psth
+        Iterates through all neurons and computes their PSTH's
 
         Parameters
         ----------
@@ -73,9 +73,12 @@ class PopVis(object):
             Legend names for conditions. Default are the unique values in
             df['conditions']
 
-        ylim: list with 2 elements
+        plot: bool
+            Whether to automatically plot or not
 
-        colors: list
+        cmap: str
+            Colormap for heatmap
+
 
         Returns
         -------
@@ -125,9 +128,11 @@ class PopVis(object):
                         cmap=plt.cm.coolwarm):
 
         """
+        Plots heat map for neuron population
+
         Parameters
         ----------
-        all_psth : dictionary
+        psth_dict : dictionary
             
             With keys: 'event', 'conditions', 'binsize', 'window', and 'data'.
             
@@ -144,7 +149,7 @@ class PopVis(object):
         conditions_names: str (or list)
             Name(s) to appear in the title
 
-        sort: str
+        sortby: str
             None: neuron number
             'rate': sort by firing rate
             'stimulus': sort by preferred stimulus
@@ -164,24 +169,24 @@ class PopVis(object):
         if conditions_names is None:
             conditions_names = np.sort(psth_dict['data'].keys()).tolist()
 
-        print conditions_names
-
-
         for i, cond_id in enumerate(np.sort(psth_dict['data'].keys())):
 
-            data = psth_dict['data'][cond_id]
+            orig_data = psth_dict['data'][cond_id]
+
+            sort_idx = self._sort(orig_data, sortby)
+            data = orig_data[sort_idx,:]
 
             plt.pcolormesh(data, cmap=cmap)
 
             plt.xticks([0, -window[0]/binsize, data.shape[1]], \
                 [window[0], 0, window[1]])
 
-            ylabels = ["Neuron %d" % (j+1) for j in \
-                        range(len(self.neuron_list))]
+            unsorted_ylabels = [neuron.name for neuron in self.neuron_list]
+            ylabels = [unsorted_ylabels[j] for j in sort_idx]
+
             plt.yticks(np.arange(data.shape[0])+0.5, ylabels)
 
             ax = plt.gca()
-            
             ax.invert_yaxis()
 
             for t in ax.xaxis.get_major_ticks(): 
@@ -195,9 +200,49 @@ class PopVis(object):
             plt.ylabel('Neuron')
 
             plt.title("Event: %s | Condition: %s" % \
-                            (event, conditions_names[i]))
-
+                            (event_name, conditions_names[i]))
 
             plt.colorbar()
         
             plt.show()
+
+    def _sort(self, data, sortby=None):
+
+        """
+        Calculates sort indices for PSTH data given sorting condition
+
+        Parameters
+        ----------
+        data : 2-D numpy array
+            n_neurons x n_bins
+
+        sortby: str
+            None: neuron number
+            'rate': sort by firing rate
+            'stimulus': sort by preferred stimulus
+            'latency': sort by peak latency
+
+        Returns
+        -------
+        sort_idx : numpy array of sorting indices
+
+        """
+
+        if sortby == 'rate':
+            avg_rates = np.sum(data, axis=1)
+            return np.argsort(avg_rates)
+
+        elif sortby == 'stimulus':
+            return np.arange(data.shape[0]) # TODO: change
+
+        elif sortby == 'latency':
+            peaks = np.argmax(data, axis=1)
+            return np.argsort(peaks)
+
+        else:
+            return np.arange(data.shape[0])
+
+
+
+
+
