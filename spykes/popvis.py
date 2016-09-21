@@ -17,6 +17,7 @@ class PopVis(object):
     Parameters
     ----------
     neuron_list: list of NeuroVis objects
+    (see NeuroVis class in spykes.neurovis)
 
     Internal variables
     ------------------
@@ -30,7 +31,7 @@ class PopVis(object):
 
     Class methods
     -------------
-    _sort
+    _get_sort_indices
 
     """
 
@@ -42,8 +43,9 @@ class PopVis(object):
         self.n_neurons = len(neuron_list)
             
     def get_psths(self, event=None, df=None, conditions=None,
-                 window=[-100, 500], binsize=10, event_name=None,
-                 conditions_names=None, plot=True, cmap=plt.cm.coolwarm):
+                window=[-100, 500], binsize=10, conditions_names=None,
+                plot=True, colors=[plt.cm.Blues, plt.cm.Reds, 
+                plt.cm.Greens]):
         """
         Iterates through all neurons and computes their PSTH's
 
@@ -66,9 +68,6 @@ class PopVis(object):
         binsize: int
             Bin size in milliseconds
 
-        event_name: string
-            Legend name for event. Default is the actual 'event' name
-
         conditions_names:
             Legend names for conditions. Default are the unique values in
             df['conditions']
@@ -76,9 +75,7 @@ class PopVis(object):
         plot: bool
             Whether to automatically plot or not
 
-        cmap: str
-            Colormap for heatmap
-
+        colors: list of Colormap objects for heatmap
 
         Returns
         -------
@@ -109,23 +106,23 @@ class PopVis(object):
                     all_psth['data'][cond_id] = list()
  
                 all_psth['data'][cond_id].append(psth['data'][cond_id]['mean'])
-                
-                # TODO: what if cond_id empty for given neuron
-        
+                        
+
         for cond_id in np.sort(all_psth['data'].keys()):
             all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
 
         if plot is True:
 
-            self.plot_heat_map(all_psth, event_name=event, conditions_names=
-                                conditions_names, cmap=cmap)
+            self.plot_heat_map(all_psth, conditions_names=conditions_names, 
+                colors=colors)
 
         return all_psth
 
 
-    def plot_heat_map(self, psth_dict, event_name='event_onset', cond_id=None, 
-                        conditions_names=None, sortby=None, 
-                        cmap=plt.cm.coolwarm):
+    def plot_heat_map(self, psth_dict, cond_id=None, 
+                    conditions_names=None, sortby=None, sortorder='descend', 
+                    normalize=None, colors=[plt.cm.Blues, plt.cm.Reds, 
+                    plt.cm.Greens]):
 
         """
         Plots heat map for neuron population
@@ -138,9 +135,6 @@ class PopVis(object):
             
             Each entry in psth['data'] is itself a dictionary with keys of
             each cond_id that correspond to the means for that condition
-
-        event_name: str
-            Name to appear in the title
 
         cond_id
             Which psth to plot indicated by the key in all_psth['data'].
@@ -155,8 +149,15 @@ class PopVis(object):
             'stimulus': sort by preferred stimulus
             'latency': sort by peak latency
 
-        cmap: str
-            Colormap for heatmap
+        sortorder: direction to sort in
+            'descend'
+            'ascend'
+
+        normalize: str
+            'all' : divide all PSTHs by highest peak firing rate in all neurons
+            'each' : divide each PSTH by its own peak firing rate
+
+        colors: list of Colormap objects for heatmap
 
         """
 
@@ -169,14 +170,20 @@ class PopVis(object):
         if conditions_names is None:
             conditions_names = np.sort(psth_dict['data'].keys()).tolist()
 
-        for i, cond_id in enumerate(np.sort(psth_dict['data'].keys())):
+        if cond_id is None:
+            keys = np.sort(psth_dict['data'].keys())
+        else:
+            keys = cond_id
+
+        for i, cond_id in enumerate(keys):
 
             orig_data = psth_dict['data'][cond_id]
 
-            sort_idx = self._sort(orig_data, sortby)
+            sort_idx = self._get_sort_indices(orig_data, sortby=sortby, sortorder=sortorder)
+
             data = orig_data[sort_idx,:]
 
-            plt.pcolormesh(data, cmap=cmap)
+            plt.pcolormesh(data, cmap=colors[i%len(colors)])
 
             plt.xticks([0, -window[0]/binsize, data.shape[1]], \
                 [window[0], 0, window[1]])
@@ -199,14 +206,14 @@ class PopVis(object):
             plt.xlabel('time [ms]')
             plt.ylabel('Neuron')
 
-            plt.title("Event: %s | Condition: %s" % \
-                            (event_name, conditions_names[i]))
+            plt.title("%s: %s" % \
+                            (conditions, conditions_names[i]))
 
             plt.colorbar()
         
             plt.show()
 
-    def _sort(self, data, sortby=None):
+    def _get_sort_indices(self, data, sortby=None, sortorder='descend'):
 
         """
         Calculates sort indices for PSTH data given sorting condition
@@ -222,6 +229,10 @@ class PopVis(object):
             'stimulus': sort by preferred stimulus
             'latency': sort by peak latency
 
+        sortorder: direction to sort in
+            'descend'
+            'ascend'
+
         Returns
         -------
         sort_idx : numpy array of sorting indices
@@ -230,19 +241,23 @@ class PopVis(object):
 
         if sortby == 'rate':
             avg_rates = np.sum(data, axis=1)
-            return np.argsort(avg_rates)
+            sort_idx = np.argsort(avg_rates)
 
         elif sortby == 'stimulus':
-            return np.arange(data.shape[0]) # TODO: change
+            sort_idx = np.arange(data.shape[0]) # TODO: change
 
         elif sortby == 'latency':
             peaks = np.argmax(data, axis=1)
-            return np.argsort(peaks)
+            sort_idx = np.argsort(peaks)
 
         else:
-            return np.arange(data.shape[0])
+            sort_idx = np.arange(data.shape[0])
 
 
+        if sortorder == 'ascend':
+            return sort_idx
+        else:
+            return sort_idx[::-1]
 
 
 
