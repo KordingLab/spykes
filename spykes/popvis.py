@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from fractions import gcd
 
 plt.style.use(
     os.path.join(
@@ -32,6 +33,7 @@ class PopVis(object):
     Class methods
     -------------
     _get_sort_indices
+    _get_normed_data
 
     """
 
@@ -144,7 +146,7 @@ class PopVis(object):
             Name(s) to appear in the title
 
         sortby: str
-            None: neuron number
+            None: 
             'rate': sort by firing rate
             'stimulus': sort by preferred stimulus
             'latency': sort by peak latency
@@ -154,6 +156,7 @@ class PopVis(object):
             'ascend'
 
         normalize: str
+            None
             'all' : divide all PSTHs by highest peak firing rate in all neurons
             'each' : divide each PSTH by its own peak firing rate
 
@@ -179,14 +182,19 @@ class PopVis(object):
 
             orig_data = psth_dict['data'][cond_id]
 
-            sort_idx = self._get_sort_indices(orig_data, sortby=sortby, sortorder=sortorder)
+            normed_data = self._get_normed_data(orig_data, normalize=normalize)
 
-            data = orig_data[sort_idx,:]
+            sort_idx = self._get_sort_indices(normed_data, sortby=sortby, 
+                sortorder=sortorder)
+
+            data = normed_data[sort_idx,:]
 
             plt.pcolormesh(data, cmap=colors[i%len(colors)])
 
-            plt.xticks([0, -window[0]/binsize, data.shape[1]], \
-                [window[0], 0, window[1]])
+            step = gcd(abs(window[0]), window[1])
+            xticlabels = range(window[0], window[1]+step, step)
+            xticlocs = [(j-window[0])/binsize for j in xticlabels]
+            plt.xticks(xticlocs, xticlabels)
 
             unsorted_ylabels = [neuron.name for neuron in self.neuron_list]
             ylabels = [unsorted_ylabels[j] for j in sort_idx]
@@ -224,7 +232,7 @@ class PopVis(object):
             n_neurons x n_bins
 
         sortby: str
-            None: neuron number
+            None:
             'rate': sort by firing rate
             'stimulus': sort by preferred stimulus
             'latency': sort by peak latency
@@ -260,4 +268,36 @@ class PopVis(object):
             return sort_idx[::-1]
 
 
+    def _get_normed_data(self, data, normalize):
+        """
+        Normalizes all PSTH data 
+
+        Parameters
+        ----------
+        data : 2-D numpy array
+            n_neurons x n_bins
+
+        normalize: str
+            None
+            'all' : divide all PSTHs by highest peak firing rate in all neurons
+            'each' : divide each PSTH by its own peak firing rate
+        
+        Returns
+        ----------
+        normed_data : original data array that has been divided s.t. all values
+            fall between [0,1]
+
+        """
+        norm_factors = np.ones([data.shape[0],1])
+
+        max_rates = np.amax(data, axis=1)
+
+        if normalize == 'all':
+            norm_factors *= np.amax(max_rates)
+
+        elif normalize == 'each':
+            norm_factors = np.reshape(max_rates,(max_rates.shape[0],1)) * \
+                np.ones([1,data.shape[1]])
+
+        return (data / norm_factors)
 
