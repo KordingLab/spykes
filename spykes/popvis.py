@@ -46,8 +46,8 @@ class PopVis(object):
             
     def get_psths(self, event=None, df=None, conditions=None,
                 window=[-100, 500], binsize=10, conditions_names=None,
-                plot=True, colors=[plt.cm.Blues, plt.cm.Reds, 
-                plt.cm.Greens]):
+                plot=True, colors=['Blues', 'Reds', 'Greens'], width=10, 
+                height=5):
         """
         Iterates through all neurons and computes their PSTH's
 
@@ -77,7 +77,14 @@ class PopVis(object):
         plot: bool
             Whether to automatically plot or not
 
-        colors: list of Colormap objects for heatmap
+        colors: 
+            list of Colormap objects for heatmap (only if plot is True)
+
+        width: int
+            width of graph (only if plot is True)
+
+        height: int
+            height of graph (only if plot is True)
 
         Returns
         -------
@@ -116,15 +123,15 @@ class PopVis(object):
         if plot is True:
 
             self.plot_heat_map(all_psth, conditions_names=conditions_names, 
-                colors=colors)
+                colors=colors, width=width, height=height)
 
         return all_psth
 
 
     def plot_heat_map(self, psth_dict, cond_id=None, 
                     conditions_names=None, sortby=None, sortorder='descend', 
-                    normalize=None, colors=[plt.cm.Blues, plt.cm.Reds, 
-                    plt.cm.Greens]):
+                    normalize=None, colors=['Blues', 'Reds', 'Greens'], 
+                    width=10, height=5):
 
         """
         Plots heat map for neuron population
@@ -145,11 +152,11 @@ class PopVis(object):
         conditions_names: str (or list)
             Name(s) to appear in the title
 
-        sortby: str
+        sortby: str or list
             None: 
             'rate': sort by firing rate
-            'stimulus': sort by preferred stimulus
             'latency': sort by peak latency
+            list: list of integer indices to be used as sorting indicces
 
         sortorder: direction to sort in
             'descend'
@@ -160,7 +167,13 @@ class PopVis(object):
             'all' : divide all PSTHs by highest peak firing rate in all neurons
             'each' : divide each PSTH by its own peak firing rate
 
-        colors: list of Colormap objects for heatmap
+        colors: list of colors for heatmap
+
+        width: int
+            width of graph
+
+        height: int
+            height of graph
 
         """
 
@@ -180,21 +193,36 @@ class PopVis(object):
 
         for i, cond_id in enumerate(keys):
 
+            # sort and norm the data
+
             orig_data = psth_dict['data'][cond_id]
 
             normed_data = self._get_normed_data(orig_data, normalize=normalize)
 
-            sort_idx = self._get_sort_indices(normed_data, sortby=sortby, 
-                sortorder=sortorder)
+            if isinstance(sortby, list):
+                sort_idx = sortby
+            else:
+                sort_idx = self._get_sort_indices(normed_data, sortby=sortby, 
+                    sortorder=sortorder)
 
             data = normed_data[sort_idx,:]
 
+            plt.figure(figsize=(width,height))
             plt.pcolormesh(data, cmap=colors[i%len(colors)])
 
-            step = gcd(abs(window[0]), window[1])
-            xticlabels = range(window[0], window[1]+step, step)
-            xticlocs = [(j-window[0])/binsize for j in xticlabels]
-            plt.xticks(xticlocs, xticlabels)
+            # making it visually appealing
+
+            xtic_len = gcd(abs(window[0]), window[1])
+            xtic_labels = range(window[0], window[1]+xtic_len, xtic_len)
+            xtic_locs = [(j-window[0])/binsize - 0.5 for j in xtic_labels]
+
+            if 0 not in xtic_labels:
+                xtic_labels.append(0)
+                xtic_locks.append(-window[0]/binsize - 0.5)
+
+            plt.xticks(xtic_locs, xtic_labels)
+
+            plt.axvline((-window[0])/binsize-0.5, color='r', linestyle='--')
 
             unsorted_ylabels = [neuron.name for neuron in self.neuron_list]
             ylabels = [unsorted_ylabels[j] for j in sort_idx]
@@ -203,22 +231,17 @@ class PopVis(object):
 
             ax = plt.gca()
             ax.invert_yaxis()
+            ax.set_frame_on(False)
 
-            for t in ax.xaxis.get_major_ticks(): 
-                t.tick1On = True
-                t.tick2On = False 
-            for t in ax.yaxis.get_major_ticks(): 
-                t.tick1On = False 
-                t.tick2On = False 
+            plt.tick_params(axis='x', which='both', top='off')
+            plt.tick_params(axis='y', which='both', left='off',right='off')
 
             plt.xlabel('time [ms]')
             plt.ylabel('Neuron')
-
             plt.title("%s: %s" % \
                             (conditions, conditions_names[i]))
 
             plt.colorbar()
-        
             plt.show()
 
     def _get_sort_indices(self, data, sortby=None, sortorder='descend'):
@@ -234,7 +257,6 @@ class PopVis(object):
         sortby: str
             None:
             'rate': sort by firing rate
-            'stimulus': sort by preferred stimulus
             'latency': sort by peak latency
 
         sortorder: direction to sort in
@@ -289,7 +311,6 @@ class PopVis(object):
 
         """
         norm_factors = np.ones([data.shape[0],1])
-
         max_rates = np.amax(data, axis=1)
 
         if normalize == 'all':
