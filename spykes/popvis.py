@@ -50,8 +50,7 @@ class PopVis(object):
             
     def get_all_psth(self, event=None, df=None, conditions=None,
                 window=[-100, 500], binsize=10, conditions_names=None,
-                plot=True, colors=['Blues', 'Reds', 'Greens'], width=10, 
-                height=5):
+                plot=True, colors=['Blues', 'Reds', 'Greens']):
         """
         Iterates through all neurons and computes their PSTH's
 
@@ -82,13 +81,7 @@ class PopVis(object):
             Whether to automatically plot or not
 
         colors: 
-            list of Colormap objects for heatmap (only if plot is True)
-
-        width: int
-            width of graph (only if plot is True)
-
-        height: int
-            height of graph (only if plot is True)
+            list of colors for heatmap (only if plot is True)
 
         Returns
         -------
@@ -128,15 +121,14 @@ class PopVis(object):
         if plot is True:
 
             self.plot_heat_map(all_psth, conditions_names=conditions_names, 
-                colors=colors, width=width, height=height)
+                colors=colors)
 
         return all_psth
 
 
     def plot_heat_map(self, psth_dict, cond_id=None, 
                     conditions_names=None, sortby=None, sortorder='descend', 
-                    normalize=None, colors=['Blues', 'Reds', 'Greens'], 
-                    width=10, height=5):
+                    normalize=None, colors=['Blues', 'Reds', 'Greens']):
 
         """
         Plots heat map for neuron population
@@ -174,12 +166,6 @@ class PopVis(object):
 
         colors: list of colors for heatmap
 
-        width: int
-            width of graph
-
-        height: int
-            height of graph
-
         """
 
         window = psth_dict['window']
@@ -205,14 +191,22 @@ class PopVis(object):
             normed_data = self._get_normed_data(orig_data, normalize=normalize)
 
             if isinstance(sortby, list):
-                sort_idx = sortby
+
+                if np.array_equal(np.sort(sortby), range(self.n_neurons)): 
+                    # make sure it's a permutation
+                    sort_idx = sortby
+
+                else:
+                    raise ValueError(
+                        "Specified sorting indices not a proper permutation")
+
             else:
                 sort_idx = self._get_sort_indices(normed_data, sortby=sortby, 
                     sortorder=sortorder)
 
             data = normed_data[sort_idx,:]
 
-            plt.figure(figsize=(width,height))
+            plt.subplot(len(keys),1,i+1)
             plt.pcolormesh(data, cmap=colors[i%len(colors)])
 
             # making it visually appealing
@@ -247,14 +241,15 @@ class PopVis(object):
                             (conditions, conditions_names[i]))
 
             plt.colorbar()
-            plt.show()
+            
+        plt.show()
 
 
     def plot_population_psth(self, all_psth=None, event=None, df=None, 
                             conditions=None, window=[-100, 500], binsize=10, 
                             conditions_names=None, event_name='event_onset', 
                             ylim=None, colors= ['#F5A21E', '#134B64', '#EF3E34', 
-                            '#02A68E', '#FF07CD'], width=10, height=5):
+                            '#02A68E', '#FF07CD']):
 
         """
         1. Normalizes each neuron's PSTH across condition
@@ -291,22 +286,12 @@ class PopVis(object):
             Legend names for conditions. Default are the unique values in
             df['conditions']
 
-        colors: 
-            list of Colormap objects for heatmap (only if plot is True)
-
         event_name: string
             Legend name for event. Default is the actual 'event' name
 
         ylim: list
 
         colors: list
-
-        width: int
-            width of graph
-
-        height: int
-            height of graph
-
 
         """
 
@@ -329,10 +314,10 @@ class PopVis(object):
             for cond_id in np.sort(psth['data'].keys()):
                 max_rates.append(np.amax(psth['data'][cond_id][i,:]))
 
-            normed_factor = max(max_rates)
+            norm_factor = max(max_rates)
 
             for cond_id in np.sort(psth['data'].keys()):
-               psth['data'][cond_id][i,:] /= normed_factor
+               psth['data'][cond_id][i,:] /= norm_factor
 
 
         # average out and plot
@@ -347,13 +332,10 @@ class PopVis(object):
                 np.var(normed_data, axis=0) / (len(self.neuron_list)**.5)
 
 
-        plt.figure(figsize=(width,height))
-
         base_neuron.plot_psth(psth=psth, event_name=event_name,
             conditions_names=conditions_names, ylim=ylim, colors=colors)
 
         plt.title("Population PSTH: %s" % psth['conditions'])
-
 
     def _get_sort_indices(self, data, sortby=None, sortorder='descend'):
 
@@ -383,9 +365,6 @@ class PopVis(object):
         if sortby == 'rate':
             avg_rates = np.sum(data, axis=1)
             sort_idx = np.argsort(avg_rates)
-
-        elif sortby == 'stimulus':
-            sort_idx = np.arange(data.shape[0]) # TODO: change
 
         elif sortby == 'latency':
             peaks = np.argmax(data, axis=1)
