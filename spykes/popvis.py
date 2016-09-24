@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import copy
 from spykes.neurovis import NeuroVis
 from fractions import gcd
 
@@ -313,9 +314,11 @@ class PopVis(object):
         base_neuron = NeuroVis(spiketimes=range(10), name="Population") 
 
         if all_psth is None:
-            all_psth = self.get_all_psth(event=event, df=df, 
+            psth = self.get_all_psth(event=event, df=df, 
                 conditions=conditions, window=window, binsize=binsize, 
                 plot=False)
+        else:
+            psth = copy.deepcopy(all_psth)
 
         # normalize each neuron across all conditions
     
@@ -323,33 +326,33 @@ class PopVis(object):
 
             max_rates = list()
 
-            for cond_id in np.sort(all_psth['data'].keys()):
-                max_rates.append(np.amax(all_psth['data'][cond_id][i,:]))
+            for cond_id in np.sort(psth['data'].keys()):
+                max_rates.append(np.amax(psth['data'][cond_id][i,:]))
 
             normed_factor = max(max_rates)
 
-            for cond_id in np.sort(all_psth['data'].keys()):
-               all_psth['data'][cond_id][i,:] /= normed_factor
+            for cond_id in np.sort(psth['data'].keys()):
+               psth['data'][cond_id][i,:] /= normed_factor
 
 
         # average out and plot
 
-        for i, cond_id in enumerate(np.sort(all_psth['data'].keys())):
+        for i, cond_id in enumerate(np.sort(psth['data'].keys())):
 
-            normed_data = all_psth['data'][cond_id]
+            normed_data = psth['data'][cond_id]
 
-            all_psth['data'][cond_id] = dict()
-            all_psth['data'][cond_id]['mean'] = np.mean(normed_data, axis=0)
-            all_psth['data'][cond_id]['sem'] = \
+            psth['data'][cond_id] = dict()
+            psth['data'][cond_id]['mean'] = np.mean(normed_data, axis=0)
+            psth['data'][cond_id]['sem'] = \
                 np.var(normed_data, axis=0) / (len(self.neuron_list)**.5)
 
 
         plt.figure(figsize=(width,height))
 
-        base_neuron.plot_psth(psth=all_psth, event_name=event_name,
+        base_neuron.plot_psth(psth=psth, event_name=event_name,
             conditions_names=conditions_names, ylim=ylim, colors=colors)
 
-        plt.title("Population PSTH: %s" % all_psth['conditions'])
+        plt.title("Population PSTH: %s" % psth['conditions'])
 
 
     def _get_sort_indices(self, data, sortby=None, sortorder='descend'):
