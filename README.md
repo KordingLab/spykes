@@ -9,7 +9,7 @@ Yet, virtually every lab relies on a set of in-house analysis scripts to go from
 
 Spykes is a collection of Python tools to make the visualization and analysis of neural data easy and reproducible.
 
-At present, spykes comes with two classes:
+At present, spykes comes with three classes:
 - ```NeuroVis``` helps you plot beautiful spike rasters and peri-stimulus time histograms (PSTHs).
 - ```PopVis``` helps you plot population summaries of PSTHs as normalized averages or heat maps.
 - ```NeuroPop``` helps you estimate tuning curves of neural populations and decode stimuli from population vectors with maximum-likelihood decoding.
