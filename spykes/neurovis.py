@@ -8,6 +8,7 @@ plt.style.use(
         '../mpl_styles/spykes.mplstyle')
     )
 
+from . import utils
 
 class NeuroVis(object):
     """
@@ -42,7 +43,7 @@ class NeuroVis(object):
     #-----------------------------------------------------------------------
     def get_raster(self, event=None, conditions=None, df=None,
                    window=[-100, 500], binsize=10, plot=True,
-                   sort=False):
+                   sortby=None, sortorder='descend'):
         """
         Compute the raster and plot it
 
@@ -68,8 +69,15 @@ class NeuroVis(object):
         plot: bool
             If True then plot
 
-        sort: bool
-            If True then sort the raster by number of spikes in ascending order
+        sortby: str or list
+            None: 
+            'rate': sort by firing rate
+            'latency': sort by peak latency
+            list: list of integer indices to be used as sorting indicces
+
+        sortorder: direction to sort in
+            'descend'
+            'ascend'
 
 
         Returns
@@ -134,15 +142,16 @@ class NeuroVis(object):
 
         # Show the raster
         if plot is True:
-            self.plot_raster(rasters, cond_id=None, sort=sort)
+            self.plot_raster(rasters, cond_id=None, sortby=sortby, 
+                sortorder=sortorder)
 
 
         # Return all the rasters
         return rasters
 
     #-----------------------------------------------------------------------
-    def plot_raster(self, rasters, cond_id=None, cond_name=None, sort=False,
-                    cmap='Greys', has_title=True):
+    def plot_raster(self, rasters, cond_id=None, cond_name=None, sortby=None, 
+                    sortorder='descend', cmap='Greys', has_title=True):
         """
         Plot one raster
 
@@ -158,8 +167,15 @@ class NeuroVis(object):
         cond_name: str
             Name to appear in the title
 
-        sort: bool
-            If True then sort the raster by number of spikes in ascending order
+        sortby: str or list
+            None: 
+            'rate': sort by firing rate
+            'latency': sort by peak latency
+            list: list of integer indices to be used as sorting indicces
+
+        sortorder: direction to sort in
+            'descend'
+            'ascend'
 
         cmap: str
             Colormap for raster
@@ -179,17 +195,17 @@ class NeuroVis(object):
         if cond_id is None:
             for cond in rasters['data'].keys():
                 self.plot_raster(rasters, cond_id=cond, cond_name=cond_name,
-                            sort=sort, cmap=cmap, has_title=has_title)
+                            sortby=sortby, sortorder=sortorder, cmap=cmap, 
+                            has_title=has_title)
                 plt.show()
         else:
             raster = rasters['data'][cond_id]
 
             if len(raster)>0:
-                if sort is True:
-                    # Sorting by total spike count in the duration
-                    raster_sorted = raster[np.sum(raster, axis=1).argsort()]
-                else:
-                    raster_sorted = raster
+
+                sort_idx = utils.get_sort_indices(data=raster, sortby=sortby,
+                    sortorder=sortorder)
+                raster_sorted = raster[sort_idx]
 
                 plt.imshow(raster_sorted, aspect='auto',
                     interpolation='none', cmap=plt.get_cmap(cmap))

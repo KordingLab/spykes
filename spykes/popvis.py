@@ -2,8 +2,11 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
-from spykes.neurovis import NeuroVis
+
 from fractions import gcd
+
+from . import NeuroVis
+from . import utils
 
 plt.style.use(
     os.path.join(
@@ -35,7 +38,6 @@ class PopVis(object):
 
     Class methods
     -------------
-    _get_sort_indices
     _get_normed_data
 
     """
@@ -190,19 +192,8 @@ class PopVis(object):
 
             normed_data = self._get_normed_data(orig_data, normalize=normalize)
 
-            if isinstance(sortby, list):
-
-                if np.array_equal(np.sort(sortby), range(self.n_neurons)): 
-                    # make sure it's a permutation
-                    sort_idx = sortby
-
-                else:
-                    raise ValueError(
-                        "Specified sorting indices not a proper permutation")
-
-            else:
-                sort_idx = self._get_sort_indices(normed_data, sortby=sortby, 
-                    sortorder=sortorder)
+            sort_idx = utils.get_sort_indices(normed_data, sortby=sortby, 
+                sortorder=sortorder)
 
             data = normed_data[sort_idx,:]
 
@@ -336,49 +327,6 @@ class PopVis(object):
             conditions_names=conditions_names, ylim=ylim, colors=colors)
 
         plt.title("Population PSTH: %s" % psth['conditions'])
-
-    def _get_sort_indices(self, data, sortby=None, sortorder='descend'):
-
-        """
-        Calculates sort indices for PSTH data given sorting condition
-
-        Parameters
-        ----------
-        data : 2-D numpy array
-            n_neurons x n_bins
-
-        sortby: str
-            None:
-            'rate': sort by firing rate
-            'latency': sort by peak latency
-
-        sortorder: direction to sort in
-            'descend'
-            'ascend'
-
-        Returns
-        -------
-        sort_idx : numpy array of sorting indices
-
-        """
-
-        if sortby == 'rate':
-            avg_rates = np.sum(data, axis=1)
-            sort_idx = np.argsort(avg_rates)
-
-        elif sortby == 'latency':
-            peaks = np.argmax(data, axis=1)
-            sort_idx = np.argsort(peaks)
-
-        else:
-            sort_idx = np.arange(data.shape[0])
-
-
-        if sortorder == 'ascend':
-            return sort_idx
-        else:
-            return sort_idx[::-1]
-
 
     def _get_normed_data(self, data, normalize):
         """
