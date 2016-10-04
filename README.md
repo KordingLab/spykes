@@ -5,7 +5,7 @@
 Almost any electrophysiology study of awake behaving animals relies on a battery of standard analyses.
 Raster plots and peri-stimulus time histograms aligned to stimuli and behavior provide a snapshot visual description of neural activity. Similarly, tuning curves are the most standard way to characterize how neurons encode stimuli or behavioral preferences. With increasing popularity of population recordings, maximum-likelihood decoders based on tuning models are becoming part of this standard.
 
-Yet, virtually every lab relies on a set of in-house analysis scripts to go from raw data to summaries. We want to change this status quo in order to enable easier sharing, better reproducibility and fewer bugs.
+Yet, virtually every lab relies on a set of in-house analysis scripts to go from raw data to summaries. We want to improve this status quo in order to enable easier sharing, better reproducibility and fewer bugs.
 
 Spykes is a collection of Python tools to make the visualization and analysis of neural data easy and reproducible.
 
