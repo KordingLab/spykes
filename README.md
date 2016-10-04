@@ -72,6 +72,7 @@ The example notebooks use two real datasets. Instructions for downloading these 
 
 * [Pavan Ramkumar](http:/github.com/pavanramkumar)
 * [Hugo Fernandes](http:/github.com/hugoguh)
+* [Ari S. Benjamin](http:/github.com/aribenjamin)
 
 ### Acknowledgments
 
