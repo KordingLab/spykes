@@ -9,9 +9,6 @@ install:
     - conda create -n testenv --yes pip python=2.7
     - source activate testenv
     - conda install --yes --quiet numpy scipy matplotlib numba nose coverage
-    - pip install coverage coveralls
     - pip install -e ./
-script:
-    - nosetests . --with-coverage
-after_success:
-    - coveralls
+script: 
+  nosetests 
