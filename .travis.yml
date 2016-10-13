@@ -1,0 +1,9 @@
+language: python
+install:
+    - pip install numpy
+    - pip install scipy
+    - pip install numba
+    - pip install matplotlib
+    - pip install -e ./
+script:
+    - nosetests .
