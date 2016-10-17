@@ -22,11 +22,16 @@ def test_neuropop():
 
         Yhat_test = pop.predict(x_test)
 
+        assert_equal(Yhat_test.shape[0], x_test.shape[0])
+        assert_equal(Yhat_test.shape[1], num_neurons)
+
         Ynull = np.mean(Y_train, axis=0)
-        pop.score(Y_test, Yhat_test, Ynull, method='pseudo_R2')
+
+        score = pop.score(Y_test, Yhat_test, Ynull, method='pseudo_R2')
+        assert_equal(len(score), num_neurons)
 
         xhat_test = pop.decode(Y_test)
+        assert_equal(xhat_test.shape[0], Y_test.shape[0])
 
         for method in ['circ_corr', 'cosine_dist']:
-
-            pop.score(x_test, xhat_test, method=method)
+            score = pop.score(x_test, xhat_test, method=method)
