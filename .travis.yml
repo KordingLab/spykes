@@ -9,9 +9,11 @@ install:
     - conda create -n testenv --yes pip python=2.7
     - source activate testenv
     - conda install --yes --quiet numpy scipy matplotlib numba pandas scikit-learn nose coverage
+    - pip install -q flake8
     - pip install coverage coveralls
     - pip install -e ./
 script: 
     - nosetests tests/ --with-coverage
+    - flake8 --count pyglmnet
 after_success:
     - coveralls
