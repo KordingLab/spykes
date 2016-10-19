@@ -37,7 +37,7 @@ def test_neurovis():
     df[condition_bool] = df[condition_num] < 0.5
 
     raster = neuron.get_raster(event=event, conditions=condition_bool, df=df, 
-        plot=False, binsize=binsize, window=window)
+        plot=True, binsize=binsize, window=window)
 
     assert_equal(raster['event'], event)
     assert_equal(raster['conditions'], condition_bool)
@@ -56,7 +56,7 @@ def test_neurovis():
     assert_equal(total_trials, num_trials)
 
     psth = neuron.get_psth(event=event, conditions=condition_bool, df=df, 
-        plot=False, binsize=binsize, window=window)
+        plot=True, binsize=binsize, window=window)
 
     assert_equal(psth['window'], window)
     assert_equal(psth['binsize'], binsize)

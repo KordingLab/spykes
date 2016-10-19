@@ -43,7 +43,7 @@ def test_popvis():
 
 
     all_psth = pop.get_all_psth(event=event, conditions=condition_bool, df=df, 
-        plot=False, binsize=binsize, window=window)
+        plot=True, binsize=binsize, window=window)
 
     assert_equal(all_psth['window'], window)
     assert_equal(all_psth['binsize'], binsize)
