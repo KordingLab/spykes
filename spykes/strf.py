@@ -5,8 +5,7 @@ import matplotlib.pyplot as plt
 plt.style.use(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        '../mpl_styles/spykes.mplstyle')
-    )
+        '../mpl_styles/spykes.mplstyle'))
 
 
 class STRF(object):
@@ -124,7 +123,7 @@ class STRF(object):
         sine_mask = np.zeros((patch_size, patch_size))
         for row in np.arange(patch_size):
             for col in np.arange(patch_size):
-                theta = np.arctan2(patch_size/2 - row, col - patch_size/2)
+                theta = np.arctan2(patch_size / 2 - row, col - patch_size / 2)
                 cosine_mask[row, col] = np.cos(theta)
                 sine_mask[row, col] = np.sin(theta)
 
@@ -146,7 +145,7 @@ class STRF(object):
         n_tiles = np.sqrt(n_spatial_basis)
         plt.figure(figsize=(7, 7))
         for i in range(n_spatial_basis):
-            plt.subplot(np.int(n_tiles), np.int(n_tiles), i+1)
+            plt.subplot(np.int(n_tiles), np.int(n_tiles), i + 1)
             plt.imshow(spatial_basis[i], cmap=color)
             plt.axis('off')
         plt.show()
