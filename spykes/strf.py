@@ -8,8 +8,8 @@ plt.style.use(
         '../mpl_styles/spykes.mplstyle')
     )
 
-class STRF(object):
 
+class STRF(object):
     """
     This class allows the estimation of spatiotemporal receptive fields
 
@@ -56,7 +56,7 @@ class STRF(object):
         self.n_spatial_basis = n_spatial_basis
         self.n_temporal_basis = n_temporal_basis
 
-    def make_2d_gaussian(self, center=(0,0)):
+    def make_2d_gaussian(self, center=(0, 0)):
         """
         Makes a 2D Gaussian filter
         with arbitary center and standard deviation
@@ -75,12 +75,13 @@ class STRF(object):
         n_rows = (self.patch_size - 1.) / 2.
         n_cols = (self.patch_size - 1.) / 2.
 
-        y, x = np.ogrid[-n_rows : n_rows + 1, -n_cols : n_cols + 1]
+        y, x = np.ogrid[-n_rows: n_rows + 1, -n_cols: n_cols + 1]
         y0, x0 = center[1], center[0]
-        gaussian_mask = np.exp( -((x - x0) ** 2 + (y - y0) ** 2) / \
-                        (2. * sigma ** 2))
-        gaussian_mask[gaussian_mask < \
-            np.finfo(gaussian_mask.dtype).eps * gaussian_mask.max()] = 0
+        gaussian_mask = np.exp(-((x - x0) ** 2 + (y - y0) ** 2) /
+                               (2. * sigma ** 2))
+        gaussian_mask[gaussian_mask <
+                      np.finfo(gaussian_mask.dtype).eps *
+                      gaussian_mask.max()] = 0
         gaussian_mask = 1. / gaussian_mask.max() * gaussian_mask
         return gaussian_mask
 
@@ -96,8 +97,10 @@ class STRF(object):
         spatial_basis = list()
         n_tiles = np.sqrt(self.n_spatial_basis)
         n_pixels = self.patch_size
-        centers = np.linspace(start=(-n_pixels / 2. + n_pixels / (n_tiles + 1.)),
-                              stop=(n_pixels / 2. - n_pixels / (n_tiles + 1.)),
+        centers = np.linspace(start=(-n_pixels / 2. +
+                                     n_pixels / (n_tiles + 1.)),
+                              stop=(n_pixels / 2. -
+                                    n_pixels / (n_tiles + 1.)),
                               num=n_tiles)
 
         for y in np.arange(n_tiles):
@@ -141,7 +144,7 @@ class STRF(object):
         """
         n_spatial_basis = len(spatial_basis)
         n_tiles = np.sqrt(n_spatial_basis)
-        plt.figure(figsize=(7,7))
+        plt.figure(figsize=(7, 7))
         for i in range(n_spatial_basis):
             plt.subplot(np.int(n_tiles), np.int(n_tiles), i+1)
             plt.imshow(spatial_basis[i], cmap=color)
@@ -283,13 +286,13 @@ class STRF(object):
         n_temporal_basis = self.n_temporal_basis
 
         n_features = n_temporal_basis * n_spatial_basis
-        spatial_covariance = np.zeros([n_features, n_features])
-        temporal_covariance = np.zeros([n_features, n_features])
+        sp_covariance = np.zeros([n_features, n_features])
+        te_covariance = np.zeros([n_features, n_features])
         prior_covariance = np.zeros([n_features, n_features])
         for i in np.arange(0, n_features):
             # Get spatiotemporal indices
-            s_i = np.floor(np.float(i) % \
-                           (n_temporal_basis * n_spatial_basis) / \
+            s_i = np.floor(np.float(i) %
+                           (n_temporal_basis * n_spatial_basis) /
                            n_temporal_basis)
             t_i = i % n_temporal_basis
             # Convert spatial indices to (x,y) coordinates
@@ -298,21 +301,22 @@ class STRF(object):
 
             for j in np.arange(i, n_features):
                 # Get spatiotemporal indices
-                s_j = np.floor(np.float(j) % \
-                               (n_temporal_basis * n_spatial_basis) / \
+                s_j = np.floor(np.float(j) %
+                               (n_temporal_basis * n_spatial_basis) /
                                n_temporal_basis)
                 t_j = j % n_temporal_basis
                 # Convert spatial indices to (x,y) coordinates
                 x_j = s_j % np.sqrt(n_spatial_basis)
                 y_j = np.floor(np.float(s_j) / np.sqrt(n_spatial_basis))
 
-                spatial_covariance[i, j] = np.exp(-1. / (sigma_spatial ** 2) \
-                    * ((x_i - x_j) ** 2 + (y_i - y_j) ** 2))
-                spatial_covariance[j, i] = spatial_covariance[i, j]
-                temporal_covariance[i, j] = np.exp(-1. / (sigma_temporal ** 2) \
-                    * (t_i - t_j) ** 2)
-                temporal_covariance[j, i] = temporal_covariance[i, j]
+                sp_covariance[i, j] = np.exp(-1. / (sigma_spatial ** 2) *
+                                             ((x_i - x_j) ** 2 +
+                                              (y_i - y_j) ** 2))
+                sp_covariance[j, i] = sp_covariance[i, j]
+                te_covariance[i, j] = np.exp(-1. / (sigma_temporal ** 2) *
+                                             (t_i - t_j) ** 2)
+                te_covariance[j, i] = te_covariance[i, j]
 
-        prior_covariance = spatial_covariance * temporal_covariance
-        prior_covariance = 1./ np.max(prior_covariance) * prior_covariance
+        prior_covariance = sp_covariance * te_covariance
+        prior_covariance = 1. / np.max(prior_covariance) * prior_covariance
         return prior_covariance
