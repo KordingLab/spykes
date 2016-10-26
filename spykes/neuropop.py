@@ -1,22 +1,22 @@
 import os
 import numpy as np
-from scipy import stats
 from copy import deepcopy
-
 import matplotlib.pyplot as plt
+from . import utils
+from numba.decorators import autojit
+
 plt.style.use(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         '../mpl_styles/spykes.mplstyle')
-    )
+)
 
-
-from . import utils
-from numba.decorators import autojit
 slow_exp = autojit(utils.slow_exp_python)
 grad_slow_exp = autojit(utils.grad_slow_exp_python)
 
+
 class NeuroPop(object):
+
     """
     This class implements several conveniences for
     plotting, fitting and decoding from population tuning curves
@@ -88,7 +88,7 @@ class NeuroPop(object):
         self.n_neurons = n_neurons
 
         # Assign random tuning parameters
-        #--------------------------------
+        # --------------------------------
         self.mu_ = np.zeros(n_neurons)
         self.k0_ = np.zeros(n_neurons)
         self.k_ = np.zeros(n_neurons)
@@ -100,7 +100,7 @@ class NeuroPop(object):
         self.set_params(tunemodel, range(self.n_neurons))
 
         # Assign optimization parameters
-        #-------------------------------
+        # -------------------------------
         self.eta = eta
         self.learning_rate = learning_rate
         self.convergence_threshold = convergence_threshold
@@ -109,8 +109,9 @@ class NeuroPop(object):
 
         self.verbose = verbose
 
-    #-----------------------------------------------------------------------
-    def set_params(self, tunemodel=None, neurons=None, mu=None, k0=None, k=None, g=None, b=None):
+    # -----------------------------------------------------------------------
+    def set_params(self, tunemodel=None, neurons=None, mu=None, k0=None,
+                   k=None, g=None, b=None):
         """
         A function that sets tuning curve parameters as specified
 
@@ -179,7 +180,7 @@ class NeuroPop(object):
         else:
             self.b_[neurons] = b
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def _tunefun(self, x, k0, k1, k2, g, b):
         """
         The tuning function as specified in self.tunemodel
@@ -200,7 +201,7 @@ class NeuroPop(object):
         y = b + g * slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta)
         return y
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def _loss(self, x, y, k0, k1, k2, g, b):
         """
         The loss function: negative Poisson log likelihood function
@@ -208,8 +209,10 @@ class NeuroPop(object):
 
         Parameters
         ----------
-        x: float, n_samples x 1 (encoding) | scalar (decoding), feature of interest
-        y: float, n_samples x 1 (encoding) | n_neurons x 1 (decoding), firing rates
+        x: float, n_samples x 1 (encoding) |
+            scalar (decoding), feature of interest
+        y: float, n_samples x 1 (encoding) |
+            n_neurons x 1 (decoding), firing rates
         mu: float,  n_neurons x 1, preferred feature [-pi, pi]
         k0: float,  n_neurons x 1, baseline
         k1: float,  n_neurons x 1, convenience parameter
@@ -225,7 +228,7 @@ class NeuroPop(object):
         J = np.sum(lmb) - np.sum(y * lmb)
         return J
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def _grad_theta_loss(self, tunemodel, x, y, k0, k1, k2, g, b):
         """
         The gradient of the loss function:
@@ -252,21 +255,31 @@ class NeuroPop(object):
         lmb = self._tunefun(x, k0, k1, k2, g, b)
 
         n_samples = np.float(x.shape[0])
-        grad_k1 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * np.cos(x) * (1 - y/lmb))
-        grad_k2 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * np.sin(x) * (1 - y/lmb))
+        grad_k1 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) +
+                                                          k2 * np.sin(x),
+                                                          self.eta) *
+                                        np.cos(x) * (1 - y/lmb))
+        grad_k2 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) +
+                                                          k2 * np.sin(x),
+                                                          self.eta) *
+                                        np.sin(x) * (1 - y/lmb))
         if tunemodel == 'glm':
-            grad_k0 = 1./n_samples * np.sum(grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * (1 - y/lmb))
+            grad_k0 = 1./n_samples * np.sum(grad_slow_exp(k0 + k1 * np.cos(x) +
+                                                          k2 * np.sin(x),
+                                                          self.eta) *
+                                            (1 - y/lmb))
             grad_g = 0.0
             grad_b = 0.0
         elif tunemodel == 'gvm':
             grad_k0 = 0.0
-            grad_g = 1./n_samples * np.sum(slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * (1 - y/lmb))
+            grad_g = 1./n_samples *\
+                np.sum(slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x),
+                                self.eta) * (1 - y/lmb))
             grad_b = 1./n_samples * np.sum((1-y/lmb))
-
 
         return grad_k0, grad_k1, grad_k2, grad_g, grad_b
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def _grad_x_loss(self, x, y, k0, k1, k2, g, b):
         """
         The gradient of the loss function:
@@ -289,11 +302,14 @@ class NeuroPop(object):
         n_neurons = np.float(self.n_neurons)
 
         lmb = self._tunefun(x, k0, k1, k2, g, b)
-        grad_x = 1./n_neurons * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta) * \
-                (k2 * np.cos(x) - k1 * np.sin(x)) * (1 - y/lmb))
+        grad_x = 1./n_neurons * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) +
+                                                         k2 * np.sin(x),
+                                                         self.eta) *
+                                       (k2 * np.cos(x) - k1 * np.sin(x)) *
+                                       (1 - y/lmb))
         return grad_x
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def simulate(self, tunemodel, n_samples=500, winsize=200):
         """
         Simulates firing rates from a neural population by randomly sampling
@@ -303,7 +319,8 @@ class NeuroPop(object):
         Parameters
         ----------
         n_samples, int, number of samples required
-        winsize, float, time interval in which to simulate spike counts, milliseconds
+        winsize, float, time interval in which to simulate spike counts,
+            milliseconds
         Outputs
         -------
         x: float, n_samples x 1, feature of interest
@@ -344,11 +361,14 @@ class NeuroPop(object):
         # Calculate firing rates under the desired model
         Y = np.zeros([n_samples, self.n_neurons])
         for n in range(0, self.n_neurons):
-            # Compute the spike count under the tuning model for given window size
-            lam = 1e-3 * winsize * self._tunefun(x, k0[n], k1[n], k2[n], g[n], b[n])
+            # Compute the spike count under the tuning model for given window
+            # size
+            lam = 1e-3 * winsize * self._tunefun(x, k0[n], k1[n], k2[n], g[n],
+                                                 b[n])
 
-            # Sample Poisson distributed spike counts and convert back to firing rate
-            Y[:, n] = 1e3/ winsize * np.random.poisson(lam)
+            # Sample Poisson distributed spike counts and convert back to
+            # firing rate
+            Y[:, n] = 1e3 / winsize * np.random.poisson(lam)
 
         return x, Y, mu, k0, k, g, b
 
@@ -371,10 +391,11 @@ class NeuroPop(object):
         # For each neuron
         for n in range(0, self.n_neurons):
             # Compute the firing rate under the von Mises model
-            Y[:, n] = self._tunefun(x, self.k0_[n], self.k1_[n], self.k2_[n], self.g_[n], self.b_[n])
+            Y[:, n] = self._tunefun(x, self.k0_[n], self.k1_[n], self.k2_[n],
+                                    self.g_[n], self.b_[n])
         return Y
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def fit(self, x, Y):
         """
         Estimate the parameters of the tuning curve under the
@@ -400,11 +421,13 @@ class NeuroPop(object):
             # Collect parameters for each repeat
             fit_params = list()
 
-            # Repeat several times over random initializations (global optimization)
+            # Repeat several times over random initializations
+            # (global optimization)
             for repeat in range(0, n_repeats):
                 self.set_params(self.tunemodel, n)
                 fit_params.append({'k0': self.k0_[n], 'k1': self.k1_[n],
-                'k2': self.k2_[n], 'g': self.g_[n], 'b': self.b_[n], 'loss': 0.0})
+                                   'k2': self.k2_[n], 'g': self.g_[n],
+                                   'b': self.b_[n], 'loss': 0.0})
 
                 # Collect loss and delta loss for each iteration
                 L, DL = list(), list()
@@ -416,29 +439,34 @@ class NeuroPop(object):
 
                     # Compute gradients
                     grad_k0_, grad_k1_, grad_k2_, grad_g_, grad_b_ = \
-                    self._grad_theta_loss(self.tunemodel, x, Y[:,n],
-                                    fit_params[repeat]['k0'],
-                                    fit_params[repeat]['k1'],
-                                    fit_params[repeat]['k2'],
-                                    fit_params[repeat]['g'],
-                                    fit_params[repeat]['b'])
+                        self._grad_theta_loss(self.tunemodel, x, Y[:, n],
+                                              fit_params[repeat]['k0'],
+                                              fit_params[repeat]['k1'],
+                                              fit_params[repeat]['k2'],
+                                              fit_params[repeat]['g'],
+                                              fit_params[repeat]['b'])
 
                     # Update parameters
-                    fit_params[repeat]['k1'] = fit_params[repeat]['k1'] - learning_rate*grad_k1_
-                    fit_params[repeat]['k2'] = fit_params[repeat]['k2'] - learning_rate*grad_k2_
+                    fit_params[repeat]['k1'] =\
+                        fit_params[repeat]['k1'] - learning_rate*grad_k1_
+                    fit_params[repeat]['k2'] =\
+                        fit_params[repeat]['k2'] - learning_rate*grad_k2_
 
                     if self.tunemodel == 'glm':
-                        fit_params[repeat]['k0'] = fit_params[repeat]['k0'] - learning_rate*grad_k0_
+                        fit_params[repeat]['k0'] =\
+                            fit_params[repeat]['k0'] - learning_rate*grad_k0_
                     if self.tunemodel == 'gvm':
-                        fit_params[repeat]['g'] = fit_params[repeat]['g'] - learning_rate*grad_g_
-                        fit_params[repeat]['b'] = fit_params[repeat]['b'] - learning_rate*grad_b_
+                        fit_params[repeat]['g'] =\
+                            fit_params[repeat]['g'] - learning_rate*grad_g_
+                        fit_params[repeat]['b'] =\
+                            fit_params[repeat]['b'] - learning_rate*grad_b_
 
                     # Update loss
-                    L.append(self._loss(x, Y[:,n],\
-                                        fit_params[repeat]['k0'],\
+                    L.append(self._loss(x, Y[:, n],
+                                        fit_params[repeat]['k0'],
                                         fit_params[repeat]['k1'],
-                                        fit_params[repeat]['k2'],\
-                                        fit_params[repeat]['g'],\
+                                        fit_params[repeat]['k2'],
+                                        fit_params[repeat]['g'],
                                         fit_params[repeat]['b']))
 
                     # Update delta loss and check for convergence
@@ -449,13 +477,13 @@ class NeuroPop(object):
 
                     # Back out gain from k1 and k2
                     fit_params[repeat]['k'] = np.sqrt(
-                            fit_params[repeat]['k1'] ** 2 + \
-                            fit_params[repeat]['k2'] ** 2)
+                        fit_params[repeat]['k1'] ** 2 +
+                        fit_params[repeat]['k2'] ** 2)
 
                     # Back out preferred feature (mu) from k1 and k2
                     fit_params[repeat]['mu'] = \
                         np.arctan2(fit_params[repeat]['k2'],
-                                    fit_params[repeat]['k1'])
+                                   fit_params[repeat]['k1'])
 
                     # Check for convergence
                     if converged is True:
@@ -463,8 +491,8 @@ class NeuroPop(object):
 
                 # Store the converged loss function
                 msg = '\tConverged. Loss function: {0:.2f}'.format(L[-1])
-                #logger.info(msg)
-                #logger.info('\tdL/L: {0:.6f}\n'.format(DL[-1] / L[-1]))
+                # logger.info(msg)
+                # logger.info('\tdL/L: {0:.6f}\n'.format(DL[-1] / L[-1]))
                 if self.verbose is True:
                     print(msg)
                 fit_params[repeat]['loss'] = L[-1]
@@ -479,7 +507,7 @@ class NeuroPop(object):
             self.g_[n] = fit_params[amin]['g']
             self.b_[n] = fit_params[amin]['b']
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def decode(self, Y):
         """
         Given population activity estimate the feature that generated it
@@ -512,25 +540,27 @@ class NeuroPop(object):
             for t in range(0, maxiter):
 
                 # Compute gradients
-                grad_x_ = self._grad_x_loss(x[s], Y[s,:],
-                         self.k0_, self.k1_, self.k2_, self.g_, self.b_)
+                grad_x_ = self._grad_x_loss(x[s], Y[s, :],
+                                            self.k0_, self.k1_, self.k2_,
+                                            self.g_, self.b_)
 
                 # Update parameters
                 x[s] = x[s] - learning_rate*grad_x_
 
                 # Update loss
-                L.append(self._loss(x[s], Y[s,:],
-                         self.k0_, self.k1_, self.k2_, self.g_, self.b_))
+                L.append(self._loss(x[s], Y[s, :],
+                                    self.k0_, self.k1_, self.k2_, self.g_,
+                                    self.b_))
 
                 # Update delta loss and check for convergence
                 if t > 1:
                     DL.append(L[-1] - L[-2])
                     if np.abs(DL[-1] / L[-1]) < convergence_threshold:
-                        msg = '\t Converged. Loss function: {0:.2f}'.format(L[-1])
-                        #logger.info(msg)
-                        #logger.info('\tdL/L: {0:.6f}\n'.format(DL[-1] / L[-1]))
-                        if self.verbose == True:
-                        #if True:
+                        msg = '\t Converged. Loss function: {0:.2f}'.format(
+                            L[-1])
+                        # logger.info(msg)
+                        if self.verbose is True:
+                            # if True:
                             print(msg)
                         break
 
@@ -538,7 +568,8 @@ class NeuroPop(object):
         x = np.arctan2(np.sin(x), np.cos(x))
 
         return x
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
+
     def display(self, x, Y, neuron, colors=['k', 'c'], alpha=0.5, ylim=[0, 25],
                 xlabel='direction [radians]', ylabel='firing rate [spk/s]',
                 style='../mpl_styles/spykes.mplstyle',
@@ -551,7 +582,7 @@ class NeuroPop(object):
         x: float, n_samples x 1, feature of interest
         Y: float, n_samples x 1, firing rates
         neuron: int, which neuron's fit to plot from the population?
-        colors: list of str, plot strings that specify color for raw data and fit
+        colors: list of str, plot strings that specify color for raw data & fit
         alpha: float, transparency for raw data
         ylim: list of float, y axis limits
         xlabel: str, x label (typically name of the feature)
@@ -578,11 +609,11 @@ class NeuroPop(object):
 
         x_range = np.arange(-np.pi, np.pi, np.pi/32)
         Yhat_range = self._tunefun(x_range,
-                                    self.k0_[neuron],
-                                    self.k1_[neuron],
-                                    self.k2_[neuron],
-                                    self.g_[neuron],
-                                    self.b_[neuron])
+                                   self.k0_[neuron],
+                                   self.k1_[neuron],
+                                   self.k2_[neuron],
+                                   self.g_[neuron],
+                                   self.b_[neuron])
 
         plt.plot(x_range, Yhat_range, '-', linewidth=4, color=colors[1])
         plt.ylim(ylim)
@@ -595,7 +626,7 @@ class NeuroPop(object):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    #-----------------------------------------------------------------------
+    # -----------------------------------------------------------------------
     def score(self, Y, Yhat, Ynull=None, method='circ_corr'):
         """Score the model.
         Parameters
@@ -605,14 +636,16 @@ class NeuroPop(object):
         Yhat : array, shape (n_samples, [n_neurons])
             The estimated firing rates.
         Ynull : None | array, shape (n_samples, [n_classes])
-            The labels for the null model. Must be None if method is not 'pseudo_R2'
+            The labels for the null model. Must be None if method is not
+            'pseudo_R2'
         method : str
             One of 'pseudo_R2' or 'circ_corr' or 'cosine_dist'
         """
 
         if method == 'pseudo_R2':
             if(len(Y.shape) > 1):
-                # There are many neurons, so calculate and return the score for each neuron
+                # There are many neurons, so calculate and return the score for
+                # each neuron
                 score = list()
                 for neuron in range(Y.shape[1]):
                     L1 = utils.log_likelihood(Y[:, neuron], Yhat[:, neuron])

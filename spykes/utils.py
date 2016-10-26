@@ -4,6 +4,7 @@ A few miscellaneous helper functions for spykes
 import numpy as np
 from scipy import stats
 
+
 def slow_exp_python(z, eta):
     """
     A slowly rising exponential
@@ -22,6 +23,7 @@ def slow_exp_python(z, eta):
     qu[z > eta] = z[z > eta] * slope + intercept
     qu[z <= eta] = np.exp(z[z <= eta])
     return qu
+
 
 def grad_slow_exp_python(z, eta):
     """
@@ -42,22 +44,25 @@ def grad_slow_exp_python(z, eta):
     dqu_dz[z <= eta] = np.exp(z[z <= eta])
     return dqu_dz
 
+
 def log_likelihood(y, yhat):
     """Helper to compute the log likelihood."""
     eps = np.spacing(1)
     return np.nansum(y * np.log(eps + yhat) - yhat)
+
 
 def circ_corr(alpha1, alpha2):
     """Helper to compute the circular correlation."""
     alpha1_bar = stats.circmean(alpha1)
     alpha2_bar = stats.circmean(alpha2)
     num = np.sum(np.sin(alpha1 - alpha1_bar) * np.sin(alpha2 - alpha2_bar))
-    den = np.sqrt(np.sum(np.sin(alpha1 - alpha1_bar) ** 2) * np.sum(np.sin(alpha2 - alpha2_bar) ** 2))
+    den = np.sqrt(np.sum(np.sin(alpha1 - alpha1_bar) ** 2)
+                  * np.sum(np.sin(alpha2 - alpha2_bar) ** 2))
     rho = num / den
     return rho
 
-def get_sort_indices(data, sortby=None, sortorder='descend'):
 
+def get_sort_indices(data, sortby=None, sortorder='descend'):
     """
     Helper function to calculate sorting indices given sorting condition
 
@@ -85,7 +90,7 @@ def get_sort_indices(data, sortby=None, sortorder='descend'):
 
     if isinstance(sortby, list):
 
-        if np.array_equal(np.sort(sortby), range(data.shape[0])): 
+        if np.array_equal(np.sort(sortby), range(data.shape[0])):
             # make sure it's a permutation
             return sortby
 
@@ -108,4 +113,3 @@ def get_sort_indices(data, sortby=None, sortorder='descend'):
             return sort_idx
         else:
             return sort_idx[::-1]
-
