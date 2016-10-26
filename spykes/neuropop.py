@@ -255,27 +255,26 @@ class NeuroPop(object):
         lmb = self._tunefun(x, k0, k1, k2, g, b)
 
         n_samples = np.float(x.shape[0])
-        grad_k1 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) +
-                                                          k2 * np.sin(x),
-                                                          self.eta) *
-                                        np.cos(x) * (1 - y/lmb))
-        grad_k2 = 1./n_samples * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) +
-                                                          k2 * np.sin(x),
-                                                          self.eta) *
-                                        np.sin(x) * (1 - y/lmb))
+        grad_k1 = 1. / n_samples * np.sum(g * grad_slow_exp(k0 + k1 *
+                                          np.cos(x) + k2 * np.sin(x),
+                                          self.eta) * np.cos(x) * (
+                                          1 - y / lmb))
+        grad_k2 = 1. / n_samples * np.sum(g * grad_slow_exp(k0 + k1 *
+                                          np.cos(x) + k2 * np.sin(x),
+                                          self.eta) * np.sin(x) *
+                                          (1 - y / lmb))
         if tunemodel == 'glm':
-            grad_k0 = 1./n_samples * np.sum(grad_slow_exp(k0 + k1 * np.cos(x) +
-                                                          k2 * np.sin(x),
-                                                          self.eta) *
-                                            (1 - y/lmb))
+            grad_k0 = 1. / n_samples * np.sum(grad_slow_exp(k0 + k1 *
+                                              np.cos(x) + k2 * np.sin(x),
+                                              self.eta) * (1 - y / lmb))
             grad_g = 0.0
             grad_b = 0.0
         elif tunemodel == 'gvm':
             grad_k0 = 0.0
-            grad_g = 1./n_samples *\
+            grad_g = 1. / n_samples *\
                 np.sum(slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x),
-                                self.eta) * (1 - y/lmb))
-            grad_b = 1./n_samples * np.sum((1-y/lmb))
+                                self.eta) * (1 - y / lmb))
+            grad_b = 1. / n_samples * np.sum((1 - y / lmb))
 
         return grad_k0, grad_k1, grad_k2, grad_g, grad_b
 
@@ -302,11 +301,12 @@ class NeuroPop(object):
         n_neurons = np.float(self.n_neurons)
 
         lmb = self._tunefun(x, k0, k1, k2, g, b)
-        grad_x = 1./n_neurons * np.sum(g * grad_slow_exp(k0 + k1 * np.cos(x) +
-                                                         k2 * np.sin(x),
-                                                         self.eta) *
-                                       (k2 * np.cos(x) - k1 * np.sin(x)) *
-                                       (1 - y/lmb))
+        grad_x = 1. / n_neurons * np.sum(g * grad_slow_exp(k0 + k1 *
+                                                           np.cos(x) + k2 *
+                                                           np.sin(x),
+                                                           self.eta) *
+                                         (k2 * np.cos(x) - k1 * np.sin(x)) *
+                                         (1 - y / lmb))
         return grad_x
 
     # -----------------------------------------------------------------------
@@ -448,18 +448,18 @@ class NeuroPop(object):
 
                     # Update parameters
                     fit_params[repeat]['k1'] =\
-                        fit_params[repeat]['k1'] - learning_rate*grad_k1_
+                        fit_params[repeat]['k1'] - learning_rate * grad_k1_
                     fit_params[repeat]['k2'] =\
-                        fit_params[repeat]['k2'] - learning_rate*grad_k2_
+                        fit_params[repeat]['k2'] - learning_rate * grad_k2_
 
                     if self.tunemodel == 'glm':
                         fit_params[repeat]['k0'] =\
-                            fit_params[repeat]['k0'] - learning_rate*grad_k0_
+                            fit_params[repeat]['k0'] - learning_rate * grad_k0_
                     if self.tunemodel == 'gvm':
                         fit_params[repeat]['g'] =\
-                            fit_params[repeat]['g'] - learning_rate*grad_g_
+                            fit_params[repeat]['g'] - learning_rate * grad_g_
                         fit_params[repeat]['b'] =\
-                            fit_params[repeat]['b'] - learning_rate*grad_b_
+                            fit_params[repeat]['b'] - learning_rate * grad_b_
 
                     # Update loss
                     L.append(self._loss(x, Y[:, n],
@@ -528,7 +528,7 @@ class NeuroPop(object):
         convergence_threshold = self.convergence_threshold
 
         # Initialize feature
-        x = np.pi*(2.0*np.random.rand(n_samples) - 1.0)
+        x = np.pi * (2.0 * np.random.rand(n_samples) - 1.0)
 
         # For each sample
         for s in range(0, n_samples):
@@ -545,7 +545,7 @@ class NeuroPop(object):
                                             self.g_, self.b_)
 
                 # Update parameters
-                x[s] = x[s] - learning_rate*grad_x_
+                x[s] = x[s] - learning_rate * grad_x_
 
                 # Update loss
                 L.append(self._loss(x[s], Y[s, :],
@@ -595,19 +595,19 @@ class NeuroPop(object):
         plt.style.use(style)
 
         if xjitter is True:
-            x_jitter = np.pi/32*np.random.randn(x.shape)
+            x_jitter = np.pi / 32 * np.random.randn(x.shape)
         else:
             x_jitter = np.zeros(x.shape)
 
         if yjitter is True:
             y_range = np.max(Y) - np.min(Y)
-            Y_jitter = y_range/20.0*np.random.randn(Y.shape)
+            Y_jitter = y_range / 20.0 * np.random.randn(Y.shape)
         else:
             Y_jitter = np.zeros(Y.shape)
 
         plt.plot(x + x_jitter, Y + Y_jitter, '.', color=colors[0], alpha=alpha)
 
-        x_range = np.arange(-np.pi, np.pi, np.pi/32)
+        x_range = np.arange(-np.pi, np.pi, np.pi / 32)
         Yhat_range = self._tunefun(x_range,
                                    self.k0_[neuron],
                                    self.k1_[neuron],
@@ -662,6 +662,6 @@ class NeuroPop(object):
             score = utils.circ_corr(np.squeeze(Y), np.squeeze(Yhat))
 
         elif method == 'cosine_dist':
-            score = np.mean(np.cos(np.squeeze(Y)-np.squeeze(Yhat)))
+            score = np.mean(np.cos(np.squeeze(Y) - np.squeeze(Yhat)))
 
         return score

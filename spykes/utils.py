@@ -56,8 +56,8 @@ def circ_corr(alpha1, alpha2):
     alpha1_bar = stats.circmean(alpha1)
     alpha2_bar = stats.circmean(alpha2)
     num = np.sum(np.sin(alpha1 - alpha1_bar) * np.sin(alpha2 - alpha2_bar))
-    den = np.sqrt(np.sum(np.sin(alpha1 - alpha1_bar) ** 2)
-                  * np.sum(np.sin(alpha2 - alpha2_bar) ** 2))
+    den = np.sqrt(np.sum(np.sin(alpha1 - alpha1_bar) ** 2) *
+                  np.sum(np.sin(alpha2 - alpha2_bar) ** 2))
     rho = num / den
     return rho
 

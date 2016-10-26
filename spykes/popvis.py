@@ -192,27 +192,28 @@ class PopVis(object):
 
             data = normed_data[sort_idx, :]
 
-            plt.subplot(len(keys), 1, i+1)
+            plt.subplot(len(keys), 1, i + 1)
             plt.pcolormesh(data, cmap=colors[i % len(colors)])
 
             # making it visually appealing
 
             xtic_len = gcd(abs(window[0]), window[1])
-            xtic_labels = range(window[0], window[1]+xtic_len, xtic_len)
-            xtic_locs = [(j-window[0])/binsize - 0.5 for j in xtic_labels]
+            xtic_labels = range(window[0], window[1] + xtic_len, xtic_len)
+            xtic_locs = [(j - window[0]) / binsize - 0.5 for j in xtic_labels]
 
             if 0 not in xtic_labels:
                 xtic_labels.append(0)
-                xtic_locs.append(-window[0]/binsize - 0.5)
+                xtic_locs.append(-window[0] / binsize - 0.5)
 
             plt.xticks(xtic_locs, xtic_labels)
 
-            plt.axvline((-window[0])/binsize-0.5, color='r', linestyle='--')
+            plt.axvline((-window[0]) / binsize - 0.5, color='r',
+                        linestyle='--')
 
             unsorted_ylabels = [neuron.name for neuron in self.neuron_list]
             ylabels = [unsorted_ylabels[j] for j in sort_idx]
 
-            plt.yticks(np.arange(data.shape[0])+0.5, ylabels)
+            plt.yticks(np.arange(data.shape[0]) + 0.5, ylabels)
 
             ax = plt.gca()
             ax.invert_yaxis()

@@ -37,9 +37,9 @@ class NeuroVis(object):
         """
         self.name = name
         self.spiketimes = np.squeeze(np.sort(spiketimes))
-        n_seconds = (self.spiketimes[-1]-self.spiketimes[0])
+        n_seconds = (self.spiketimes[-1] - self.spiketimes[0])
         n_spikes = np.size(spiketimes)
-        self.firingrate = (n_spikes/n_seconds)
+        self.firingrate = (n_spikes / n_seconds)
 
     # -----------------------------------------------------------------------
     def get_raster(self, event=None, conditions=None, df=None,
@@ -93,8 +93,8 @@ class NeuroVis(object):
         if not type(df) is dict:
             df = df.reset_index()
 
-        window = [np.floor(window[0]/binsize)*binsize,
-                  np.ceil(window[1]/binsize)*binsize]
+        window = [np.floor(window[0] / binsize) * binsize,
+                  np.ceil(window[1] / binsize) * binsize]
 
         # Get a set of binary indicators for trials of interest
         if conditions:
@@ -123,15 +123,15 @@ class NeuroVis(object):
             raster = []
 
             bin_template = 1e-3 * \
-                np.arange(window[0], window[1]+binsize, binsize)
+                np.arange(window[0], window[1] + binsize, binsize)
             for event_time in selected_events:
                 bins = event_time + bin_template
 
                 # consider only spikes within window
                 searchsorted_idx = np.searchsorted(self.spiketimes,
-                                                   [event_time+1e-3 *
+                                                   [event_time + 1e-3 *
                                                     window[0],
-                                                    event_time+1e-3 *
+                                                    event_time + 1e-3 *
                                                     window[1]])
 
                 # bin the spikes into time bins
@@ -191,8 +191,8 @@ class NeuroVis(object):
 
         xtics = [window[0], 0, window[1]]
         xtics = [str(i) for i in xtics]
-        xtics_loc = [0-0.5, (-window[0])/binsize-0.5,
-                     (window[1]-window[0])/binsize-0.5]
+        xtics_loc = [-0.5, (-window[0]) / binsize - 0.5,
+                     (window[1] - window[0]) / binsize - 0.5]
 
         if cond_id is None:
             for cond in rasters['data'].keys():
@@ -213,7 +213,7 @@ class NeuroVis(object):
                            interpolation='none', cmap=plt.get_cmap(cmap))
 
                 plt.axvline(
-                    (-window[0])/binsize-0.5, color='r', linestyle='--')
+                    (-window[0]) / binsize - 0.5, color='r', linestyle='--')
                 plt.ylabel('trials')
                 plt.xlabel('time [ms]')
                 plt.xticks(xtics_loc, xtics)
@@ -292,8 +292,8 @@ class NeuroVis(object):
             condition
         """
 
-        window = [np.floor(window[0]/binsize)*binsize,
-                  np.ceil(window[1]/binsize)*binsize]
+        window = [np.floor(window[0] / binsize) * binsize,
+                  np.ceil(window[1] / binsize) * binsize]
         # Get all the rasters first
         rasters = self.get_raster(event=event, df=df,
                                   conditions=conditions,
@@ -313,10 +313,10 @@ class NeuroVis(object):
 
             psth['data'][cond_id] = dict()
             raster = rasters['data'][cond_id]
-            mean_psth = np.mean(raster, axis=0)/(1e-3*binsize)
-            std_psth = np.sqrt(np.var(raster, axis=0))/(1e-3*binsize)
+            mean_psth = np.mean(raster, axis=0) / (1e-3 * binsize)
+            std_psth = np.sqrt(np.var(raster, axis=0)) / (1e-3 * binsize)
 
-            sem_psth = std_psth/np.sqrt(float(np.shape(raster)[0]))
+            sem_psth = std_psth / np.sqrt(float(np.shape(raster)[0]))
 
             psth['data'][cond_id]['mean'] = mean_psth
             psth['data'][cond_id]['sem'] = sem_psth
@@ -359,16 +359,16 @@ class NeuroVis(object):
         conditions = psth['conditions']
 
         scale = 0.1
-        y_min = (1.0-scale)*np.nanmin([np.min(
+        y_min = (1.0 - scale) * np.nanmin([np.min(
             psth['data'][psth_idx]['mean'])
             for psth_idx in psth['data']])
-        y_max = (1.0+scale)*np.nanmax([np.max(
+        y_max = (1.0 + scale) * np.nanmax([np.max(
             psth['data'][psth_idx]['mean'])
             for psth_idx in psth['data']])
 
         legend = [event_name]
 
-        time_bins = np.arange(window[0], window[1], binsize) + binsize/2.0
+        time_bins = np.arange(window[0], window[1], binsize) + binsize / 2.0
 
         if ylim:
             plt.plot([0, 0], ylim, color='k', ls='--')
@@ -444,8 +444,9 @@ class NeuroVis(object):
         spikecounts = np.zeros(events.shape)
 
         for i, eve in enumerate(events):
-            spikecounts[i] = np.sum(np.all((spiketimes >= eve + 1e-3*window[0],
+            spikecounts[i] = np.sum(np.all((spiketimes >= eve +
+                                            1e-3 * window[0],
                                             spiketimes <= eve +
-                                            1e-3*window[1]),
+                                            1e-3 * window[1]),
                                            axis=0))
         return spikecounts
