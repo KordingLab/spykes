@@ -5,7 +5,7 @@ import copy
 
 from fractions import gcd
 
-from . import NeuroVis
+from spykes.Neurovis import NeuroVis
 from . import utils
 
 plt.style.use(
