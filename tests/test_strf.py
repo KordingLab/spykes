@@ -1,8 +1,10 @@
 from spykes.strf import STRF
-from nose.tools import assert_true, assert_equal, assert_raises
+from nose.tools import assert_equal
+from mock import patch
 import numpy as np
 
-def test_strf():
+@patch('matplotlib.pyplot.show')
+def test_strf(mock_show):
 
     n_spatial_basis = 36
     n_temporal_basis = 7
@@ -18,7 +20,7 @@ def test_strf():
     assert_equal(len(spatial_basis), n_spatial_basis)
 
     # Visualize spatial basis
-    strf_.visualize_gaussian_basis(spatial_basis)
+    #strf_.visualize_gaussian_basis(spatial_basis)
 
     # Design temporal basis
     time_points = np.linspace(-100., 100., 10.)
@@ -28,8 +30,9 @@ def test_strf():
                         time_points=time_points,
                         centers=centers,
                         widths=width * np.ones(7))
-    assert_equal(temporal_basis.shape[0], n_temporal_basis)
-    assert_equal(temporal_basis.shape[1], len(time_points))
+    assert_equal(temporal_basis.shape[0], len(time_points))
+    assert_equal(temporal_basis.shape[1], n_temporal_basis)
+
 
     # Project to spatial basis
     I = np.zeros(shape=(patch_size, patch_size))
