@@ -5,7 +5,7 @@ import numpy as np
 from scipy import stats
 
 
-def slow_exp_python(z, eta):
+def slow_exp(z, eta):
     """
     A slowly rising exponential
     that linearizes above threshold parameter eta
@@ -25,7 +25,7 @@ def slow_exp_python(z, eta):
     return qu
 
 
-def grad_slow_exp_python(z, eta):
+def grad_slow_exp(z, eta):
     """
     Gradient of a slowly rising exponential
     that linearizes above threshold parameter eta

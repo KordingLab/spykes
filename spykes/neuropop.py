@@ -2,17 +2,13 @@ import os
 import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
-from . import utils
-from numba.decorators import autojit
+from utils import slow_exp, grad_slow_exp, log_likelihood, circ_corr
 
 plt.style.use(
     os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
         '../mpl_styles/spykes.mplstyle')
 )
-
-slow_exp = autojit(utils.slow_exp_python)
-grad_slow_exp = autojit(utils.grad_slow_exp_python)
 
 
 class NeuroPop(object):
@@ -648,18 +644,18 @@ class NeuroPop(object):
                 # each neuron
                 score = list()
                 for neuron in range(Y.shape[1]):
-                    L1 = utils.log_likelihood(Y[:, neuron], Yhat[:, neuron])
-                    LS = utils.log_likelihood(Y[:, neuron], Y[:, neuron])
-                    L0 = utils.log_likelihood(Y[:, neuron], Ynull[neuron])
+                    L1 = log_likelihood(Y[:, neuron], Yhat[:, neuron])
+                    LS = log_likelihood(Y[:, neuron], Y[:, neuron])
+                    L0 = log_likelihood(Y[:, neuron], Ynull[neuron])
                     score.append(1 - (LS - L1) / (LS - L0))
             else:
-                L1 = utils.log_likelihood(Y, Yhat)
-                LS = utils.log_likelihood(Y, Y)
-                L0 = utils.log_likelihood(Y, Ynull)
+                L1 = log_likelihood(Y, Yhat)
+                LS = log_likelihood(Y, Y)
+                L0 = log_likelihood(Y, Ynull)
                 score = 1 - (LS - L1) / (LS - L0)
 
         elif method == 'circ_corr':
-            score = utils.circ_corr(np.squeeze(Y), np.squeeze(Yhat))
+            score = circ_corr(np.squeeze(Y), np.squeeze(Yhat))
 
         elif method == 'cosine_dist':
             score = np.mean(np.cos(np.squeeze(Y) - np.squeeze(Yhat)))
