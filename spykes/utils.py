@@ -4,7 +4,7 @@ A few miscellaneous helper functions for spykes
 import numpy as np
 from scipy import stats
 
-def slow_exp_python(z, eta):
+def slow_exp(z, eta):
     """
     A slowly rising exponential
     that linearizes above threshold parameter eta
@@ -23,7 +23,7 @@ def slow_exp_python(z, eta):
     qu[z <= eta] = np.exp(z[z <= eta])
     return qu
 
-def grad_slow_exp_python(z, eta):
+def grad_slow_exp(z, eta):
     """
     Gradient of a slowly rising exponential
     that linearizes above threshold parameter eta
@@ -85,7 +85,7 @@ def get_sort_indices(data, sortby=None, sortorder='descend'):
 
     if isinstance(sortby, list):
 
-        if np.array_equal(np.sort(sortby), range(data.shape[0])): 
+        if np.array_equal(np.sort(sortby), range(data.shape[0])):
             # make sure it's a permutation
             return sortby
 
@@ -108,4 +108,3 @@ def get_sort_indices(data, sortby=None, sortorder='descend'):
             return sort_idx
         else:
             return sort_idx[::-1]
-

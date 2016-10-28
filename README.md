@@ -60,12 +60,6 @@ Already distributed with [Anaconda](https://www.continuum.io/downloads) and [Can
 - ```SciPy``` >= 0.14
 - ```Matplotlib``` >= 1.5
 
-We also use ```Numba``` to optimize certain functions. We recommend the latest stable version (>= 0.26.0).
-
-```bash
-$ pip install numba
-```
-
 ### Datasets
 
 The example notebooks use two real datasets. Instructions for downloading these datasets are included in the notebooks. We recommend [deepdish](https://github.com/uchicago-cs/deepdish) for reading the HDF5 datafile.
