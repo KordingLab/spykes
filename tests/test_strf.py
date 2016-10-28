@@ -19,9 +19,6 @@ def test_strf(mock_show):
     spatial_basis = strf_.make_gaussian_basis()
     assert_equal(len(spatial_basis), n_spatial_basis)
 
-    # Visualize spatial basis
-    #strf_.visualize_gaussian_basis(spatial_basis)
-
     # Design temporal basis
     time_points = np.linspace(-100., 100., 10.)
     centers = [-75., -50., -25., 0, 25., 50., 75.]
