@@ -1,0 +1,494 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Neural Coding Reward Example &mdash; spykes 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="spykes 0.1 documentation" href="index.html" />
+    <link rel="up" title="Examples" href="examples.html" />
+    <link rel="next" title="PopVis Example" href="popvis_example.html" />
+    <link rel="prev" title="Reaching Dataset Example" href="reaching_dataset_example.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="neural-coding-reward-example">
+<h1>Neural Coding Reward Example<a class="headerlink" href="#neural-coding-reward-example" title="Permalink to this headline">¶</a></h1>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="o">%</span><span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-ticks&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">spykes.neurovis</span> <span class="k">import</span> <span class="n">NeuroVis</span>
+</pre></div>
+</div>
+<div class="section" id="reproduce-figure">
+<h2>0 Reproduce Figure<a class="headerlink" href="#reproduce-figure" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="article">
+<h3>0.1 Article<a class="headerlink" href="#article" title="Permalink to this headline">¶</a></h3>
+<p>Ramkumar, Pavan, et al. &#8220;Premotor and Motor Cortices Encode Reward.&#8221;
+PloS one 11.8 (2016): e0160851. [<a class="reference external" href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0160851">link to
+paper</a>]</p>
+</div>
+<div class="section" id="figure">
+<h3>0.2 Figure<a class="headerlink" href="#figure" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="k">import</span> <span class="n">HTML</span>
+
+<span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s2">&quot;./figures/journal.pone.0160851.g002.PNG&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">650</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/neural_coding_reward_example_4_0.png" src="_images/neural_coding_reward_example_4_0.png" />
+</div>
+</div>
+<div class="section" id="initialization">
+<h2>1 Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download-data">
+<h3>0.1 Download Data<a class="headerlink" href="#download-data" title="Permalink to this headline">¶</a></h3>
+<p>Download all files [<a class="reference external" href="https://figshare.com/articles/Ramkumar_et_al_2016_Premotor_and_motor_cortices_encode_reward/3573447">here</a>]. However, we&#8217;ll only be looking at Mihili_07112013.mat (Monkey M, Session 1) and Mihili_08062013.mat (Monkey M, Session 4)</p>
+</div>
+<div class="section" id="initialize-variables">
+<h3>0.2 Initialize Variables<a class="headerlink" href="#initialize-variables" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">event</span> <span class="o">=</span> <span class="s1">&#39;rewardTime&#39;</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="s1">&#39;rewardBool&#39;</span>
+<span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]</span>
+<span class="n">binsize</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="first-graph-of-panel-a">
+<h2>1. First Graph of Panel A<a class="headerlink" href="#first-graph-of-panel-a" title="Permalink to this headline">¶</a></h2>
+<p>(The other graphs in A &amp; B are done the same way, just a different neuron number or switching PMd for M1)</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.io</span>
+<span class="n">mat</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;3573447/Mihili_08062013.mat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="initiate-all-neurons">
+<h3>1.1. Initiate all Neurons<a class="headerlink" href="#initiate-all-neurons" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_spike_time</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">neuron_number</span><span class="p">):</span>
+
+    <span class="n">spike_times</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;PMd_units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:][</span><span class="n">neuron_number</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">spike_times</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spike_times</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">spike_times</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">initiate_neurons</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+
+    <span class="n">neuron_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;PMd_units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:])</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">spike_times</span> <span class="o">=</span> <span class="n">get_spike_time</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># instantiate neuron</span>
+        <span class="n">neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;PMd </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">neuron_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">neuron_list</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">neuron_list</span> <span class="o">=</span> <span class="n">initiate_neurons</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-event-times">
+<h3>1.2. Get Event Times<a class="headerlink" href="#get-event-times" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_data_frame</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+
+    <span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="n">uncertainty_conditions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">center_target_times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">reward_times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">reward_outcomes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+
+        <span class="n">meta_data</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;tt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">uncertainty_conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">center_target_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">reward_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">6</span><span class="p">])</span>
+        <span class="n">reward_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">7</span><span class="p">])</span>
+
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">uncertainty_conditions</span><span class="p">)</span>
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;centerTargetTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">center_target_times</span><span class="p">)</span>
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">reward_times</span><span class="p">)</span>
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardOutcome&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">reward_outcomes</span><span class="p">)</span>
+
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardBool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardOutcome&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">32</span><span class="p">)</span>
+
+    <span class="c1"># find time in between previous reward onset and start of current trial</span>
+    <span class="c1"># shouldn&#39;t be more than 1500ms</span>
+
+    <span class="n">start_times</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;centerTargetTime&#39;</span><span class="p">]</span>
+    <span class="n">last_reward_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">diffs</span> <span class="o">=</span> <span class="n">start_times</span> <span class="o">-</span> <span class="n">last_reward_times</span>
+    <span class="n">diffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;consecutiveBool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">diffs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data_df</span><span class="p">[((</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">50.0</span><span class="p">))</span>
+                  <span class="o">&amp;</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;consecutiveBool&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">create_data_frame</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+<span class="n">data_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>uncertaintyCondition</th>
+      <th>centerTargetTime</th>
+      <th>rewardTime</th>
+      <th>rewardOutcome</th>
+      <th>rewardBool</th>
+      <th>consecutiveBool</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>280</th>
+      <td>5.0</td>
+      <td>1481.082633</td>
+      <td>1483.947</td>
+      <td>34.0</td>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>284</th>
+      <td>5.0</td>
+      <td>1509.540300</td>
+      <td>1511.946</td>
+      <td>34.0</td>
+      <td>False</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>285</th>
+      <td>5.0</td>
+      <td>1513.181333</td>
+      <td>1515.847</td>
+      <td>32.0</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>286</th>
+      <td>5.0</td>
+      <td>1516.982767</td>
+      <td>1519.256</td>
+      <td>32.0</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+    <tr>
+      <th>287</th>
+      <td>50.0</td>
+      <td>1520.391233</td>
+      <td>1523.123</td>
+      <td>32.0</td>
+      <td>True</td>
+      <td>True</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+<div class="section" id="match-peak-velocities">
+<h3>1.3. Match Peak Velocities<a class="headerlink" href="#match-peak-velocities" title="Permalink to this headline">¶</a></h3>
+<p>(Peak velocities must be in between 11 and 16 cm/s)</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">find_velocities_in_range</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">,</span> <span class="n">min_vel</span><span class="p">,</span> <span class="n">max_vel</span><span class="p">,</span> <span class="n">min_time</span><span class="p">,</span> <span class="n">max_time</span><span class="p">):</span>
+
+    <span class="n">all_velocities</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;kin&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;vel&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">max_velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataframe</span><span class="p">))</span>
+    <span class="n">peak_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataframe</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dataframe</span><span class="p">)):</span>
+
+        <span class="c1"># find time range for potential peak velocity</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="o">.</span><span class="mi">2</span>
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mf">1.5</span>
+
+        <span class="c1"># find velocities in the time range</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">(</span><span class="n">all_velocities</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">start_time</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">all_velocities</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">end_time</span><span class="p">)</span>
+        <span class="n">in_time</span> <span class="o">=</span> <span class="n">all_velocities</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+
+        <span class="c1"># find max velocity in given time range</span>
+        <span class="n">velocity_norms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">in_time</span><span class="p">[:,</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">in_time</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">max_velocity_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">velocity_norms</span><span class="p">)</span>
+
+        <span class="n">max_velocities</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">velocity_norms</span><span class="p">[</span><span class="n">max_velocity_index</span><span class="p">]</span><span class="o">**.</span><span class="mi">5</span>
+        <span class="n">peak_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">in_time</span><span class="p">[</span><span class="n">max_velocity_index</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;maxVelocity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_velocities</span>
+    <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;peakTimesDiff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">peak_times</span> <span class="o">-</span> <span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">dataframe</span><span class="p">[((</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;maxVelocity&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_vel</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;maxVelocity&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_vel</span><span class="p">))</span> <span class="o">&amp;</span>
+                    <span class="p">((</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;peakTimesDiff&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">min_time</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">dataframe</span><span class="p">[</span><span class="s1">&#39;peakTimesDiff&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">max_time</span><span class="p">))]</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">trials_df</span> <span class="o">=</span> <span class="n">find_velocities_in_range</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">data_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(),</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="o">.</span><span class="mi">55</span><span class="p">,</span> <span class="o">.</span><span class="mi">95</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plot-psths">
+<h3>1.4. Plot PSTHs<a class="headerlink" href="#plot-psths" title="Permalink to this headline">¶</a></h3>
+<p>PSTH (before matching)</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">neuron_number</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">neuron</span> <span class="o">=</span> <span class="n">neuron_list</span><span class="p">[</span><span class="n">neuron_number</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">psth</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span>
+                           <span class="n">conditions</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+                           <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span>
+                           <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span><span class="mi">1500</span><span class="p">],</span>
+                           <span class="n">binsize</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                           <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;Reward Time&#39;</span><span class="p">);</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%s</span><span class="s1">: Reward&#39;</span> <span class="o">%</span> <span class="n">neuron</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/neural_coding_reward_example_22_0.png" src="_images/neural_coding_reward_example_22_0.png" />
+<p>PSTH (after velocity matching)</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">neuron_number</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">neuron</span> <span class="o">=</span> <span class="n">neuron_list</span><span class="p">[</span><span class="n">neuron_number</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">psth</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span>
+                           <span class="n">conditions</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span>
+                           <span class="n">df</span><span class="o">=</span><span class="n">trials_df</span><span class="p">,</span>
+                           <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span><span class="mi">1500</span><span class="p">],</span>
+                           <span class="n">binsize</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span>
+                           <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;Reward Time&#39;</span><span class="p">);</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%s</span><span class="s1">: Reward&#39;</span> <span class="o">%</span> <span class="n">neuron</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/neural_coding_reward_example_24_0.png" src="_images/neural_coding_reward_example_24_0.png" />
+</div>
+</div>
+<div class="section" id="first-graph-of-panel-c">
+<h2>2 First Graph of Panel C<a class="headerlink" href="#first-graph-of-panel-c" title="Permalink to this headline">¶</a></h2>
+<p>(The other graphs in C &amp; D are done the same way, just a different session number / monkey)</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">mat</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;3573447/Mihili_07112013.mat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">neuron_list</span> <span class="o">=</span> <span class="n">initiate_neurons</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">create_data_frame</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="normalize">
+<h3>2.1 Normalize<a class="headerlink" href="#normalize" title="Permalink to this headline">¶</a></h3>
+<p>This is done by setting the PSTH peaks to 1.</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">normalize_psth</span><span class="p">(</span><span class="n">neuron</span><span class="p">,</span> <span class="n">dataframe</span><span class="p">):</span>
+
+    <span class="n">psth</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span><span class="n">event</span> <span class="o">=</span> <span class="n">event</span><span class="p">,</span>
+                           <span class="n">conditions</span> <span class="o">=</span> <span class="n">condition</span><span class="p">,</span>
+                           <span class="n">df</span> <span class="o">=</span> <span class="n">dataframe</span><span class="p">,</span>
+                           <span class="n">window</span> <span class="o">=</span> <span class="n">window</span><span class="p">,</span>
+                           <span class="n">binsize</span> <span class="o">=</span> <span class="n">binsize</span><span class="p">,</span>
+                           <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">);</span>
+
+    <span class="c1"># find all max rates, and find max of max rates</span>
+
+    <span class="n">max_rates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+        <span class="n">max_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]))</span>
+
+    <span class="n">max_rate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_rates</span><span class="p">)</span>
+
+    <span class="c1"># divide all means by max to normalize</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+
+        <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="n">max_rate</span>
+        <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># population SEM calculated later</span>
+
+    <span class="k">return</span> <span class="n">psth</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">neuron</span> <span class="o">=</span> <span class="n">neuron_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># example</span>
+
+<span class="n">new_psth</span> <span class="o">=</span> <span class="n">normalize_psth</span><span class="p">(</span><span class="n">neuron</span><span class="p">,</span> <span class="n">data_df</span><span class="p">)</span>
+
+<span class="n">neuron</span><span class="o">.</span><span class="n">plot_psth</span><span class="p">(</span><span class="n">new_psth</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="_images/neural_coding_reward_example_31_0.png" src="_images/neural_coding_reward_example_31_0.png" />
+</div>
+<div class="section" id="find-population-average">
+<h3>2.2 Find Population Average<a class="headerlink" href="#find-population-average" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">psth_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="n">psth_dict</span><span class="p">[</span><span class="n">cond_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+
+<span class="c1"># add all normalized psth&#39;s</span>
+<span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="n">neuron_list</span><span class="p">:</span>
+
+    <span class="n">norm_psth</span> <span class="o">=</span> <span class="n">normalize_psth</span><span class="p">(</span><span class="n">neuron</span><span class="p">,</span> <span class="n">data_df</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">psth_dict</span><span class="p">[</span><span class="n">cond_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">norm_psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">psth_dict</span><span class="p">:</span>
+    <span class="n">psth_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">psth_dict</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+
+<span class="c1"># get base psth</span>
+
+<span class="n">base_neuron</span> <span class="o">=</span> <span class="n">neuron_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">psth</span> <span class="o">=</span> <span class="n">normalize_psth</span><span class="p">(</span><span class="n">base_neuron</span><span class="p">,</span> <span class="n">data_df</span><span class="p">)</span>
+
+<span class="c1"># update mean and SEM to reflect population</span>
+
+<span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+
+    <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">psth_dict</span><span class="p">[</span><span class="n">cond_id</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">psth_dict</span><span class="p">[</span><span class="n">cond_id</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">neuron_list</span><span class="p">))</span><span class="o">**.</span><span class="mi">5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plot-psth">
+<h3>2.3 Plot PSTH<a class="headerlink" href="#plot-psth" title="Permalink to this headline">¶</a></h3>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">neuron</span><span class="o">.</span><span class="n">plot_psth</span><span class="p">(</span><span class="n">psth</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">condition</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/neural_coding_reward_example_35_0.png" src="_images/neural_coding_reward_example_35_0.png" />
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Neural Coding Reward Example</a><ul>
+<li><a class="reference internal" href="#reproduce-figure">0 Reproduce Figure</a><ul>
+<li><a class="reference internal" href="#article">0.1 Article</a></li>
+<li><a class="reference internal" href="#figure">0.2 Figure</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#initialization">1 Initialization</a><ul>
+<li><a class="reference internal" href="#download-data">0.1 Download Data</a></li>
+<li><a class="reference internal" href="#initialize-variables">0.2 Initialize Variables</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#first-graph-of-panel-a">1. First Graph of Panel A</a><ul>
+<li><a class="reference internal" href="#initiate-all-neurons">1.1. Initiate all Neurons</a></li>
+<li><a class="reference internal" href="#get-event-times">1.2. Get Event Times</a></li>
+<li><a class="reference internal" href="#match-peak-velocities">1.3. Match Peak Velocities</a></li>
+<li><a class="reference internal" href="#plot-psths">1.4. Plot PSTHs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#first-graph-of-panel-c">2 First Graph of Panel C</a><ul>
+<li><a class="reference internal" href="#normalize">2.1 Normalize</a></li>
+<li><a class="reference internal" href="#find-population-average">2.2 Find Population Average</a></li>
+<li><a class="reference internal" href="#plot-psth">2.3 Plot PSTH</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="examples.html">Examples</a><ul>
+      <li>Previous: <a href="reaching_dataset_example.html" title="previous chapter">Reaching Dataset Example</a></li>
+      <li>Next: <a href="popvis_example.html" title="next chapter">PopVis Example</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neural_coding_reward_example.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, KordingLab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/neural_coding_reward_example.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

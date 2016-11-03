@@ -1,0 +1,227 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>NeuroPop Simul Example &mdash; spykes 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="spykes 0.1 documentation" href="index.html" />
+    <link rel="up" title="Examples" href="examples.html" />
+    <link rel="prev" title="PopVis Example" href="popvis_example.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="neuropop-simul-example">
+<h1>NeuroPop Simul Example<a class="headerlink" href="#neuropop-simul-example" title="Permalink to this headline">¶</a></h1>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="o">%</span> <span class="n">matplotlib</span> <span class="n">inline</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">style</span><span class="o">=</span><span class="s1">&#39;../mpl_styles/spykes.mplstyle&#39;</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">spykes.neuropop</span> <span class="k">import</span> <span class="n">NeuroPop</span>
+</pre></div>
+</div>
+<div class="section" id="instantiation">
+<h2>Instantiation<a class="headerlink" href="#instantiation" title="Permalink to this headline">¶</a></h2>
+<p>Create a NeuroPop object</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">n_neurons</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">pop</span> <span class="o">=</span> <span class="n">NeuroPop</span><span class="p">(</span><span class="n">n_neurons</span><span class="o">=</span><span class="n">n_neurons</span><span class="p">,</span> <span class="n">tunemodel</span><span class="o">=</span><span class="s1">&#39;glm&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<p>Simulate a population of neurons</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Simulate a population of neurons</span>
+<span class="n">n_samples</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">simulate</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">tunemodel</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">winsize</span><span class="o">=</span><span class="mf">400.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Split into training and testing sets</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="k">import</span> <span class="n">train_test_split</span>
+<span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="fitting-scoring">
+<h2>Fitting &amp; Scoring<a class="headerlink" href="#fitting-scoring" title="Permalink to this headline">¶</a></h2>
+<p>Fit the tuning curves with gradient descent</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Predict the population activity with the fit tuning curves</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">Yhat_test</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Score the prediction</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">Ynull</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y_train</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">pseudo_R2</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">,</span> <span class="n">Yhat_test</span><span class="p">,</span> <span class="n">Ynull</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;pseudo_R2&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="n">pseudo_R2</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mf">0.015708742765651595</span><span class="p">,</span> <span class="mf">0.88548228496430081</span><span class="p">,</span> <span class="mf">0.64953549349519391</span><span class="p">,</span> <span class="mf">0.7102359690739799</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.10208578347625186</span><span class="p">,</span> <span class="mf">0.1902246866369538</span><span class="p">,</span> <span class="mf">0.87209044139582448</span><span class="p">,</span> <span class="mf">0.52223845031890392</span><span class="p">,</span> <span class="mf">0.8791167973194528</span><span class="p">,</span> <span class="mf">0.8980274072137493</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Plot the simulated and fit tuning curves</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">15</span><span class="p">])</span>
+
+<span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="n">neuron</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pop</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">],</span> <span class="n">neuron</span><span class="o">=</span><span class="n">neuron</span><span class="p">,</span>
+                <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Y_test</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">]),</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y_test</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">])])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/neuropop_simul_example_15_0.png" src="_images/neuropop_simul_example_15_0.png" />
+<p>Decode feature from the population activity</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">xhat_test</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">Y_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Visualize ground truth vs. decoded estimates</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">xhat_test</span><span class="p">,</span> <span class="s1">&#39;k.&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Ground truth [radians]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Decoded [radians]&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<span class="n">jitter</span> <span class="o">=</span> <span class="mf">0.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">,</span> <span class="n">polar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">jitter</span><span class="p">,</span> <span class="s1">&#39;ko&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Ground truth&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">,</span> <span class="n">polar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xhat_test</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">xhat_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">jitter</span><span class="p">,</span> <span class="s1">&#39;co&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Decoded&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<img alt="_images/neuropop_simul_example_19_0.png" src="_images/neuropop_simul_example_19_0.png" />
+<img alt="_images/neuropop_simul_example_19_1.png" src="_images/neuropop_simul_example_19_1.png" />
+<p>Score decoding performance</p>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Circular correlation</span>
+<span class="n">circ_corr</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">xhat_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;circ_corr&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;Circular correlation: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">circ_corr</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Circular</span> <span class="n">correlation</span><span class="p">:</span> <span class="mf">0.732707</span>
+</pre></div>
+</div>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Cosine distance</span>
+<span class="n">cosine_dist</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">xhat_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cosine_dist&#39;</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;Cosine distance: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cosine_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Cosine</span> <span class="n">distance</span><span class="p">:</span> <span class="mf">0.827625</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">NeuroPop Simul Example</a><ul>
+<li><a class="reference internal" href="#instantiation">Instantiation</a></li>
+<li><a class="reference internal" href="#data">Data</a></li>
+<li><a class="reference internal" href="#fitting-scoring">Fitting &amp; Scoring</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="examples.html">Examples</a><ul>
+      <li>Previous: <a href="popvis_example.html" title="previous chapter">PopVis Example</a></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/neuropop_simul_example.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, KordingLab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.8</a>
+      
+      |
+      <a href="_sources/neuropop_simul_example.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
