@@ -1,5 +1,5 @@
-import matplotlib
-matplotlib.use('Agg')
+import matplotlib.pyplot as p
+p.switch_backend('Agg')
 from spykes.neurovis import NeuroVis
 from nose.tools import assert_true, assert_equal, assert_raises
 import numpy as np
