@@ -1,3 +1,5 @@
+import matplotlib.pyplot as p
+p.switch_backend('Agg')
 from spykes.strf import STRF
 from nose.tools import assert_equal
 from mock import patch
@@ -18,6 +20,9 @@ def test_strf(mock_show):
     # Design a spatial basis
     spatial_basis = strf_.make_gaussian_basis()
     assert_equal(len(spatial_basis), n_spatial_basis)
+
+    # Visualize spatial basis
+    strf_.visualize_gaussian_basis(spatial_basis)
 
     # Design temporal basis
     time_points = np.linspace(-100., 100., 10.)
