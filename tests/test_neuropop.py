@@ -1,6 +1,9 @@
+import matplotlib.pyplot as p
+p.switch_backend('Agg')
 from spykes.neuropop import NeuroPop
 from nose.tools import assert_true, assert_equal, assert_raises
 import numpy as np
+
 
 
 def test_neuropop():
@@ -35,3 +38,5 @@ def test_neuropop():
 
         for method in ['circ_corr', 'cosine_dist']:
             score = pop.score(x_test, xhat_test, method=method)
+
+        pop.display(x, Y, 0)

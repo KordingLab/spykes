@@ -18,6 +18,12 @@ def test_strf(mock_show):
                  n_temporal_basis=n_temporal_basis)
 
     # Design a spatial basis
+    spatial_basis = strf_.make_cosine_basis()
+    assert_equal(len(spatial_basis), 2)
+    for basis in spatial_basis:
+        assert_equal(basis.shape[0], patch_size)
+        assert_equal(basis.shape[1], patch_size)
+
     spatial_basis = strf_.make_gaussian_basis()
     assert_equal(len(spatial_basis), n_spatial_basis)
 
