@@ -195,7 +195,7 @@ class NeuroVis(object):
                      (window[1] - window[0]) / binsize - 0.5]
 
         if cond_id is None:
-            for cond in rasters['data'].keys():
+            for cond in list(rasters['data']):
                 self.plot_raster(rasters, cond_id=cond, cond_name=cond_name,
                                  sortby=sortby, sortorder=sortorder, cmap=cmap,
                                  has_title=has_title)
@@ -239,7 +239,7 @@ class NeuroVis(object):
                 plt.tick_params(axis='y', which='both', right='off')
 
             else:
-                print 'No trials for this condition!'
+                print('No trials for this condition!')
 
     # -----------------------------------------------------------------------
     def get_psth(self, event=None, df=None, conditions=None,
@@ -309,7 +309,7 @@ class NeuroVis(object):
         psth['data'] = dict()
 
         # Compute the PSTH
-        for cond_id in np.sort(rasters['data'].keys()):
+        for cond_id in np.sort(list(rasters['data'])):
 
             psth['data'][cond_id] = dict()
             raster = rasters['data'][cond_id]
@@ -324,7 +324,7 @@ class NeuroVis(object):
         if plot is True:
             if not event_name:
                 event_name = event
-                conditions_names = psth['data'].keys()
+                conditions_names = list(psth['data'])
             self.plot_psth(psth, ylim=ylim, event_name=event_name,
                            conditions_names=conditions_names,
                            colors=colors)
@@ -375,14 +375,14 @@ class NeuroVis(object):
         else:
             plt.plot([0, 0], [y_min, y_max], color='k', ls='--')
 
-        for i, cond_id in enumerate(np.sort(psth['data'].keys())):
+        for i, cond_id in enumerate(np.sort(list(psth['data']))):
             if np.all(np.isnan(psth['data'][cond_id]['mean'])):
                 plt.plot(0, 0, alpha=1.0, color=colors[i])
             else:
                 plt.plot(time_bins, psth['data'][cond_id]['mean'],
                          color=colors[i], lw=1.5)
 
-        for i, cond_id in enumerate(np.sort(psth['data'].keys())):
+        for i, cond_id in enumerate(np.sort(list(psth['data']))):
             if conditions > 0:
                 if conditions_names:
                     legend.append('%s' % conditions_names[i])

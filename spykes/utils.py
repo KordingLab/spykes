@@ -90,7 +90,7 @@ def get_sort_indices(data, sortby=None, sortorder='descend'):
 
     if isinstance(sortby, list):
 
-        if np.array_equal(np.sort(sortby), range(data.shape[0])):
+        if np.array_equal(np.sort(sortby), list(range(data.shape[0]))):
             # make sure it's a permutation
             return sortby
 

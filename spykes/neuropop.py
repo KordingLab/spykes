@@ -2,7 +2,7 @@ import os
 import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
-from utils import slow_exp, grad_slow_exp, log_likelihood, circ_corr
+from .utils import slow_exp, grad_slow_exp, log_likelihood, circ_corr
 
 plt.style.use(
     os.path.join(
@@ -93,7 +93,7 @@ class NeuroPop(object):
         self.g_ = np.zeros(n_neurons)
         self.b_ = np.zeros(n_neurons)
         np.random.seed(random_state)
-        self.set_params(tunemodel, range(self.n_neurons))
+        self.set_params(tunemodel, list(range(self.n_neurons)))
 
         # Assign optimization parameters
         # -------------------------------
@@ -131,7 +131,7 @@ class NeuroPop(object):
             tunemodel = self.tunemodel
 
         if neurons is None:
-            neurons = range(self.n_neurons)
+            neurons = list(range(self.n_neurons))
 
         if isinstance(neurons, list):
             n_neurons = len(neurons)
