@@ -588,7 +588,8 @@ class NeuroPop(object):
         ylitter: bool, whether to add jitter to y variable while plotting
         """
 
-        plt.style.use(style)
+        plt.style.use(os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                   style))
 
         if xjitter is True:
             x_jitter = np.pi / 32 * np.random.randn(x.shape)

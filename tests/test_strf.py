@@ -2,11 +2,9 @@ import matplotlib.pyplot as p
 p.switch_backend('Agg')
 from spykes.strf import STRF
 from nose.tools import assert_equal
-from mock import patch
 import numpy as np
 
-@patch('matplotlib.pyplot.show')
-def test_strf(mock_show):
+def test_strf():
 
     n_spatial_basis = 36
     n_temporal_basis = 7
@@ -18,6 +16,12 @@ def test_strf(mock_show):
                  n_temporal_basis=n_temporal_basis)
 
     # Design a spatial basis
+    spatial_basis = strf_.make_cosine_basis()
+    assert_equal(len(spatial_basis), 2)
+    for basis in spatial_basis:
+        assert_equal(basis.shape[0], patch_size)
+        assert_equal(basis.shape[1], patch_size)
+
     spatial_basis = strf_.make_gaussian_basis()
     assert_equal(len(spatial_basis), n_spatial_basis)
 
