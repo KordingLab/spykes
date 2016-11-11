@@ -2,11 +2,9 @@ import matplotlib.pyplot as p
 p.switch_backend('Agg')
 from spykes.strf import STRF
 from nose.tools import assert_equal
-from mock import patch
 import numpy as np
 
-@patch('matplotlib.pyplot.show')
-def test_strf(mock_show):
+def test_strf():
 
     n_spatial_basis = 36
     n_temporal_basis = 7
