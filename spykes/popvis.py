@@ -171,13 +171,13 @@ class PopVis(object):
         binsize = psth_dict['binsize']
         conditions = psth_dict['conditions']
 
-        if conditions_names is None:
-            conditions_names = np.sort(psth_dict['data'].keys()).tolist()
-
         if cond_id is None:
             keys = np.sort(psth_dict['data'].keys())
         else:
             keys = cond_id
+
+        if conditions_names is None:
+            conditions_names = keys
 
         for i, cond_id in enumerate(keys):
 
@@ -232,11 +232,11 @@ class PopVis(object):
         plt.show()
 
     def plot_population_psth(self, all_psth=None, event=None, df=None,
-                             conditions=None, window=[-100, 500], binsize=10,
-                             conditions_names=None, event_name='event_onset',
-                             ylim=None, colors=['#F5A21E', '#134B64',
-                                                '#EF3E34', '#02A68E',
-                                                '#FF07CD']):
+                             conditions=None, cond_id=None, window=[-100, 500],
+                             binsize=10, conditions_names=None,
+                             event_name='event_onset', ylim=None,
+                             colors=['#F5A21E', '#134B64', '#EF3E34',
+                                     '#02A68E', '#FF07CD']):
         """
         1. Normalizes each neuron's PSTH across condition
         2. Averages out and plots population PSTH
@@ -261,6 +261,10 @@ class PopVis(object):
         conditions: str
             Column/key name of DataFrame/dictionary "data" which contains the
             conditions by which the trials must be grouped
+
+        cond_id: list
+            Which psth to plot indicated by the key in all_psth['data'].
+            If None then all are plotted.
 
         window: list of 2 elements
             Time interval to consider (milliseconds)
@@ -291,32 +295,35 @@ class PopVis(object):
         else:
             psth = copy.deepcopy(all_psth)
 
+        keys = np.sort(psth['data'].keys())
+
         # normalize each neuron across all conditions
 
         for i in range(self.n_neurons):
 
             max_rates = list()
 
-            for cond_id in np.sort(psth['data'].keys()):
-                max_rates.append(np.amax(psth['data'][cond_id][i, :]))
+            for key in keys:
+                max_rates.append(np.amax(psth['data'][key][i, :]))
 
             norm_factor = max(max_rates)
 
-            for cond_id in np.sort(psth['data'].keys()):
-                psth['data'][cond_id][i, :] /= norm_factor
+            for key in keys:
+                psth['data'][key][i, :] /= norm_factor
 
         # average out and plot
 
-        for i, cond_id in enumerate(np.sort(psth['data'].keys())):
+        for i, key in enumerate(keys):
 
-            normed_data = psth['data'][cond_id]
+            normed_data = psth['data'][key]
 
-            psth['data'][cond_id] = dict()
-            psth['data'][cond_id]['mean'] = np.mean(normed_data, axis=0)
-            psth['data'][cond_id]['sem'] = \
+            psth['data'][key] = dict()
+            psth['data'][key]['mean'] = np.mean(normed_data, axis=0)
+            psth['data'][key]['sem'] = \
                 np.var(normed_data, axis=0) / (len(self.neuron_list)**.5)
 
         base_neuron.plot_psth(psth=psth, event_name=event_name,
+                              cond_id=cond_id,
                               conditions_names=conditions_names, ylim=ylim,
                               colors=colors)
 

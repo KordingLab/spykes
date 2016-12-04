@@ -242,7 +242,7 @@ class NeuroVis(object):
                 print 'No trials for this condition!'
 
     # -----------------------------------------------------------------------
-    def get_psth(self, event=None, df=None, conditions=None,
+    def get_psth(self, event=None, df=None, conditions=None, cond_id=None,
                  window=[-100, 500], binsize=10, plot=True, event_name=None,
                  conditions_names=None, ylim=None,
                  colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E',
@@ -260,6 +260,10 @@ class NeuroVis(object):
         conditions: str
             Column/key name of DataFrame/dictionary "data" which contains the
             conditions by which the trials must be grouped
+
+        cond_id: list
+            Which psth to plot indicated by the key in all_psth['data'].
+            If None then all are plotted.
 
         df: DataFrame (or dictionary)
 
@@ -333,8 +337,9 @@ class NeuroVis(object):
 
     # -----------------------------------------------------------------------
     def plot_psth(self, psth, event_name='event_onset', conditions_names=None,
-                  ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34',
-                                     '#02A68E', '#FF07CD']):
+                  cond_id=None, ylim=None, colors=['#F5A21E', '#134B64',
+                                                   '#EF3E34', '#02A68E',
+                                                   '#FF07CD']):
         """
         Plot psth
 
@@ -348,6 +353,10 @@ class NeuroVis(object):
         conditions_names:
             Legend names for conditions. Default are the keys in psth['data']
 
+        cond_id: list
+            Which psth to plot indicated by the key in all_psth['data'].
+            If None then all are plotted.
+
         ylim: list
 
         colors: list
@@ -357,6 +366,14 @@ class NeuroVis(object):
         window = psth['window']
         binsize = psth['binsize']
         conditions = psth['conditions']
+
+        if cond_id is None:
+            keys = np.sort(psth['data'].keys())
+        else:
+            keys = cond_id
+
+        if conditions_names is None:
+            conditions_names = keys
 
         scale = 0.1
         y_min = (1.0 - scale) * np.nanmin([np.min(
@@ -375,19 +392,17 @@ class NeuroVis(object):
         else:
             plt.plot([0, 0], [y_min, y_max], color='k', ls='--')
 
-        for i, cond_id in enumerate(np.sort(psth['data'].keys())):
+        for i, cond_id in enumerate(keys):
+
             if np.all(np.isnan(psth['data'][cond_id]['mean'])):
-                plt.plot(0, 0, alpha=1.0, color=colors[i])
+                plt.plot(0, 0, alpha=1.0, color=colors[i % len(colors)])
             else:
                 plt.plot(time_bins, psth['data'][cond_id]['mean'],
-                         color=colors[i], lw=1.5)
+                         color=colors[i % len(colors)], lw=1.5)
 
-        for i, cond_id in enumerate(np.sort(psth['data'].keys())):
+        for i, cond_id in enumerate(keys):
             if conditions > 0:
-                if conditions_names:
-                    legend.append('%s' % conditions_names[i])
-                else:
-                    legend.append('%s' % str(cond_id))
+                legend.append('%s' % str(conditions_names[i]))
             else:
                 legend.append('all')
 
@@ -395,7 +410,8 @@ class NeuroVis(object):
                 plt.fill_between(time_bins, psth['data'][cond_id]['mean'] -
                                  psth['data'][cond_id]['sem'],
                                  psth['data'][cond_id]['mean'] +
-                                 psth['data'][cond_id]['sem'], color=colors[i],
+                                 psth['data'][cond_id]['sem'],
+                                 color=colors[i % len(colors)],
                                  alpha=0.2)
 
         if conditions:
