@@ -43,12 +43,13 @@ class PopVis(object):
 
     """
 
-    def __init__(self, neuron_list):
+    def __init__(self, neuron_list, name=""):
         """
         Initialize the object
         """
         self.neuron_list = neuron_list
         self.n_neurons = len(neuron_list)
+        self.name = name
 
     def get_all_psth(self, event=None, df=None, conditions=None,
                      window=[-100, 500], binsize=10, conditions_names=None,
@@ -128,7 +129,8 @@ class PopVis(object):
 
     def plot_heat_map(self, psth_dict, cond_id=None,
                       conditions_names=None, sortby=None, sortorder='descend',
-                      normalize=None, colors=['Blues', 'Reds', 'Greens']):
+                      normalize=None, neuron_names=True,
+                      colors=['Blues', 'Reds', 'Greens']):
         """
         Plots heat map for neuron population
 
@@ -162,6 +164,9 @@ class PopVis(object):
             None
             'all' : divide all PSTHs by highest peak firing rate in all neurons
             'each' : divide each PSTH by its own peak firing rate
+
+        neuron_names: bool
+            Whether or not to list the names of neurons on the side
 
         colors: list of colors for heatmap
 
@@ -199,19 +204,23 @@ class PopVis(object):
 
             xtic_len = gcd(abs(window[0]), window[1])
             xtic_labels = range(window[0], window[1] + xtic_len, xtic_len)
-            xtic_locs = [(j - window[0]) / binsize - 0.5 for j in xtic_labels]
+            xtic_locs = [(j - window[0]) / binsize for j in xtic_labels]
 
             if 0 not in xtic_labels:
                 xtic_labels.append(0)
-                xtic_locs.append(-window[0] / binsize - 0.5)
+                xtic_locs.append(-window[0] / binsize)
 
             plt.xticks(xtic_locs, xtic_labels)
 
-            plt.axvline((-window[0]) / binsize - 0.5, color='r',
+            plt.axvline((-window[0]) / binsize, color='r',
                         linestyle='--')
 
-            unsorted_ylabels = [neuron.name for neuron in self.neuron_list]
-            ylabels = [unsorted_ylabels[j] for j in sort_idx]
+            if neuron_names:
+                unsorted_ylabels = [neuron.name for neuron in self.neuron_list]
+                ylabels = [unsorted_ylabels[j] for j in sort_idx]
+
+            else:
+                ylabels = ["" for neuron in self.neuron_list]
 
             plt.yticks(np.arange(data.shape[0]) + 0.5, ylabels)
 
@@ -286,7 +295,7 @@ class PopVis(object):
         """
 
         # placeholder in order to use NeuroVis functionality
-        base_neuron = NeuroVis(spiketimes=range(10), name="Population")
+        base_neuron = NeuroVis(spiketimes=range(10), name=self.name)
 
         if all_psth is None:
             psth = self.get_all_psth(event=event, df=df,
@@ -318,16 +327,16 @@ class PopVis(object):
             normed_data = psth['data'][key]
 
             psth['data'][key] = dict()
-            psth['data'][key]['mean'] = np.mean(normed_data, axis=0)
+            psth['data'][key]['mean'] = np.nanmean(normed_data, axis=0)
             psth['data'][key]['sem'] = \
-                np.var(normed_data, axis=0) / (len(self.neuron_list)**.5)
+                np.nanvar(normed_data, axis=0) / (len(self.neuron_list)**.5)
 
         base_neuron.plot_psth(psth=psth, event_name=event_name,
                               cond_id=cond_id,
                               conditions_names=conditions_names, ylim=ylim,
                               colors=colors)
 
-        plt.title("Population PSTH: %s" % psth['conditions'])
+        plt.title("%s Population PSTH: %s" % (self.name, psth['conditions']))
 
     def _get_normed_data(self, data, normalize):
         """
