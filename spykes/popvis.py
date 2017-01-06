@@ -109,14 +109,14 @@ class PopVis(object):
                                    conditions=conditions, window=window,
                                    binsize=binsize, plot=False)
 
-            for cond_id in np.sort(psth['data'].keys()):
+            for cond_id in np.sort(list(psth['data'])):
 
                 if cond_id not in all_psth['data']:
                     all_psth['data'][cond_id] = list()
 
                 all_psth['data'][cond_id].append(psth['data'][cond_id]['mean'])
 
-        for cond_id in np.sort(all_psth['data'].keys()):
+        for cond_id in np.sort(list(all_psth['data'])):
             all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
 
         if plot is True:
@@ -172,10 +172,10 @@ class PopVis(object):
         conditions = psth_dict['conditions']
 
         if conditions_names is None:
-            conditions_names = np.sort(psth_dict['data'].keys()).tolist()
+            conditions_names = np.sort(list(psth_dict['data'])).tolist()
 
         if cond_id is None:
-            keys = np.sort(psth_dict['data'].keys())
+            keys = np.sort(list(psth_dict['data']))
         else:
             keys = cond_id
 
@@ -198,7 +198,8 @@ class PopVis(object):
             # making it visually appealing
 
             xtic_len = gcd(abs(window[0]), window[1])
-            xtic_labels = range(window[0], window[1] + xtic_len, xtic_len)
+            xtic_labels = list(range(window[0],
+                               window[1] + xtic_len, xtic_len))
             xtic_locs = [(j - window[0]) / binsize - 0.5 for j in xtic_labels]
 
             if 0 not in xtic_labels:
@@ -282,7 +283,7 @@ class PopVis(object):
         """
 
         # placeholder in order to use NeuroVis functionality
-        base_neuron = NeuroVis(spiketimes=range(10), name="Population")
+        base_neuron = NeuroVis(spiketimes=list(range(10)), name="Population")
 
         if all_psth is None:
             psth = self.get_all_psth(event=event, df=df,
@@ -297,17 +298,17 @@ class PopVis(object):
 
             max_rates = list()
 
-            for cond_id in np.sort(psth['data'].keys()):
+            for cond_id in np.sort(list(psth['data'])):
                 max_rates.append(np.amax(psth['data'][cond_id][i, :]))
 
             norm_factor = max(max_rates)
 
-            for cond_id in np.sort(psth['data'].keys()):
+            for cond_id in np.sort(list(psth['data'])):
                 psth['data'][cond_id][i, :] /= norm_factor
 
         # average out and plot
 
-        for i, cond_id in enumerate(np.sort(psth['data'].keys())):
+        for i, cond_id in enumerate(np.sort(list(psth['data']))):
 
             normed_data = psth['data'][cond_id]
 
