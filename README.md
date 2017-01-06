@@ -4,6 +4,8 @@
 [![Travis](https://api.travis-ci.org/pavanramkumar/pyglmnet.svg?branch=master "Travis")](https://travis-ci.org/KordingLab/spykes)
 [![Coverage Status](https://coveralls.io/repos/github/KordingLab/spykes/badge.svg?branch=master)](https://coveralls.io/github/KordingLab/spykes?branch=master)
 
+<img src="spykes-logo.png" width="400" />
+
 Almost any electrophysiology study of neural spiking data relies on a battery of standard analyses.
 Raster plots and peri-stimulus time histograms aligned to stimuli and behavior provide a snapshot visual description of neural activity. Similarly, tuning curves are the most standard way to characterize how neurons encode stimuli or behavioral preferences. With increasing popularity of population recordings, maximum-likelihood decoders based on tuning models are becoming part of this standard.
 
