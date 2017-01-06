@@ -1,0 +1,1094 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API Documentation &#8212; spykes 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Contributing" href="contributing.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-documentation">
+<span id="id1"></span><h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-spykes.neurovis">
+<span id="neurovis"></span><h2>NeuroVis<a class="headerlink" href="#module-spykes.neurovis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spykes.neurovis.NeuroVis">
+<em class="property">class </em><code class="descclassname">spykes.neurovis.</code><code class="descname">NeuroVis</code><span class="sig-paren">(</span><em>spiketimes</em>, <em>name='neuron'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class implements several conveniences for
+visualizing firing activity of single neurons</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>spiketimes: float, array of spike times</strong></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.get_raster" title="spykes.neurovis.NeuroVis.get_raster"><code class="xref py py-obj docutils literal"><span class="pre">get_raster</span></code></a>([event,&nbsp;conditions,&nbsp;df,&nbsp;window,&nbsp;...])</td>
+<td>Compute the raster and plot it</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.plot_raster" title="spykes.neurovis.NeuroVis.plot_raster"><code class="xref py py-obj docutils literal"><span class="pre">plot_raster</span></code></a>(rasters[,&nbsp;cond_id,&nbsp;cond_name,&nbsp;...])</td>
+<td>Plot one raster</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.get_psth" title="spykes.neurovis.NeuroVis.get_psth"><code class="xref py py-obj docutils literal"><span class="pre">get_psth</span></code></a>([event,&nbsp;df,&nbsp;conditions,&nbsp;window,&nbsp;...])</td>
+<td>Compute the psth and plot it</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.plot_psth" title="spykes.neurovis.NeuroVis.plot_psth"><code class="xref py py-obj docutils literal"><span class="pre">plot_psth</span></code></a>(psth[,&nbsp;event_name,&nbsp;...])</td>
+<td>Plot psth</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.get_spikecounts" title="spykes.neurovis.NeuroVis.get_spikecounts"><code class="xref py py-obj docutils literal"><span class="pre">get_spikecounts</span></code></a>([event,&nbsp;df,&nbsp;window])</td>
+<td><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spykes.neurovis.NeuroVis.get_psth">
+<code class="descname">get_psth</code><span class="sig-paren">(</span><em>event=None, df=None, conditions=None, window=[-100, 500], binsize=10, plot=True, event_name=None, conditions_names=None, ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.get_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.get_psth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the psth and plot it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>event: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
+event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
+etc.)</p>
+</div></blockquote>
+<p><strong>conditions: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
+conditions by which the trials must be grouped</p>
+</div></blockquote>
+<p><strong>df: DataFrame (or dictionary)</strong></p>
+<p><strong>window: list of 2 elements</strong></p>
+<blockquote>
+<div><p>Time interval to consider (milliseconds)</p>
+</div></blockquote>
+<p><strong>binsize: int</strong></p>
+<blockquote>
+<div><p>Bin size in milliseconds</p>
+</div></blockquote>
+<p><strong>plot: bool</strong></p>
+<blockquote>
+<div><p>If True then plot</p>
+</div></blockquote>
+<p><strong>event_name: string</strong></p>
+<blockquote>
+<div><p>Legend name for event. Default is the actual &#8216;event&#8217; name</p>
+</div></blockquote>
+<p><strong>conditions_names:</strong></p>
+<blockquote>
+<div><p>Legend names for conditions. Default are the unique values in
+df[&#8216;conditions&#8217;]</p>
+</div></blockquote>
+<p><strong>ylim: list with 2 elements</strong></p>
+<p><strong>colors: list</strong></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>psth</strong> : dictionary</p>
+<blockquote class="last">
+<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.
+Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys &#8216;mean&#8217;
+and &#8216;sem&#8217; that correspond to the mean and sem of the psth for that
+condition</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neurovis.NeuroVis.get_raster">
+<code class="descname">get_raster</code><span class="sig-paren">(</span><em>event=None, conditions=None, df=None, window=[-100, 500], binsize=10, plot=True, sortby=None, sortorder='descend'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.get_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.get_raster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the raster and plot it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>event: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
+event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
+etc.)</p>
+</div></blockquote>
+<p><strong>conditions: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
+conditions by which the trials must be grouped</p>
+</div></blockquote>
+<p><strong>df: DataFrame (or dictionary)</strong></p>
+<p><strong>window: list of 2 elements</strong></p>
+<blockquote>
+<div><p>Time interval to consider (milliseconds)</p>
+</div></blockquote>
+<p><strong>binsize: int</strong></p>
+<blockquote>
+<div><p>Bin size in milliseconds</p>
+</div></blockquote>
+<p><strong>plot: bool</strong></p>
+<blockquote>
+<div><p>If True then plot</p>
+</div></blockquote>
+<p><strong>sortby: str or list</strong></p>
+<blockquote>
+<div><p>None:
+&#8216;rate&#8217;: sort by firing rate
+&#8216;latency&#8217;: sort by peak latency
+list: list of integer indices to be used as sorting indicces</p>
+</div></blockquote>
+<p><strong>sortorder: direction to sort in</strong></p>
+<blockquote>
+<div><p>&#8216;descend&#8217;
+&#8216;ascend&#8217;</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>rasters</strong> : dictionary</p>
+<blockquote class="last">
+<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;,&#8217;window&#8217;, and &#8216;data&#8217;.
+rasters[&#8216;data&#8217;] is a dictionary where each value is a raster for
+each unique entry of df[&#8216;conditions&#8217;]</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neurovis.NeuroVis.get_spikecounts">
+<code class="descname">get_spikecounts</code><span class="sig-paren">(</span><em>event=None</em>, <em>df=None</em>, <em>window=array([  50.</em>, <em>100.])</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.get_spikecounts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.get_spikecounts" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>event: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
+event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
+etc.)</p>
+</div></blockquote>
+<p><strong>window: list of 2 elements</strong></p>
+<blockquote>
+<div><p>Time interval to consider (milliseconds)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">spikecounts: float, n x 1 array of spike counts</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neurovis.NeuroVis.plot_psth">
+<code class="descname">plot_psth</code><span class="sig-paren">(</span><em>psth, event_name='event_onset', conditions_names=None, ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.plot_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.plot_psth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot psth</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>psth: dict, output of get_psth method</strong></p>
+<p><strong>event_name: string</strong></p>
+<blockquote>
+<div><p>Legend name for event. Default is the actual &#8216;event&#8217; name</p>
+</div></blockquote>
+<p><strong>conditions_names:</strong></p>
+<blockquote>
+<div><p>Legend names for conditions. Default are the keys in psth[&#8216;data&#8217;]</p>
+</div></blockquote>
+<p><strong>ylim: list</strong></p>
+<p class="last"><strong>colors: list</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neurovis.NeuroVis.plot_raster">
+<code class="descname">plot_raster</code><span class="sig-paren">(</span><em>rasters</em>, <em>cond_id=None</em>, <em>cond_name=None</em>, <em>sortby=None</em>, <em>sortorder='descend'</em>, <em>cmap='Greys'</em>, <em>has_title=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.plot_raster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.plot_raster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot one raster</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>rasters: dict</strong></p>
+<blockquote>
+<div><p>Output of get_raster method</p>
+</div></blockquote>
+<p><strong>cond_id</strong></p>
+<blockquote>
+<div><p>Which raster to plot indicated by the key in rasters[&#8216;data&#8217;].
+If None then all are plotted.</p>
+</div></blockquote>
+<p><strong>cond_name: str</strong></p>
+<blockquote>
+<div><p>Name to appear in the title</p>
+</div></blockquote>
+<p><strong>sortby: str or list</strong></p>
+<blockquote>
+<div><p>None:
+&#8216;rate&#8217;: sort by firing rate
+&#8216;latency&#8217;: sort by peak latency
+list: list of integer indices to be used as sorting indicces</p>
+</div></blockquote>
+<p><strong>sortorder: direction to sort in</strong></p>
+<blockquote>
+<div><p>&#8216;descend&#8217;
+&#8216;ascend&#8217;</p>
+</div></blockquote>
+<p><strong>cmap: str</strong></p>
+<blockquote>
+<div><p>Colormap for raster</p>
+</div></blockquote>
+<p><strong>has_title: bool</strong></p>
+<blockquote class="last">
+<div><p>If True then adds title</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-spykes.neuropop">
+<span id="neuropop"></span><h2>NeuroPop<a class="headerlink" href="#module-spykes.neuropop" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spykes.neuropop.NeuroPop">
+<em class="property">class </em><code class="descclassname">spykes.neuropop.</code><code class="descname">NeuroPop</code><span class="sig-paren">(</span><em>tunemodel='glm'</em>, <em>n_neurons=100</em>, <em>random_state=1</em>, <em>eta=0.4</em>, <em>learning_rate=0.2</em>, <em>convergence_threshold=1e-05</em>, <em>maxiter=1000</em>, <em>n_repeats=1</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class implements several conveniences for
+plotting, fitting and decoding from population tuning curves</p>
+<p>We allow the fitting of two classes of parametric tuning curves.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>tunemodel: str, can be either &#8216;gvm&#8217; or &#8216;glm&#8217;</strong></p>
+<blockquote>
+<div><p>tunemodel = &#8216;gvm&#8217;
+Generalized von Mises model
+Amirikan &amp; Georgopulos (2000):
+<a class="reference external" href="http://brain.umn.edu/pdfs/BA118.pdf">http://brain.umn.edu/pdfs/BA118.pdf</a>
+f(x) = <a href="#id2"><span class="problematic" id="id3">b_</span></a> + <a href="#id4"><span class="problematic" id="id5">g_</span></a> * exp(<a href="#id6"><span class="problematic" id="id7">k_</span></a> * cos(x - <a href="#id8"><span class="problematic" id="id9">mu_</span></a>))
+f(x) = <a href="#id10"><span class="problematic" id="id11">b_</span></a> + <a href="#id12"><span class="problematic" id="id13">g_</span></a> * exp(<a href="#id14"><span class="problematic" id="id15">k1_</span></a> * cos(x) + <a href="#id16"><span class="problematic" id="id17">k2_</span></a> * sin(x))</p>
+<p>tunemodel = &#8216;glm&#8217;
+Poisson generalized linear model
+f(x) = exp(<a href="#id18"><span class="problematic" id="id19">k0_</span></a> + <a href="#id20"><span class="problematic" id="id21">k_</span></a> * cos(x - <a href="#id22"><span class="problematic" id="id23">mu_</span></a>))
+f(x) = exp(<a href="#id24"><span class="problematic" id="id25">k0_</span></a> + <a href="#id26"><span class="problematic" id="id27">k1_</span></a> * cos(x) + <a href="#id28"><span class="problematic" id="id29">k2_</span></a> * sin(x))</p>
+</div></blockquote>
+<p><strong>n_neurons: float, number of neurons in the population</strong></p>
+<p><strong>random_state: int, seed for numpy.random</strong></p>
+<p><strong>eta: float, linearizes the exp above eta, default: 4.0</strong></p>
+<p><strong>learning_rate: float, default: 2e-1</strong></p>
+<p><strong>convergence_threshold: float, default, 1e-5</strong></p>
+<p><strong>maxiter: float, default: 1000</strong></p>
+<p><strong>n_repeats: float, default: 5</strong></p>
+<p class="last"><strong>verbose: bool, whether to print convergence / loss, default: False</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.decode" title="spykes.neuropop.NeuroPop.decode"><code class="xref py py-obj docutils literal"><span class="pre">decode</span></code></a>(Y)</td>
+<td>Given population activity estimate the feature that generated it</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.display" title="spykes.neuropop.NeuroPop.display"><code class="xref py py-obj docutils literal"><span class="pre">display</span></code></a>(x,&nbsp;Y,&nbsp;neuron[,&nbsp;colors,&nbsp;alpha,&nbsp;ylim,&nbsp;...])</td>
+<td>Visualize data and estimated tuning curves</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.fit" title="spykes.neuropop.NeuroPop.fit"><code class="xref py py-obj docutils literal"><span class="pre">fit</span></code></a>(x,&nbsp;Y)</td>
+<td>Estimate the parameters of the tuning curve under the</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.predict" title="spykes.neuropop.NeuroPop.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>(x)</td>
+<td>Compute the firing rates for the population</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.score" title="spykes.neuropop.NeuroPop.score"><code class="xref py py-obj docutils literal"><span class="pre">score</span></code></a>(Y,&nbsp;Yhat[,&nbsp;Ynull,&nbsp;method])</td>
+<td>Score the model.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.set_params" title="spykes.neuropop.NeuroPop.set_params"><code class="xref py py-obj docutils literal"><span class="pre">set_params</span></code></a>([tunemodel,&nbsp;neurons,&nbsp;mu,&nbsp;k0,&nbsp;k,&nbsp;g,&nbsp;b])</td>
+<td>A function that sets tuning curve parameters as specified</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.simulate" title="spykes.neuropop.NeuroPop.simulate"><code class="xref py py-obj docutils literal"><span class="pre">simulate</span></code></a>(tunemodel[,&nbsp;n_samples,&nbsp;winsize])</td>
+<td>Simulates firing rates from a neural population by randomly sampling</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spykes.neuropop.NeuroPop.decode">
+<code class="descname">decode</code><span class="sig-paren">(</span><em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given population activity estimate the feature that generated it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Y: float, n_samples x n_neurons, population activity</strong></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neuropop.NeuroPop.display">
+<code class="descname">display</code><span class="sig-paren">(</span><em>x, Y, neuron, colors=['k', 'c'], alpha=0.5, ylim=[0, 25], xlabel='direction [radians]', ylabel='firing rate [spk/s]', style='../mpl_styles/spykes.mplstyle', xjitter=False, yjitter=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize data and estimated tuning curves</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: float, n_samples x 1, feature of interest</strong></p>
+<p><strong>Y: float, n_samples x 1, firing rates</strong></p>
+<p><strong>neuron: int, which neuron&#8217;s fit to plot from the population?</strong></p>
+<p><strong>colors: list of str, plot strings that specify color for raw data &amp; fit</strong></p>
+<p><strong>alpha: float, transparency for raw data</strong></p>
+<p><strong>ylim: list of float, y axis limits</strong></p>
+<p><strong>xlabel: str, x label (typically name of the feature)</strong></p>
+<p><strong>ylabel: str, y label (typically firing rate)</strong></p>
+<p><strong>style: str, name of the mpl style file to use with path</strong></p>
+<p><strong>xjitter: bool, whether to add jitter to x variable while plotting</strong></p>
+<p class="last"><strong>ylitter: bool, whether to add jitter to y variable while plotting</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neuropop.NeuroPop.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>x</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the parameters of the tuning curve under the
+model specified by self.tunemodel,
+given features and population activity</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x: float, n_samples x 1, feature of interest</strong></p>
+<p class="last"><strong>Y: float, n_samples x n_neurons, population activity</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neuropop.NeuroPop.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the firing rates for the population
+based on the fit or specified tuning models</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x: float, n_samples x 1, feature of interest</strong></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neuropop.NeuroPop.score">
+<code class="descname">score</code><span class="sig-paren">(</span><em>Y</em>, <em>Yhat</em>, <em>Ynull=None</em>, <em>method='circ_corr'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Score the model.
+Parameters
+&#8212;&#8212;&#8212;-
+Y : array, shape (n_samples, [n_neurons])</p>
+<blockquote>
+<div>The true firing rates.</div></blockquote>
+<dl class="docutils">
+<dt>Yhat</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">array, shape (n_samples, [n_neurons])</span><dd>The estimated firing rates.</dd>
+<dt>Ynull</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">None | array, shape (n_samples, [n_classes])</span><dd>The labels for the null model. Must be None if method is not
+&#8216;pseudo_R2&#8217;</dd>
+<dt>method</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">str</span><dd>One of &#8216;pseudo_R2&#8217; or &#8216;circ_corr&#8217; or &#8216;cosine_dist&#8217;</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neuropop.NeuroPop.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>tunemodel=None</em>, <em>neurons=None</em>, <em>mu=None</em>, <em>k0=None</em>, <em>k=None</em>, <em>g=None</em>, <em>b=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that sets tuning curve parameters as specified</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>tunemodel: str, either &#8216;gvm&#8217; or &#8216;glm&#8217;</strong></p>
+<p><strong>neurons: list,</strong></p>
+<blockquote>
+<div><p>a list of integers which specifies the subset of neurons to set
+default: all neurons</p>
+</div></blockquote>
+<p><strong>mu: float,  len(neurons) x 1, feature of interest</strong></p>
+<p><strong>k0: float,  len(neurons) x 1, baseline</strong></p>
+<p><strong>k: float,  len(neurons) x 1, gain</strong></p>
+<p><strong>g: float,  len(neurons) x 1, gain</strong></p>
+<p><strong>b: float,  len(neurons) x 1, baseline</strong></p>
+<p><strong>if any of the above are None, it randomly initializes parameters for</strong></p>
+<p class="last"><strong>all neurons</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.neuropop.NeuroPop.simulate">
+<code class="descname">simulate</code><span class="sig-paren">(</span><em>tunemodel</em>, <em>n_samples=500</em>, <em>winsize=200</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulates firing rates from a neural population by randomly sampling
+circular variables (feature of interest)
+as well as parameters (mu, k0, k, g, b)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>n_samples, int, number of samples required</strong></p>
+<p><strong>winsize, float, time interval in which to simulate spike counts,</strong></p>
+<blockquote>
+<div><p>milliseconds</p>
+</div></blockquote>
+<p><strong>Outputs</strong></p>
+<p><strong>&#8212;&#8212;-</strong></p>
+<p><strong>x: float, n_samples x 1, feature of interest</strong></p>
+<p><strong>Y: float, n_samples x n_neurons, population activity</strong></p>
+<p><strong>mu: float,  n_neurons x 1, preferred feature [-pi, pi]</strong></p>
+<p><strong>k0: float,  n_neurons x 1, baseline</strong></p>
+<p><strong>k: float,  n_neurons x 1, shape (width)</strong></p>
+<p><strong>g: float,  n_neurons x 1, gain</strong></p>
+<p class="last"><strong>b: float,  n_neurons x 1, baseline</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-spykes.popvis">
+<span id="popvis"></span><h2>PopVis<a class="headerlink" href="#module-spykes.popvis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spykes.popvis.PopVis">
+<em class="property">class </em><code class="descclassname">spykes.popvis.</code><code class="descname">PopVis</code><span class="sig-paren">(</span><em>neuron_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class implements several conveniences for
+visualizing firing activity of neuron populations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>neuron_list: list of NeuroVis objects</strong></p>
+<p class="last"><strong>(see NeuroVis class in spykes.neurovis)</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.popvis.PopVis.get_all_psth" title="spykes.popvis.PopVis.get_all_psth"><code class="xref py py-obj docutils literal"><span class="pre">get_all_psth</span></code></a>([event,&nbsp;df,&nbsp;conditions,&nbsp;...])</td>
+<td>Iterates through all neurons and computes their PSTH&#8217;s</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.popvis.PopVis.plot_heat_map" title="spykes.popvis.PopVis.plot_heat_map"><code class="xref py py-obj docutils literal"><span class="pre">plot_heat_map</span></code></a>(psth_dict[,&nbsp;cond_id,&nbsp;...])</td>
+<td>Plots heat map for neuron population</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.popvis.PopVis.plot_population_psth" title="spykes.popvis.PopVis.plot_population_psth"><code class="xref py py-obj docutils literal"><span class="pre">plot_population_psth</span></code></a>([all_psth,&nbsp;event,&nbsp;df,&nbsp;...])</td>
+<td><ol class="arabic simple">
+<li>Normalizes each neuron&#8217;s PSTH across condition</li>
+</ol>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spykes.popvis.PopVis.get_all_psth">
+<code class="descname">get_all_psth</code><span class="sig-paren">(</span><em>event=None, df=None, conditions=None, window=[-100, 500], binsize=10, conditions_names=None, plot=True, colors=['Blues', 'Reds', 'Greens']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.get_all_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.get_all_psth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through all neurons and computes their PSTH&#8217;s</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>event: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
+event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
+etc.)</p>
+</div></blockquote>
+<p><strong>df: DataFrame (or dictionary)</strong></p>
+<p><strong>conditions: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
+conditions by which the trials must be grouped</p>
+</div></blockquote>
+<p><strong>window: list of 2 elements</strong></p>
+<blockquote>
+<div><p>Time interval to consider (milliseconds)</p>
+</div></blockquote>
+<p><strong>binsize: int</strong></p>
+<blockquote>
+<div><p>Bin size in milliseconds</p>
+</div></blockquote>
+<p><strong>conditions_names:</strong></p>
+<blockquote>
+<div><p>Legend names for conditions. Default are the unique values in
+df[&#8216;conditions&#8217;]</p>
+</div></blockquote>
+<p><strong>plot: bool</strong></p>
+<blockquote>
+<div><p>Whether to automatically plot or not</p>
+</div></blockquote>
+<p><strong>colors:</strong></p>
+<blockquote>
+<div><p>list of colors for heatmap (only if plot is True)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>all_psth</strong> : dictionary</p>
+<blockquote class="last">
+<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.</p>
+<p>Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
+each cond_id that correspond to the means for that condition</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.popvis.PopVis.plot_heat_map">
+<code class="descname">plot_heat_map</code><span class="sig-paren">(</span><em>psth_dict, cond_id=None, conditions_names=None, sortby=None, sortorder='descend', normalize=None, colors=['Blues', 'Reds', 'Greens']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.plot_heat_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.plot_heat_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots heat map for neuron population</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>psth_dict</strong> : dictionary</p>
+<blockquote>
+<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.</p>
+<p>Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
+each cond_id that correspond to the means for that condition</p>
+</div></blockquote>
+<p><strong>cond_id</strong></p>
+<blockquote>
+<div><p>Which psth to plot indicated by the key in all_psth[&#8216;data&#8217;].
+If None then all are plotted.</p>
+</div></blockquote>
+<p><strong>conditions_names: str (or list)</strong></p>
+<blockquote>
+<div><p>Name(s) to appear in the title</p>
+</div></blockquote>
+<p><strong>sortby: str or list</strong></p>
+<blockquote>
+<div><p>None:
+&#8216;rate&#8217;: sort by firing rate
+&#8216;latency&#8217;: sort by peak latency
+list: list of integer indices to be used as sorting indicces</p>
+</div></blockquote>
+<p><strong>sortorder: direction to sort in</strong></p>
+<blockquote>
+<div><p>&#8216;descend&#8217;
+&#8216;ascend&#8217;</p>
+</div></blockquote>
+<p><strong>normalize: str</strong></p>
+<blockquote>
+<div><p>None
+&#8216;all&#8217; : divide all PSTHs by highest peak firing rate in all neurons
+&#8216;each&#8217; : divide each PSTH by its own peak firing rate</p>
+</div></blockquote>
+<p class="last"><strong>colors: list of colors for heatmap</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.popvis.PopVis.plot_population_psth">
+<code class="descname">plot_population_psth</code><span class="sig-paren">(</span><em>all_psth=None, event=None, df=None, conditions=None, window=[-100, 500], binsize=10, conditions_names=None, event_name='event_onset', ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.plot_population_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.plot_population_psth" title="Permalink to this definition">¶</a></dt>
+<dd><ol class="arabic simple">
+<li>Normalizes each neuron&#8217;s PSTH across condition</li>
+<li>Averages out and plots population PSTH</li>
+</ol>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>all_psth</strong> : dictionary</p>
+<blockquote>
+<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.</p>
+<p>Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
+each cond_id that correspond to the means for that condition</p>
+</div></blockquote>
+<p><strong>event: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
+event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
+etc.)</p>
+</div></blockquote>
+<p><strong>df: DataFrame (or dictionary)</strong></p>
+<p><strong>conditions: str</strong></p>
+<blockquote>
+<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
+conditions by which the trials must be grouped</p>
+</div></blockquote>
+<p><strong>window: list of 2 elements</strong></p>
+<blockquote>
+<div><p>Time interval to consider (milliseconds)</p>
+</div></blockquote>
+<p><strong>binsize: int</strong></p>
+<blockquote>
+<div><p>Bin size in milliseconds</p>
+</div></blockquote>
+<p><strong>conditions_names:</strong></p>
+<blockquote>
+<div><p>Legend names for conditions. Default are the unique values in
+df[&#8216;conditions&#8217;]</p>
+</div></blockquote>
+<p><strong>event_name: string</strong></p>
+<blockquote>
+<div><p>Legend name for event. Default is the actual &#8216;event&#8217; name</p>
+</div></blockquote>
+<p><strong>ylim: list</strong></p>
+<p class="last"><strong>colors: list</strong></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-spykes.strf">
+<span id="strf"></span><h2>STRF<a class="headerlink" href="#module-spykes.strf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spykes.strf.STRF">
+<em class="property">class </em><code class="descclassname">spykes.strf.</code><code class="descname">STRF</code><span class="sig-paren">(</span><em>patch_size=100</em>, <em>sigma=0.5</em>, <em>n_spatial_basis=25</em>, <em>n_temporal_basis=3</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class allows the estimation of spatiotemporal receptive fields</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>patch_size: int</strong></p>
+<blockquote>
+<div><p>dimension of the square patch spanned by the spatial basis</p>
+</div></blockquote>
+<p><strong>sigma: float</strong></p>
+<blockquote>
+<div><p>standard deviation of the Gaussian distribution</p>
+</div></blockquote>
+<p><strong>n_spatial_basis: int</strong></p>
+<blockquote>
+<div><p>number of spatial basis functions for the Gaussian basis
+(has to be a perfect square)</p>
+</div></blockquote>
+<p><strong>n_temporal_basis: int</strong></p>
+<blockquote class="last">
+<div><p>number of temporal basis functions</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Methods</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.convolve_with_temporal_basis" title="spykes.strf.STRF.convolve_with_temporal_basis"><code class="xref py py-obj docutils literal"><span class="pre">convolve_with_temporal_basis</span></code></a>(design_matrix,&nbsp;...)</td>
+<td>Convolve each column of the design matrix</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.design_prior_covariance" title="spykes.strf.STRF.design_prior_covariance"><code class="xref py py-obj docutils literal"><span class="pre">design_prior_covariance</span></code></a>([sigma_temporal,&nbsp;...])</td>
+<td>Design a prior covariance matrix for STRF estimation</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.make_2d_gaussian" title="spykes.strf.STRF.make_2d_gaussian"><code class="xref py py-obj docutils literal"><span class="pre">make_2d_gaussian</span></code></a>([center])</td>
+<td>Makes a 2D Gaussian filter</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.make_cosine_basis" title="spykes.strf.STRF.make_cosine_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_cosine_basis</span></code></a>()</td>
+<td>Makes a spatial cosine and sine basis</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.make_gaussian_basis" title="spykes.strf.STRF.make_gaussian_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_gaussian_basis</span></code></a>()</td>
+<td>Makes a list of Gaussian filters</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.make_image_from_spatial_basis" title="spykes.strf.STRF.make_image_from_spatial_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_image_from_spatial_basis</span></code></a>(basis,&nbsp;weights)</td>
+<td>Recovers an image from a basis given a set of weights</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.make_raised_cosine_temporal_basis" title="spykes.strf.STRF.make_raised_cosine_temporal_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_raised_cosine_temporal_basis</span></code></a>(...)</td>
+<td>Makes a series of raised cosine temporal basis</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.project_to_spatial_basis" title="spykes.strf.STRF.project_to_spatial_basis"><code class="xref py py-obj docutils literal"><span class="pre">project_to_spatial_basis</span></code></a>(image,&nbsp;spatial_basis)</td>
+<td>Projects a given image into a spatial basis</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.visualize_gaussian_basis" title="spykes.strf.STRF.visualize_gaussian_basis"><code class="xref py py-obj docutils literal"><span class="pre">visualize_gaussian_basis</span></code></a>(spatial_basis[,&nbsp;color])</td>
+<td>Plots spatial basis functions in a tile of images</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spykes.strf.STRF.convolve_with_temporal_basis">
+<code class="descname">convolve_with_temporal_basis</code><span class="sig-paren">(</span><em>design_matrix</em>, <em>temporal_basis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.convolve_with_temporal_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.convolve_with_temporal_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convolve each column of the design matrix
+with a series of temporal basis functions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>design_matrix: numpy array</strong></p>
+<blockquote>
+<div><p>2-d array of n_samples x n_features</p>
+</div></blockquote>
+<p><strong>temporal_basis: numpy array</strong></p>
+<blockquote>
+<div><p>2-d array of n_basis x n_timepoints</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">convolved_design_matrix: numpy array</p>
+<blockquote class="last">
+<div><p>2-d array of n_samples x (n_features * n_basis)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.design_prior_covariance">
+<code class="descname">design_prior_covariance</code><span class="sig-paren">(</span><em>sigma_temporal=2.0</em>, <em>sigma_spatial=5.0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.design_prior_covariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.design_prior_covariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Design a prior covariance matrix for STRF estimation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>sigma_temporal: float</strong></p>
+<blockquote>
+<div><p>standard deviation of temporal prior covariance</p>
+</div></blockquote>
+<p><strong>sigma_spatial: float</strong></p>
+<blockquote>
+<div><p>standard deviation of spatial prior covariance</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">prior_covariance: numpy array</p>
+<blockquote class="last">
+<div><dl class="docutils">
+<dt>2-d array of (n_spatial_basis * n_temporal_basis) x</dt>
+<dd><p class="first last">(n_spatial_basis * n_temporal_basis)</p>
+</dd>
+</dl>
+<p>the ordering of rows and columns is so that
+all temporal basis are consecutive for each spatial basis</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.make_2d_gaussian">
+<code class="descname">make_2d_gaussian</code><span class="sig-paren">(</span><em>center=(0</em>, <em>0)</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.make_2d_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.make_2d_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a 2D Gaussian filter
+with arbitary center and standard deviation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>center: tuple</strong></p>
+<blockquote>
+<div><p>(row, col) specifiying co-ordinates of the center
+of the Gaussian. (0,0) is the center of the image</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">gaussian_mask: numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.make_cosine_basis">
+<code class="descname">make_cosine_basis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.make_cosine_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.make_cosine_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a spatial cosine and sine basis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">spatial_basis: list</p>
+<blockquote class="last">
+<div><p>each entry is a 2-d array of patch_size x patch_size</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.make_gaussian_basis">
+<code class="descname">make_gaussian_basis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.make_gaussian_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.make_gaussian_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a list of Gaussian filters</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">spatial_basis: list</p>
+<blockquote class="last">
+<div><p>each entry is a 2-d array of patch_size x patch_size</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.make_image_from_spatial_basis">
+<code class="descname">make_image_from_spatial_basis</code><span class="sig-paren">(</span><em>basis</em>, <em>weights</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.make_image_from_spatial_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.make_image_from_spatial_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recovers an image from a basis given a set of weights</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spatial_basis: list</strong></p>
+<blockquote>
+<div><p>each entry is a 2-d array of patch_size x patch_size</p>
+</div></blockquote>
+<p><strong>weights: numpy array</strong></p>
+<blockquote>
+<div><p>1-d array, coefficients</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">image: numpy array</p>
+<blockquote class="last">
+<div><p>2-d array of patch_size x patch_size</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.make_raised_cosine_temporal_basis">
+<code class="descname">make_raised_cosine_temporal_basis</code><span class="sig-paren">(</span><em>time_points</em>, <em>centers</em>, <em>widths</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.make_raised_cosine_temporal_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.make_raised_cosine_temporal_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a series of raised cosine temporal basis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>time_points: numpy array</strong></p>
+<blockquote>
+<div><p>list of time points at which the basis function is computed</p>
+</div></blockquote>
+<p><strong>centers: numpy array or list</strong></p>
+<blockquote>
+<div><p>list of coordinates at which each basis function is centered
+1-d array of (n_temporal_basis,)</p>
+</div></blockquote>
+<p><strong>widths: numpy array or list</strong></p>
+<blockquote>
+<div><p>list of widths, one per basis function
+1-d array of (n_temporal_basis,)</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">temporal_basis: numpy array</p>
+<blockquote class="last">
+<div><p>2-d array of n_basis x n_timepoints</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.project_to_spatial_basis">
+<code class="descname">project_to_spatial_basis</code><span class="sig-paren">(</span><em>image</em>, <em>spatial_basis</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.project_to_spatial_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.project_to_spatial_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Projects a given image into a spatial basis</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>image: numpy array</strong></p>
+<blockquote>
+<div><p>image that must be projected into the spatial basis
+2-d array of patch_size x patch_size</p>
+</div></blockquote>
+<p><strong>spatial_basis: list</strong></p>
+<blockquote>
+<div><p>each entry is a 2-d array of patch_size x patch_size</p>
+</div></blockquote>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">weights: numpy array</p>
+<blockquote class="last">
+<div><p>1-d array, coefficients</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.strf.STRF.visualize_gaussian_basis">
+<code class="descname">visualize_gaussian_basis</code><span class="sig-paren">(</span><em>spatial_basis</em>, <em>color='Greys'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/strf.html#STRF.visualize_gaussian_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.strf.STRF.visualize_gaussian_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots spatial basis functions in a tile of images</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>spatial_basis: list</strong></p>
+<blockquote class="last">
+<div><p>each entry is a 2-d array of patch_size x patch_size</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Documentation</a><ul>
+<li><a class="reference internal" href="#module-spykes.neurovis">NeuroVis</a></li>
+<li><a class="reference internal" href="#module-spykes.neuropop">NeuroPop</a></li>
+<li><a class="reference internal" href="#module-spykes.popvis">PopVis</a></li>
+<li><a class="reference internal" href="#module-spykes.strf">STRF</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="contributing.html" title="previous chapter">Contributing</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, KordingLab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/api.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,541 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>spykes.neurovis &#8212; spykes 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for spykes.neurovis</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">utils</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+        <span class="s1">&#39;../mpl_styles/spykes.mplstyle&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="NeuroVis"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis">[docs]</a><span class="k">class</span> <span class="nc">NeuroVis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class implements several conveniences for</span>
+<span class="sd">    visualizing firing activity of single neurons</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    spiketimes: float, array of spike times</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    get_raster</span>
+<span class="sd">    plot_raster</span>
+<span class="sd">    get_psth</span>
+<span class="sd">    plot_psth</span>
+<span class="sd">    get_spikecounts</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">spiketimes</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;neuron&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">spiketimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">spiketimes</span><span class="p">))</span>
+        <span class="n">n_seconds</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spiketimes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">spiketimes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">n_spikes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">spiketimes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">firingrate</span> <span class="o">=</span> <span class="p">(</span><span class="n">n_spikes</span> <span class="o">/</span> <span class="n">n_seconds</span><span class="p">)</span>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroVis.get_raster"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.get_raster">[docs]</a>    <span class="k">def</span> <span class="nf">get_raster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                   <span class="n">sortby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;descend&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the raster and plot it</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event: str</span>
+<span class="sd">            Column/key name of DataFrame/dictionary &quot;data&quot; which contains</span>
+<span class="sd">            event times in milliseconds (e.g. stimulus/ trial/ fixation onset,</span>
+<span class="sd">            etc.)</span>
+
+<span class="sd">        conditions: str</span>
+<span class="sd">            Column/key name of DataFrame/dictionary &quot;data&quot; which contains the</span>
+<span class="sd">            conditions by which the trials must be grouped</span>
+
+<span class="sd">        df: DataFrame (or dictionary)</span>
+
+<span class="sd">        window: list of 2 elements</span>
+<span class="sd">            Time interval to consider (milliseconds)</span>
+
+<span class="sd">        binsize: int</span>
+<span class="sd">            Bin size in milliseconds</span>
+
+<span class="sd">        plot: bool</span>
+<span class="sd">            If True then plot</span>
+
+<span class="sd">        sortby: str or list</span>
+<span class="sd">            None:</span>
+<span class="sd">            &#39;rate&#39;: sort by firing rate</span>
+<span class="sd">            &#39;latency&#39;: sort by peak latency</span>
+<span class="sd">            list: list of integer indices to be used as sorting indicces</span>
+
+<span class="sd">        sortorder: direction to sort in</span>
+<span class="sd">            &#39;descend&#39;</span>
+<span class="sd">            &#39;ascend&#39;</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        rasters : dictionary</span>
+<span class="sd">            With keys: &#39;event&#39;, &#39;conditions&#39;, &#39;binsize&#39;,&#39;window&#39;, and &#39;data&#39;.</span>
+<span class="sd">            rasters[&#39;data&#39;] is a dictionary where each value is a raster for</span>
+<span class="sd">            each unique entry of df[&#39;conditions&#39;]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">type</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">binsize</span><span class="p">)</span> <span class="o">*</span> <span class="n">binsize</span><span class="p">,</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">binsize</span><span class="p">)</span> <span class="o">*</span> <span class="n">binsize</span><span class="p">]</span>
+
+        <span class="c1"># Get a set of binary indicators for trials of interest</span>
+        <span class="k">if</span> <span class="n">conditions</span><span class="p">:</span>
+            <span class="n">trials</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">conditions</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()):</span>
+                <span class="n">trials</span><span class="p">[</span><span class="n">cond_id</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">df</span><span class="p">[</span><span class="n">conditions</span><span class="p">]</span> <span class="o">==</span> <span class="n">cond_id</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span>
+                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="n">x</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">trials</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">trials</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">event</span><span class="p">])))[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Initialize rasters</span>
+        <span class="n">rasters</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span>
+        <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;conditions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">conditions</span>
+        <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;binsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binsize</span>
+        <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># Loop over each raster</span>
+        <span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">trials</span><span class="p">:</span>
+            <span class="c1"># Select events relevant to this raster</span>
+            <span class="n">selected_events</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">event</span><span class="p">][</span><span class="n">trials</span><span class="p">[</span><span class="n">cond_id</span><span class="p">]]</span>
+
+            <span class="n">raster</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="n">bin_template</span> <span class="o">=</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">binsize</span><span class="p">,</span> <span class="n">binsize</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">event_time</span> <span class="ow">in</span> <span class="n">selected_events</span><span class="p">:</span>
+                <span class="n">bins</span> <span class="o">=</span> <span class="n">event_time</span> <span class="o">+</span> <span class="n">bin_template</span>
+
+                <span class="c1"># consider only spikes within window</span>
+                <span class="n">searchsorted_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">searchsorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spiketimes</span><span class="p">,</span>
+                                                   <span class="p">[</span><span class="n">event_time</span> <span class="o">+</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span>
+                                                    <span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                    <span class="n">event_time</span> <span class="o">+</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span>
+                                                    <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+
+                <span class="c1"># bin the spikes into time bins</span>
+                <span class="n">spike_counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">spiketimes</span><span class="p">[</span><span class="n">searchsorted_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">searchsorted_idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
+                    <span class="n">bins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="n">raster</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">spike_counts</span><span class="p">)</span>
+
+            <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">raster</span><span class="p">)</span>
+
+        <span class="c1"># Show the raster</span>
+        <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_raster</span><span class="p">(</span><span class="n">rasters</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="n">sortby</span><span class="p">,</span>
+                             <span class="n">sortorder</span><span class="o">=</span><span class="n">sortorder</span><span class="p">)</span>
+
+        <span class="c1"># Return all the rasters</span>
+        <span class="k">return</span> <span class="n">rasters</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroVis.plot_raster"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.plot_raster">[docs]</a>    <span class="k">def</span> <span class="nf">plot_raster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rasters</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cond_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                    <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;descend&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;Greys&#39;</span><span class="p">,</span> <span class="n">has_title</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot one raster</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rasters: dict</span>
+<span class="sd">            Output of get_raster method</span>
+
+<span class="sd">        cond_id</span>
+<span class="sd">            Which raster to plot indicated by the key in rasters[&#39;data&#39;].</span>
+<span class="sd">            If None then all are plotted.</span>
+
+<span class="sd">        cond_name: str</span>
+<span class="sd">            Name to appear in the title</span>
+
+<span class="sd">        sortby: str or list</span>
+<span class="sd">            None:</span>
+<span class="sd">            &#39;rate&#39;: sort by firing rate</span>
+<span class="sd">            &#39;latency&#39;: sort by peak latency</span>
+<span class="sd">            list: list of integer indices to be used as sorting indicces</span>
+
+<span class="sd">        sortorder: direction to sort in</span>
+<span class="sd">            &#39;descend&#39;</span>
+<span class="sd">            &#39;ascend&#39;</span>
+
+<span class="sd">        cmap: str</span>
+<span class="sd">            Colormap for raster</span>
+
+<span class="sd">        has_title: bool</span>
+<span class="sd">            If True then adds title</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">window</span> <span class="o">=</span> <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;window&#39;</span><span class="p">]</span>
+        <span class="n">binsize</span> <span class="o">=</span> <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;binsize&#39;</span><span class="p">]</span>
+
+        <span class="n">xtics</span> <span class="o">=</span> <span class="p">[</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">xtics</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xtics</span><span class="p">]</span>
+        <span class="n">xtics_loc</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">binsize</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span>
+                     <span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">binsize</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">cond_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cond</span> <span class="ow">in</span> <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">plot_raster</span><span class="p">(</span><span class="n">rasters</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="n">cond</span><span class="p">,</span> <span class="n">cond_name</span><span class="o">=</span><span class="n">cond_name</span><span class="p">,</span>
+                                 <span class="n">sortby</span><span class="o">=</span><span class="n">sortby</span><span class="p">,</span> <span class="n">sortorder</span><span class="o">=</span><span class="n">sortorder</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span>
+                                 <span class="n">has_title</span><span class="o">=</span><span class="n">has_title</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">raster</span> <span class="o">=</span> <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">raster</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+                <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_sort_indices</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">raster</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="n">sortby</span><span class="p">,</span>
+                                                  <span class="n">sortorder</span><span class="o">=</span><span class="n">sortorder</span><span class="p">)</span>
+                <span class="n">raster_sorted</span> <span class="o">=</span> <span class="n">raster</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+
+                <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">raster_sorted</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+                           <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">))</span>
+
+                <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">(</span>
+                    <span class="p">(</span><span class="o">-</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">binsize</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;trials&#39;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time [ms]&#39;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">xtics_loc</span><span class="p">,</span> <span class="n">xtics</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">has_title</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">cond_id</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">cond_name</span><span class="p">:</span>
+                            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%s</span><span class="s1">. </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                      <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">cond_name</span><span class="p">))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%s</span><span class="s1">. </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span>
+                                      <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;conditions&#39;</span><span class="p">],</span>
+                                       <span class="n">cond_id</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;bottom&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;left&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span> <span class="s1">&#39;No trials for this condition!&#39;</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroVis.get_psth"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.get_psth">[docs]</a>    <span class="k">def</span> <span class="nf">get_psth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">event_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">conditions_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span> <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span> <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span> <span class="s1">&#39;#02A68E&#39;</span><span class="p">,</span>
+                         <span class="s1">&#39;#FF07CD&#39;</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the psth and plot it</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event: str</span>
+<span class="sd">            Column/key name of DataFrame/dictionary &quot;data&quot; which contains</span>
+<span class="sd">            event times in milliseconds (e.g. stimulus/ trial/ fixation onset,</span>
+<span class="sd">            etc.)</span>
+
+<span class="sd">        conditions: str</span>
+<span class="sd">            Column/key name of DataFrame/dictionary &quot;data&quot; which contains the</span>
+<span class="sd">            conditions by which the trials must be grouped</span>
+
+<span class="sd">        df: DataFrame (or dictionary)</span>
+
+<span class="sd">        window: list of 2 elements</span>
+<span class="sd">            Time interval to consider (milliseconds)</span>
+
+<span class="sd">        binsize: int</span>
+<span class="sd">            Bin size in milliseconds</span>
+
+<span class="sd">        plot: bool</span>
+<span class="sd">            If True then plot</span>
+
+<span class="sd">        event_name: string</span>
+<span class="sd">            Legend name for event. Default is the actual &#39;event&#39; name</span>
+
+<span class="sd">        conditions_names:</span>
+<span class="sd">            Legend names for conditions. Default are the unique values in</span>
+<span class="sd">            df[&#39;conditions&#39;]</span>
+
+<span class="sd">        ylim: list with 2 elements</span>
+
+<span class="sd">        colors: list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        psth : dictionary</span>
+<span class="sd">            With keys: &#39;event&#39;, &#39;conditions&#39;, &#39;binsize&#39;, &#39;window&#39;, and &#39;data&#39;.</span>
+<span class="sd">            Each entry in psth[&#39;data&#39;] is itself a dictionary with keys &#39;mean&#39;</span>
+<span class="sd">            and &#39;sem&#39; that correspond to the mean and sem of the psth for that</span>
+<span class="sd">            condition</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">binsize</span><span class="p">)</span> <span class="o">*</span> <span class="n">binsize</span><span class="p">,</span>
+                  <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">binsize</span><span class="p">)</span> <span class="o">*</span> <span class="n">binsize</span><span class="p">]</span>
+        <span class="c1"># Get all the rasters first</span>
+        <span class="n">rasters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_raster</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                                  <span class="n">conditions</span><span class="o">=</span><span class="n">conditions</span><span class="p">,</span>
+                                  <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="n">binsize</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Initialize PSTH</span>
+        <span class="n">psth</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;window&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">window</span>
+        <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;binsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">binsize</span>
+        <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span>
+        <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;conditions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">conditions</span>
+        <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># Compute the PSTH</span>
+        <span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">raster</span> <span class="o">=</span> <span class="n">rasters</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">]</span>
+            <span class="n">mean_psth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">binsize</span><span class="p">)</span>
+            <span class="n">std_psth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">raster</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">binsize</span><span class="p">)</span>
+
+            <span class="n">sem_psth</span> <span class="o">=</span> <span class="n">std_psth</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">raster</span><span class="p">)[</span><span class="mi">0</span><span class="p">]))</span>
+
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mean_psth</span>
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sem_psth</span>
+
+        <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">event_name</span><span class="p">:</span>
+                <span class="n">event_name</span> <span class="o">=</span> <span class="n">event</span>
+                <span class="n">conditions_names</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_psth</span><span class="p">(</span><span class="n">psth</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="n">ylim</span><span class="p">,</span> <span class="n">event_name</span><span class="o">=</span><span class="n">event_name</span><span class="p">,</span>
+                           <span class="n">conditions_names</span><span class="o">=</span><span class="n">conditions_names</span><span class="p">,</span>
+                           <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">psth</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroVis.plot_psth"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.plot_psth">[docs]</a>    <span class="k">def</span> <span class="nf">plot_psth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psth</span><span class="p">,</span> <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;event_onset&#39;</span><span class="p">,</span> <span class="n">conditions_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span> <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span> <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span>
+                                     <span class="s1">&#39;#02A68E&#39;</span><span class="p">,</span> <span class="s1">&#39;#FF07CD&#39;</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot psth</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        psth: dict, output of get_psth method</span>
+
+<span class="sd">        event_name: string</span>
+<span class="sd">            Legend name for event. Default is the actual &#39;event&#39; name</span>
+
+<span class="sd">        conditions_names:</span>
+<span class="sd">            Legend names for conditions. Default are the keys in psth[&#39;data&#39;]</span>
+
+<span class="sd">        ylim: list</span>
+
+<span class="sd">        colors: list</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;window&#39;</span><span class="p">]</span>
+        <span class="n">binsize</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;binsize&#39;</span><span class="p">]</span>
+        <span class="n">conditions</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;conditions&#39;</span><span class="p">]</span>
+
+        <span class="n">scale</span> <span class="o">=</span> <span class="mf">0.1</span>
+        <span class="n">y_min</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">scale</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span>
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">psth_idx</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">psth_idx</span> <span class="ow">in</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]])</span>
+        <span class="n">y_max</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">scale</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span>
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">psth_idx</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">psth_idx</span> <span class="ow">in</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]])</span>
+
+        <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span><span class="n">event_name</span><span class="p">]</span>
+
+        <span class="n">time_bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">binsize</span><span class="p">)</span> <span class="o">+</span> <span class="n">binsize</span> <span class="o">/</span> <span class="mf">2.0</span>
+
+        <span class="k">if</span> <span class="n">ylim</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">ylim</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">])):</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_bins</span><span class="p">,</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">],</span>
+                         <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="n">conditions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">conditions_names</span><span class="p">:</span>
+                    <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">conditions_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">cond_id</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">])):</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">time_bins</span><span class="p">,</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">-</span>
+                                 <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">],</span>
+                                 <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">+</span>
+                                 <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                 <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">conditions</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%s</span><span class="s1">: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">conditions</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time [ms]&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;spikes per second [spks/s]&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">ylim</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">])</span>
+
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">legend</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroVis.get_spikecounts"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.get_spikecounts">[docs]</a>    <span class="k">def</span> <span class="nf">get_spikecounts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">window</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">50.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">])):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        event: str</span>
+<span class="sd">            Column/key name of DataFrame/dictionary &quot;data&quot; which contains</span>
+<span class="sd">            event times in milliseconds (e.g. stimulus/ trial/ fixation onset,</span>
+<span class="sd">            etc.)</span>
+
+<span class="sd">        window: list of 2 elements</span>
+<span class="sd">            Time interval to consider (milliseconds)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        spikecounts: float, n x 1 array of spike counts</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">event</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">spiketimes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spiketimes</span>
+        <span class="n">spikecounts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">eve</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
+            <span class="n">spikecounts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="n">spiketimes</span> <span class="o">&gt;=</span> <span class="n">eve</span> <span class="o">+</span>
+                                            <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                            <span class="n">spiketimes</span> <span class="o">&lt;=</span> <span class="n">eve</span> <span class="o">+</span>
+                                            <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                                           <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">spikecounts</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, KordingLab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

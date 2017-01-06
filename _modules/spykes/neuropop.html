@@ -1,0 +1,752 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>spykes.neuropop &#8212; spykes 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for spykes.neuropop</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">utils</span> <span class="k">import</span> <span class="n">slow_exp</span><span class="p">,</span> <span class="n">grad_slow_exp</span><span class="p">,</span> <span class="n">log_likelihood</span><span class="p">,</span> <span class="n">circ_corr</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+        <span class="s1">&#39;../mpl_styles/spykes.mplstyle&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="NeuroPop"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop">[docs]</a><span class="k">class</span> <span class="nc">NeuroPop</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class implements several conveniences for</span>
+<span class="sd">    plotting, fitting and decoding from population tuning curves</span>
+
+<span class="sd">    We allow the fitting of two classes of parametric tuning curves.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tunemodel: str, can be either &#39;gvm&#39; or &#39;glm&#39;</span>
+<span class="sd">        tunemodel = &#39;gvm&#39;</span>
+<span class="sd">        Generalized von Mises model</span>
+<span class="sd">        Amirikan &amp; Georgopulos (2000):</span>
+<span class="sd">        http://brain.umn.edu/pdfs/BA118.pdf</span>
+<span class="sd">        f(x) = b_ + g_ * exp(k_ * cos(x - mu_))</span>
+<span class="sd">        f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))</span>
+
+<span class="sd">        tunemodel = &#39;glm&#39;</span>
+<span class="sd">        Poisson generalized linear model</span>
+<span class="sd">        f(x) = exp(k0_ + k_ * cos(x - mu_))</span>
+<span class="sd">        f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))</span>
+
+<span class="sd">    n_neurons: float, number of neurons in the population</span>
+<span class="sd">    random_state: int, seed for numpy.random</span>
+<span class="sd">    eta: float, linearizes the exp above eta, default: 4.0</span>
+<span class="sd">    learning_rate: float, default: 2e-1</span>
+<span class="sd">    convergence_threshold: float, default, 1e-5</span>
+<span class="sd">    maxiter: float, default: 1000</span>
+<span class="sd">    n_repeats: float, default: 5</span>
+<span class="sd">    verbose: bool, whether to print convergence / loss, default: False</span>
+
+<span class="sd">    Internal variables</span>
+<span class="sd">    ------------------</span>
+<span class="sd">    mu_: float,  n_neurons x 1, preferred feature [-pi, pi]</span>
+<span class="sd">    k0_: float,  n_neurons x 1, baseline</span>
+<span class="sd">    k_: float,  n_neurons x 1, shape (width)</span>
+<span class="sd">    k1_: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">    k2_: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">    g_: float,  n_neurons x 1, gain</span>
+<span class="sd">    b_: float,  n_neurons x 1, baseline</span>
+
+<span class="sd">    Callable methods</span>
+<span class="sd">    ----------------</span>
+<span class="sd">    set_params</span>
+<span class="sd">    simulate</span>
+<span class="sd">    fit</span>
+<span class="sd">    predict</span>
+<span class="sd">    decode</span>
+<span class="sd">    display</span>
+<span class="sd">    score</span>
+
+<span class="sd">    Class methods</span>
+<span class="sd">    -------------</span>
+<span class="sd">    _tunefun</span>
+<span class="sd">    _loss</span>
+<span class="sd">    _grad_theta_loss</span>
+<span class="sd">    _grad_x_loss</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tunemodel</span><span class="o">=</span><span class="s1">&#39;glm&#39;</span><span class="p">,</span> <span class="n">n_neurons</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                 <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">eta</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
+                 <span class="n">learning_rate</span><span class="o">=</span><span class="mi">2</span><span class="n">e</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">convergence_threshold</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span>
+                 <span class="n">maxiter</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">n_repeats</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tunemodel</span> <span class="o">=</span> <span class="n">tunemodel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span> <span class="o">=</span> <span class="n">n_neurons</span>
+
+        <span class="c1"># Assign random tuning parameters</span>
+        <span class="c1"># --------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mu_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">tunemodel</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">))</span>
+
+        <span class="c1"># Assign optimization parameters</span>
+        <span class="c1"># -------------------------------</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eta</span> <span class="o">=</span> <span class="n">eta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">learning_rate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convergence_threshold</span> <span class="o">=</span> <span class="n">convergence_threshold</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maxiter</span> <span class="o">=</span> <span class="n">maxiter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_repeats</span> <span class="o">=</span> <span class="n">n_repeats</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroPop.set_params"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop.set_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tunemodel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">neurons</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">k0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">k</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">g</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A function that sets tuning curve parameters as specified</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tunemodel: str, either &#39;gvm&#39; or &#39;glm&#39;</span>
+<span class="sd">        neurons: list,</span>
+<span class="sd">            a list of integers which specifies the subset of neurons to set</span>
+<span class="sd">            default: all neurons</span>
+
+<span class="sd">        mu: float,  len(neurons) x 1, feature of interest</span>
+<span class="sd">        k0: float,  len(neurons) x 1, baseline</span>
+<span class="sd">        k: float,  len(neurons) x 1, gain</span>
+<span class="sd">        g: float,  len(neurons) x 1, gain</span>
+<span class="sd">        b: float,  len(neurons) x 1, baseline</span>
+
+<span class="sd">        if any of the above are None, it randomly initializes parameters for</span>
+<span class="sd">        all neurons</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">tunemodel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">tunemodel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tunemodel</span>
+
+        <span class="k">if</span> <span class="n">neurons</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">neurons</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">n_neurons</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_neurons</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Assign parameters; if None, assign random</span>
+        <span class="k">if</span> <span class="n">mu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">mu</span>
+
+        <span class="k">if</span> <span class="n">k0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;glm&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">k0</span>
+
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="mf">20.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu_</span><span class="p">[</span><span class="n">neurons</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mu_</span><span class="p">[</span><span class="n">neurons</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">g</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;gvm&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span>
+
+        <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;gvm&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">[</span><span class="n">neurons</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_tunefun</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The tuning function as specified in self.tunemodel</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: float, n_samples x 1, feature of interest</span>
+<span class="sd">        k0: float,  n_neurons x 1, baseline</span>
+<span class="sd">        k1: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        k2: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        g: float,  n_neurons x 1, gain</span>
+<span class="sd">        b: float,  n_neurons x 1, baseline</span>
+
+<span class="sd">        Outputs</span>
+<span class="sd">        -------</span>
+<span class="sd">        Y: float, n_samples x 1, firing rates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="n">g</span> <span class="o">*</span> <span class="n">slow_exp</span><span class="p">(</span><span class="n">k0</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The loss function: negative Poisson log likelihood function</span>
+<span class="sd">        under the von mises tuning model</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: float, n_samples x 1 (encoding) |</span>
+<span class="sd">            scalar (decoding), feature of interest</span>
+<span class="sd">        y: float, n_samples x 1 (encoding) |</span>
+<span class="sd">            n_neurons x 1 (decoding), firing rates</span>
+<span class="sd">        mu: float,  n_neurons x 1, preferred feature [-pi, pi]</span>
+<span class="sd">        k0: float,  n_neurons x 1, baseline</span>
+<span class="sd">        k1: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        k2: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        g: float,  n_neurons x 1, gain</span>
+<span class="sd">        b: float,  n_neurons x 1, baseline</span>
+
+<span class="sd">        Outputs</span>
+<span class="sd">        -------</span>
+<span class="sd">        loss: float, scalar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lmb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tunefun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">J</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lmb</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">lmb</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">J</span>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_grad_theta_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tunemodel</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The gradient of the loss function:</span>
+<span class="sd">        wrt parameters of the tuning model (theta)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: float,  n_samples x 1, feature of interest</span>
+<span class="sd">        y: float,  n_samples x 1, firing rates</span>
+<span class="sd">        k0: float,  n_neurons x 1, baseline</span>
+<span class="sd">        k1: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        k2: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        g: float,  scalar, gain</span>
+<span class="sd">        b: float,  scalar, baseline</span>
+
+<span class="sd">        Outputs</span>
+<span class="sd">        -------</span>
+<span class="sd">        grad_k0: float, scalar</span>
+<span class="sd">        grad_k1: float, scalar</span>
+<span class="sd">        grad_k2: float, scalar</span>
+<span class="sd">        grad_g: float, scalar</span>
+<span class="sd">        grad_b: float, scalar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lmb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tunefun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">grad_k1</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="n">grad_slow_exp</span><span class="p">(</span><span class="n">k0</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span>
+                                          <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span>
+                                          <span class="mi">1</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="n">lmb</span><span class="p">))</span>
+        <span class="n">grad_k2</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="n">grad_slow_exp</span><span class="p">(</span><span class="n">k0</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span>
+                                          <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span>
+                                          <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="n">lmb</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;glm&#39;</span><span class="p">:</span>
+            <span class="n">grad_k0</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">grad_slow_exp</span><span class="p">(</span><span class="n">k0</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span>
+                                              <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                                              <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="n">lmb</span><span class="p">))</span>
+            <span class="n">grad_g</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">grad_b</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">elif</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;gvm&#39;</span><span class="p">:</span>
+            <span class="n">grad_k0</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="n">grad_g</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n_samples</span> <span class="o">*</span>\
+                <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">slow_exp</span><span class="p">(</span><span class="n">k0</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="n">lmb</span><span class="p">))</span>
+            <span class="n">grad_b</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n_samples</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="n">lmb</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">grad_k0</span><span class="p">,</span> <span class="n">grad_k1</span><span class="p">,</span> <span class="n">grad_k2</span><span class="p">,</span> <span class="n">grad_g</span><span class="p">,</span> <span class="n">grad_b</span>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+    <span class="k">def</span> <span class="nf">_grad_x_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The gradient of the loss function:</span>
+<span class="sd">        wrt encoded feature x</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: float, scalar, feature of interest</span>
+<span class="sd">        y: float, n_neurons x 1, firing rates</span>
+<span class="sd">        k0: float,  n_neurons x 1, baseline</span>
+<span class="sd">        k1: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        k2: float,  n_neurons x 1, convenience parameter</span>
+<span class="sd">        g: float,  n_neurons x 1, gain</span>
+<span class="sd">        b: float,  n_neurons x 1, baseline</span>
+
+<span class="sd">        Outputs</span>
+<span class="sd">        -------</span>
+<span class="sd">        grad_x: float, scalar</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_neurons</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+
+        <span class="n">lmb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tunefun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k1</span><span class="p">,</span> <span class="n">k2</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+        <span class="n">grad_x</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n_neurons</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">g</span> <span class="o">*</span> <span class="n">grad_slow_exp</span><span class="p">(</span><span class="n">k0</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span>
+                                                           <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span> <span class="o">*</span>
+                                                           <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span>
+                                                           <span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">)</span> <span class="o">*</span>
+                                         <span class="p">(</span><span class="n">k2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="n">k1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">*</span>
+                                         <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span> <span class="o">/</span> <span class="n">lmb</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">grad_x</span>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroPop.simulate"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop.simulate">[docs]</a>    <span class="k">def</span> <span class="nf">simulate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tunemodel</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">winsize</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simulates firing rates from a neural population by randomly sampling</span>
+<span class="sd">        circular variables (feature of interest)</span>
+<span class="sd">        as well as parameters (mu, k0, k, g, b)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        n_samples, int, number of samples required</span>
+<span class="sd">        winsize, float, time interval in which to simulate spike counts,</span>
+<span class="sd">            milliseconds</span>
+<span class="sd">        Outputs</span>
+<span class="sd">        -------</span>
+<span class="sd">        x: float, n_samples x 1, feature of interest</span>
+<span class="sd">        Y: float, n_samples x n_neurons, population activity</span>
+<span class="sd">        mu: float,  n_neurons x 1, preferred feature [-pi, pi]</span>
+<span class="sd">        k0: float,  n_neurons x 1, baseline</span>
+<span class="sd">        k: float,  n_neurons x 1, shape (width)</span>
+<span class="sd">        g: float,  n_neurons x 1, gain</span>
+<span class="sd">        b: float,  n_neurons x 1, baseline</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Sample parameters randomly</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;glm&#39;</span><span class="p">:</span>
+            <span class="n">k0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">k0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+
+        <span class="n">k</span> <span class="o">=</span> <span class="mf">20.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+
+        <span class="n">k1</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+        <span class="n">k2</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">mu</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;gvm&#39;</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="mf">5.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;gvm&#39;</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">)</span>
+
+        <span class="c1"># Sample features of interest randomly [-pi, pi]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="c1"># Calculate firing rates under the desired model</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">):</span>
+            <span class="c1"># Compute the spike count under the tuning model for given window</span>
+            <span class="c1"># size</span>
+            <span class="n">lam</span> <span class="o">=</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span> <span class="o">*</span> <span class="n">winsize</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tunefun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k0</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">k1</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">k2</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">g</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+                                                 <span class="n">b</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+
+            <span class="c1"># Sample Poisson distributed spike counts and convert back to</span>
+            <span class="c1"># firing rate</span>
+            <span class="n">Y</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="n">e3</span> <span class="o">/</span> <span class="n">winsize</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">mu</span><span class="p">,</span> <span class="n">k0</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">b</span></div>
+
+<div class="viewcode-block" id="NeuroPop.predict"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compute the firing rates for the population</span>
+<span class="sd">        based on the fit or specified tuning models</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: float, n_samples x 1, feature of interest</span>
+
+<span class="sd">        Outputs</span>
+<span class="sd">        -------</span>
+<span class="sd">        Y: float, n_samples x n_neurons, population activity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">n_samples</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">])</span>
+        <span class="c1"># For each neuron</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">):</span>
+            <span class="c1"># Compute the firing rate under the von Mises model</span>
+            <span class="n">Y</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tunefun</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">[</span><span class="n">n</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">Y</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroPop.fit"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Estimate the parameters of the tuning curve under the</span>
+<span class="sd">        model specified by self.tunemodel,</span>
+<span class="sd">        given features and population activity</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: float, n_samples x 1, feature of interest</span>
+<span class="sd">        Y: float, n_samples x n_neurons, population activity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">Y</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">learning_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span>
+        <span class="n">convergence_threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convergence_threshold</span>
+        <span class="n">n_repeats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_repeats</span>
+        <span class="n">maxiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxiter</span>
+
+        <span class="c1"># Fit model for each neuron</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">):</span>
+
+            <span class="c1"># Collect parameters for each repeat</span>
+            <span class="n">fit_params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+            <span class="c1"># Repeat several times over random initializations</span>
+            <span class="c1"># (global optimization)</span>
+            <span class="k">for</span> <span class="n">repeat</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_repeats</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tunemodel</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+                <span class="n">fit_params</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s1">&#39;k0&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="s1">&#39;k1&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+                                   <span class="s1">&#39;k2&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span>
+                                   <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="s1">&#39;loss&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
+
+                <span class="c1"># Collect loss and delta loss for each iteration</span>
+                <span class="n">L</span><span class="p">,</span> <span class="n">DL</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="nb">list</span><span class="p">()</span>
+
+                <span class="c1"># Gradient descent iterations (local optimization)</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">):</span>
+
+                    <span class="n">converged</span> <span class="o">=</span> <span class="kc">False</span>
+
+                    <span class="c1"># Compute gradients</span>
+                    <span class="n">grad_k0_</span><span class="p">,</span> <span class="n">grad_k1_</span><span class="p">,</span> <span class="n">grad_k2_</span><span class="p">,</span> <span class="n">grad_g_</span><span class="p">,</span> <span class="n">grad_b_</span> <span class="o">=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_grad_theta_loss</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tunemodel</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Y</span><span class="p">[:,</span> <span class="n">n</span><span class="p">],</span>
+                                              <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k0&#39;</span><span class="p">],</span>
+                                              <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k1&#39;</span><span class="p">],</span>
+                                              <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k2&#39;</span><span class="p">],</span>
+                                              <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;g&#39;</span><span class="p">],</span>
+                                              <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;b&#39;</span><span class="p">])</span>
+
+                    <span class="c1"># Update parameters</span>
+                    <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k1&#39;</span><span class="p">]</span> <span class="o">=</span>\
+                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k1&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_k1_</span>
+                    <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k2&#39;</span><span class="p">]</span> <span class="o">=</span>\
+                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k2&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_k2_</span>
+
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;glm&#39;</span><span class="p">:</span>
+                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k0&#39;</span><span class="p">]</span> <span class="o">=</span>\
+                            <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k0&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_k0_</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tunemodel</span> <span class="o">==</span> <span class="s1">&#39;gvm&#39;</span><span class="p">:</span>
+                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;g&#39;</span><span class="p">]</span> <span class="o">=</span>\
+                            <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;g&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_g_</span>
+                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">=</span>\
+                            <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;b&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_b_</span>
+
+                    <span class="c1"># Update loss</span>
+                    <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Y</span><span class="p">[:,</span> <span class="n">n</span><span class="p">],</span>
+                                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k0&#39;</span><span class="p">],</span>
+                                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k1&#39;</span><span class="p">],</span>
+                                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k2&#39;</span><span class="p">],</span>
+                                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;g&#39;</span><span class="p">],</span>
+                                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;b&#39;</span><span class="p">]))</span>
+
+                    <span class="c1"># Update delta loss and check for convergence</span>
+                    <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">DL</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">DL</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">convergence_threshold</span><span class="p">:</span>
+                            <span class="n">converged</span> <span class="o">=</span> <span class="kc">True</span>
+
+                    <span class="c1"># Back out gain from k1 and k2</span>
+                    <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k1&#39;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span>
+                        <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k2&#39;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+
+                    <span class="c1"># Back out preferred feature (mu) from k1 and k2</span>
+                    <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                        <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k2&#39;</span><span class="p">],</span>
+                                   <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;k1&#39;</span><span class="p">])</span>
+
+                    <span class="c1"># Check for convergence</span>
+                    <span class="k">if</span> <span class="n">converged</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+                <span class="c1"># Store the converged loss function</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">Converged. Loss function: </span><span class="si">{0:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="c1"># logger.info(msg)</span>
+                <span class="c1"># logger.info(&#39;\tdL/L: {0:.6f}\n&#39;.format(DL[-1] / L[-1]))</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">fit_params</span><span class="p">[</span><span class="n">repeat</span><span class="p">][</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># Assign the global optimum</span>
+            <span class="n">amin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;loss&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">fit_params</span><span class="p">])</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mu_</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_params</span><span class="p">[</span><span class="n">amin</span><span class="p">][</span><span class="s1">&#39;mu&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_params</span><span class="p">[</span><span class="n">amin</span><span class="p">][</span><span class="s1">&#39;k0&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_params</span><span class="p">[</span><span class="n">amin</span><span class="p">][</span><span class="s1">&#39;k1&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_params</span><span class="p">[</span><span class="n">amin</span><span class="p">][</span><span class="s1">&#39;k2&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">k_</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_params</span><span class="p">[</span><span class="n">amin</span><span class="p">][</span><span class="s1">&#39;k&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_params</span><span class="p">[</span><span class="n">amin</span><span class="p">][</span><span class="s1">&#39;g&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">fit_params</span><span class="p">[</span><span class="n">amin</span><span class="p">][</span><span class="s1">&#39;b&#39;</span><span class="p">]</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroPop.decode"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop.decode">[docs]</a>    <span class="k">def</span> <span class="nf">decode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given population activity estimate the feature that generated it</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Y: float, n_samples x n_neurons, population activity</span>
+
+<span class="sd">        Outputs</span>
+<span class="sd">        -------</span>
+<span class="sd">        x: float, n_samples x 1, feature of interest</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n_samples</span> <span class="o">=</span> <span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">maxiter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxiter</span>
+        <span class="n">learning_rate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span>
+        <span class="n">convergence_threshold</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convergence_threshold</span>
+
+        <span class="c1"># Initialize feature</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span> <span class="o">-</span> <span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="c1"># For each sample</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">):</span>
+
+            <span class="c1"># Collect loss and delta loss for each iteration</span>
+            <span class="n">L</span><span class="p">,</span> <span class="n">DL</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(),</span> <span class="nb">list</span><span class="p">()</span>
+
+            <span class="c1"># Gradient descent iterations (local optimization)</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxiter</span><span class="p">):</span>
+
+                <span class="c1"># Compute gradients</span>
+                <span class="n">grad_x_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grad_x_loss</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:],</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">)</span>
+
+                <span class="c1"># Update parameters</span>
+                <span class="n">x</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">grad_x_</span>
+
+                <span class="c1"># Update loss</span>
+                <span class="n">L</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_loss</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">Y</span><span class="p">[</span><span class="n">s</span><span class="p">,</span> <span class="p">:],</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">))</span>
+
+                <span class="c1"># Update delta loss and check for convergence</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">DL</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">DL</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;</span> <span class="n">convergence_threshold</span><span class="p">:</span>
+                        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1"> Converged. Loss function: </span><span class="si">{0:.2f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">L</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="c1"># logger.info(msg)</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="c1"># if True:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="k">break</span>
+
+        <span class="c1"># Make sure x is between [-pi, pi]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">x</span></div>
+    <span class="c1"># -----------------------------------------------------------------------</span>
+
+<div class="viewcode-block" id="NeuroPop.display"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop.display">[docs]</a>    <span class="k">def</span> <span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">neuron</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">25</span><span class="p">],</span>
+                <span class="n">xlabel</span><span class="o">=</span><span class="s1">&#39;direction [radians]&#39;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s1">&#39;firing rate [spk/s]&#39;</span><span class="p">,</span>
+                <span class="n">style</span><span class="o">=</span><span class="s1">&#39;../mpl_styles/spykes.mplstyle&#39;</span><span class="p">,</span>
+                <span class="n">xjitter</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">yjitter</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Visualize data and estimated tuning curves</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        x: float, n_samples x 1, feature of interest</span>
+<span class="sd">        Y: float, n_samples x 1, firing rates</span>
+<span class="sd">        neuron: int, which neuron&#39;s fit to plot from the population?</span>
+<span class="sd">        colors: list of str, plot strings that specify color for raw data &amp; fit</span>
+<span class="sd">        alpha: float, transparency for raw data</span>
+<span class="sd">        ylim: list of float, y axis limits</span>
+<span class="sd">        xlabel: str, x label (typically name of the feature)</span>
+<span class="sd">        ylabel: str, y label (typically firing rate)</span>
+<span class="sd">        style: str, name of the mpl style file to use with path</span>
+<span class="sd">        xjitter: bool, whether to add jitter to x variable while plotting</span>
+<span class="sd">        ylitter: bool, whether to add jitter to y variable while plotting</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">xjitter</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">x_jitter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">32</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">x_jitter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">yjitter</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">y_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span>
+            <span class="n">Y_jitter</span> <span class="o">=</span> <span class="n">y_range</span> <span class="o">/</span> <span class="mf">20.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">Y_jitter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x_jitter</span><span class="p">,</span> <span class="n">Y</span> <span class="o">+</span> <span class="n">Y_jitter</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+        <span class="n">x_range</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">32</span><span class="p">)</span>
+        <span class="n">Yhat_range</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tunefun</span><span class="p">(</span><span class="n">x_range</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">k0_</span><span class="p">[</span><span class="n">neuron</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">k1_</span><span class="p">[</span><span class="n">neuron</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">k2_</span><span class="p">[</span><span class="n">neuron</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">g_</span><span class="p">[</span><span class="n">neuron</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">b_</span><span class="p">[</span><span class="n">neuron</span><span class="p">])</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_range</span><span class="p">,</span> <span class="n">Yhat_range</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">ylim</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">ylabel</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span></div>
+
+    <span class="c1"># -----------------------------------------------------------------------</span>
+<div class="viewcode-block" id="NeuroPop.score"><a class="viewcode-back" href="../../api.html#spykes.neuropop.NeuroPop.score">[docs]</a>    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">Yhat</span><span class="p">,</span> <span class="n">Ynull</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;circ_corr&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Score the model.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        Y : array, shape (n_samples, [n_neurons])</span>
+<span class="sd">            The true firing rates.</span>
+<span class="sd">        Yhat : array, shape (n_samples, [n_neurons])</span>
+<span class="sd">            The estimated firing rates.</span>
+<span class="sd">        Ynull : None | array, shape (n_samples, [n_classes])</span>
+<span class="sd">            The labels for the null model. Must be None if method is not</span>
+<span class="sd">            &#39;pseudo_R2&#39;</span>
+<span class="sd">        method : str</span>
+<span class="sd">            One of &#39;pseudo_R2&#39; or &#39;circ_corr&#39; or &#39;cosine_dist&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;pseudo_R2&#39;</span><span class="p">:</span>
+            <span class="k">if</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># There are many neurons, so calculate and return the score for</span>
+                <span class="c1"># each neuron</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="n">L1</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">Y</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">],</span> <span class="n">Yhat</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">])</span>
+                    <span class="n">LS</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">Y</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">],</span> <span class="n">Y</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">])</span>
+                    <span class="n">L0</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">Y</span><span class="p">[:,</span> <span class="n">neuron</span><span class="p">],</span> <span class="n">Ynull</span><span class="p">[</span><span class="n">neuron</span><span class="p">])</span>
+                    <span class="n">score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">LS</span> <span class="o">-</span> <span class="n">L1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">LS</span> <span class="o">-</span> <span class="n">L0</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">L1</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Yhat</span><span class="p">)</span>
+                <span class="n">LS</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+                <span class="n">L0</span> <span class="o">=</span> <span class="n">log_likelihood</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">Ynull</span><span class="p">)</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">LS</span> <span class="o">-</span> <span class="n">L1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">LS</span> <span class="o">-</span> <span class="n">L0</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;circ_corr&#39;</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">circ_corr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">Y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">Yhat</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;cosine_dist&#39;</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">Y</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">Yhat</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">score</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, KordingLab.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.5.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
