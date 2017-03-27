@@ -170,7 +170,7 @@ visualizing firing activity of single neurons</p>
 <tr class="row-even"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.plot_raster" title="spykes.neurovis.NeuroVis.plot_raster"><code class="xref py py-obj docutils literal"><span class="pre">plot_raster</span></code></a>(rasters[,&nbsp;cond_id,&nbsp;cond_name,&nbsp;...])</td>
 <td>Plot one raster</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.get_psth" title="spykes.neurovis.NeuroVis.get_psth"><code class="xref py py-obj docutils literal"><span class="pre">get_psth</span></code></a>([event,&nbsp;df,&nbsp;conditions,&nbsp;window,&nbsp;...])</td>
+<tr class="row-odd"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.get_psth" title="spykes.neurovis.NeuroVis.get_psth"><code class="xref py py-obj docutils literal"><span class="pre">get_psth</span></code></a>([event,&nbsp;df,&nbsp;conditions,&nbsp;cond_id,&nbsp;...])</td>
 <td>Compute the psth and plot it</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="#spykes.neurovis.NeuroVis.plot_psth" title="spykes.neurovis.NeuroVis.plot_psth"><code class="xref py py-obj docutils literal"><span class="pre">plot_psth</span></code></a>(psth[,&nbsp;event_name,&nbsp;...])</td>
@@ -191,7 +191,7 @@ visualizing firing activity of single neurons</p>
 </table>
 <dl class="method">
 <dt id="spykes.neurovis.NeuroVis.get_psth">
-<code class="descname">get_psth</code><span class="sig-paren">(</span><em>event=None, df=None, conditions=None, window=[-100, 500], binsize=10, plot=True, event_name=None, conditions_names=None, ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.get_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.get_psth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_psth</code><span class="sig-paren">(</span><em>event=None, df=None, conditions=None, cond_id=None, window=[-100, 500], binsize=10, plot=True, event_name=None, conditions_names=None, ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.get_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.get_psth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the psth and plot it</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -207,6 +207,11 @@ etc.)</p>
 <blockquote>
 <div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
 conditions by which the trials must be grouped</p>
+</div></blockquote>
+<p><strong>cond_id: list</strong></p>
+<blockquote>
+<div><p>Which psth to plot indicated by the key in all_psth[&#8216;data&#8217;].
+If None then all are plotted.</p>
 </div></blockquote>
 <p><strong>df: DataFrame (or dictionary)</strong></p>
 <p><strong>window: list of 2 elements</strong></p>
@@ -333,7 +338,7 @@ etc.)</p>
 
 <dl class="method">
 <dt id="spykes.neurovis.NeuroVis.plot_psth">
-<code class="descname">plot_psth</code><span class="sig-paren">(</span><em>psth, event_name='event_onset', conditions_names=None, ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.plot_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.plot_psth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_psth</code><span class="sig-paren">(</span><em>psth, event_name='event_onset', conditions_names=None, cond_id=None, ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neurovis.html#NeuroVis.plot_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neurovis.NeuroVis.plot_psth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot psth</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -347,6 +352,11 @@ etc.)</p>
 <p><strong>conditions_names:</strong></p>
 <blockquote>
 <div><p>Legend names for conditions. Default are the keys in psth[&#8216;data&#8217;]</p>
+</div></blockquote>
+<p><strong>cond_id: list</strong></p>
+<blockquote>
+<div><p>Which psth to plot indicated by the key in all_psth[&#8216;data&#8217;].
+If None then all are plotted.</p>
 </div></blockquote>
 <p><strong>ylim: list</strong></p>
 <p class="last"><strong>colors: list</strong></p>
@@ -599,174 +609,138 @@ as well as parameters (mu, k0, k, g, b)</p>
 <span id="popvis"></span><h2>PopVis<a class="headerlink" href="#module-spykes.popvis" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="spykes.popvis.PopVis">
-<em class="property">class </em><code class="descclassname">spykes.popvis.</code><code class="descname">PopVis</code><span class="sig-paren">(</span><em>neuron_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">spykes.popvis.</code><code class="descname">PopVis</code><span class="sig-paren">(</span><em>neuron_list</em>, <em>name=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis" title="Permalink to this definition">¶</a></dt>
 <dd><p>This class implements several conveniences for
-visualizing firing activity of neuron populations</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>neuron_list: list of NeuroVis objects</strong></p>
-<p class="last"><strong>(see NeuroVis class in spykes.neurovis)</strong></p>
-</td>
-</tr>
-</tbody>
-</table>
+visualizing firing activity of neuron populations
+Parameters
+&#8212;&#8212;&#8212;-
+neuron_list: list of NeuroVis objects
+(see NeuroVis class in spykes.neurovis)
+Internal variables
+&#8212;&#8212;&#8212;&#8212;&#8212;&#8212;
+neuron_list: list of NeuroVis objects
+n_neurons: int
+Callable methods
+&#8212;&#8212;&#8212;&#8212;&#8212;-
+get_all_psth
+plot_heat_map
+plot_population_psth
+Class methods
+&#8212;&#8212;&#8212;&#8212;-
+_get_normed_data</p>
 <dl class="method">
 <dt id="spykes.popvis.PopVis.get_all_psth">
 <code class="descname">get_all_psth</code><span class="sig-paren">(</span><em>event=None, df=None, conditions=None, window=[-100, 500], binsize=10, conditions_names=None, plot=True, colors=['Blues', 'Reds', 'Greens']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.get_all_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.get_all_psth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterates through all neurons and computes their PSTH&#8217;s</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>event: str</strong></p>
+<dd><p>Iterates through all neurons and computes their PSTH&#8217;s
+Parameters
+&#8212;&#8212;&#8212;-
+event: str</p>
 <blockquote>
-<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
+<div>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
 event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
-etc.)</p>
-</div></blockquote>
-<p><strong>df: DataFrame (or dictionary)</strong></p>
-<p><strong>conditions: str</strong></p>
+etc.)</div></blockquote>
+<p>df: DataFrame (or dictionary)
+conditions: str</p>
 <blockquote>
-<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
-conditions by which the trials must be grouped</p>
-</div></blockquote>
-<p><strong>window: list of 2 elements</strong></p>
-<blockquote>
-<div><p>Time interval to consider (milliseconds)</p>
-</div></blockquote>
-<p><strong>binsize: int</strong></p>
-<blockquote>
-<div><p>Bin size in milliseconds</p>
-</div></blockquote>
-<p><strong>conditions_names:</strong></p>
-<blockquote>
-<div><p>Legend names for conditions. Default are the unique values in
-df[&#8216;conditions&#8217;]</p>
-</div></blockquote>
-<p><strong>plot: bool</strong></p>
-<blockquote>
-<div><p>Whether to automatically plot or not</p>
-</div></blockquote>
-<p><strong>colors:</strong></p>
-<blockquote>
-<div><p>list of colors for heatmap (only if plot is True)</p>
-</div></blockquote>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>all_psth</strong> : dictionary</p>
-<blockquote class="last">
-<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.</p>
-<p>Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
-each cond_id that correspond to the means for that condition</p>
-</div></blockquote>
-</td>
-</tr>
-</tbody>
-</table>
+<div>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
+conditions by which the trials must be grouped</div></blockquote>
+<dl class="docutils">
+<dt>window: list of 2 elements</dt>
+<dd>Time interval to consider (milliseconds)</dd>
+<dt>binsize: int</dt>
+<dd>Bin size in milliseconds</dd>
+<dt>conditions_names:</dt>
+<dd>Legend names for conditions. Default are the unique values in
+df[&#8216;conditions&#8217;]</dd>
+<dt>plot: bool</dt>
+<dd>Whether to automatically plot or not</dd>
+<dt>colors:</dt>
+<dd>list of colors for heatmap (only if plot is True)</dd>
+</dl>
+<dl class="docutils">
+<dt>all_psth</dt>
+ <span class="classifier-delimiter">:</span> <span class="classifier">dictionary</span><dd>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.
+Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
+each cond_id that correspond to the means for that condition</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="spykes.popvis.PopVis.plot_heat_map">
-<code class="descname">plot_heat_map</code><span class="sig-paren">(</span><em>psth_dict, cond_id=None, conditions_names=None, sortby=None, sortorder='descend', normalize=None, colors=['Blues', 'Reds', 'Greens']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.plot_heat_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.plot_heat_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots heat map for neuron population</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>psth_dict</strong> : dictionary</p>
+<code class="descname">plot_heat_map</code><span class="sig-paren">(</span><em>psth_dict, cond_id=None, conditions_names=None, sortby=None, sortorder='descend', normalize=None, neuron_names=True, colors=['Blues', 'Reds', 'Greens']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.plot_heat_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.plot_heat_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots heat map for neuron population
+Parameters
+&#8212;&#8212;&#8212;-
+psth_dict : dictionary</p>
 <blockquote>
-<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.</p>
-<p>Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
-each cond_id that correspond to the means for that condition</p>
-</div></blockquote>
-<p><strong>cond_id</strong></p>
-<blockquote>
-<div><p>Which psth to plot indicated by the key in all_psth[&#8216;data&#8217;].
-If None then all are plotted.</p>
-</div></blockquote>
-<p><strong>conditions_names: str (or list)</strong></p>
-<blockquote>
-<div><p>Name(s) to appear in the title</p>
-</div></blockquote>
-<p><strong>sortby: str or list</strong></p>
-<blockquote>
-<div><p>None:
+<div>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.
+Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
+each cond_id that correspond to the means for that condition</div></blockquote>
+<dl class="docutils">
+<dt>cond_id</dt>
+<dd>Which psth to plot indicated by the key in all_psth[&#8216;data&#8217;].
+If None then all are plotted.</dd>
+<dt>conditions_names: str (or list)</dt>
+<dd>Name(s) to appear in the title</dd>
+<dt>sortby: str or list</dt>
+<dd>None:
 &#8216;rate&#8217;: sort by firing rate
 &#8216;latency&#8217;: sort by peak latency
-list: list of integer indices to be used as sorting indicces</p>
-</div></blockquote>
-<p><strong>sortorder: direction to sort in</strong></p>
-<blockquote>
-<div><p>&#8216;descend&#8217;
-&#8216;ascend&#8217;</p>
-</div></blockquote>
-<p><strong>normalize: str</strong></p>
-<blockquote>
-<div><p>None
+list: list of integer indices to be used as sorting indicces</dd>
+<dt>sortorder: direction to sort in</dt>
+<dd>&#8216;descend&#8217;
+&#8216;ascend&#8217;</dd>
+<dt>normalize: str</dt>
+<dd>None
 &#8216;all&#8217; : divide all PSTHs by highest peak firing rate in all neurons
-&#8216;each&#8217; : divide each PSTH by its own peak firing rate</p>
-</div></blockquote>
-<p class="last"><strong>colors: list of colors for heatmap</strong></p>
-</td>
-</tr>
-</tbody>
-</table>
+&#8216;each&#8217; : divide each PSTH by its own peak firing rate</dd>
+<dt>neuron_names: bool</dt>
+<dd>Whether or not to list the names of neurons on the side</dd>
+</dl>
+<p>colors: list of colors for heatmap</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="spykes.popvis.PopVis.plot_population_psth">
-<code class="descname">plot_population_psth</code><span class="sig-paren">(</span><em>all_psth=None, event=None, df=None, conditions=None, window=[-100, 500], binsize=10, conditions_names=None, event_name='event_onset', ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.plot_population_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.plot_population_psth" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_population_psth</code><span class="sig-paren">(</span><em>all_psth=None, event=None, df=None, conditions=None, cond_id=None, window=[-100, 500], binsize=10, conditions_names=None, event_name='event_onset', ylim=None, colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E', '#FF07CD']</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/popvis.html#PopVis.plot_population_psth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.popvis.PopVis.plot_population_psth" title="Permalink to this definition">¶</a></dt>
 <dd><ol class="arabic simple">
 <li>Normalizes each neuron&#8217;s PSTH across condition</li>
-<li>Averages out and plots population PSTH</li>
 </ol>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>all_psth</strong> : dictionary</p>
+<p>2. Averages out and plots population PSTH
+Parameters
+&#8212;&#8212;&#8212;-
+all_psth : dictionary</p>
 <blockquote>
-<div><p>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.</p>
-<p>Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
-each cond_id that correspond to the means for that condition</p>
-</div></blockquote>
-<p><strong>event: str</strong></p>
-<blockquote>
-<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
+<div>With keys: &#8216;event&#8217;, &#8216;conditions&#8217;, &#8216;binsize&#8217;, &#8216;window&#8217;, and &#8216;data&#8217;.
+Each entry in psth[&#8216;data&#8217;] is itself a dictionary with keys of
+each cond_id that correspond to the means for that condition</div></blockquote>
+<dl class="docutils">
+<dt>event: str</dt>
+<dd>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains
 event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
-etc.)</p>
-</div></blockquote>
-<p><strong>df: DataFrame (or dictionary)</strong></p>
-<p><strong>conditions: str</strong></p>
+etc.)</dd>
+</dl>
+<p>df: DataFrame (or dictionary)
+conditions: str</p>
 <blockquote>
-<div><p>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
-conditions by which the trials must be grouped</p>
-</div></blockquote>
-<p><strong>window: list of 2 elements</strong></p>
-<blockquote>
-<div><p>Time interval to consider (milliseconds)</p>
-</div></blockquote>
-<p><strong>binsize: int</strong></p>
-<blockquote>
-<div><p>Bin size in milliseconds</p>
-</div></blockquote>
-<p><strong>conditions_names:</strong></p>
-<blockquote>
-<div><p>Legend names for conditions. Default are the unique values in
-df[&#8216;conditions&#8217;]</p>
-</div></blockquote>
-<p><strong>event_name: string</strong></p>
-<blockquote>
-<div><p>Legend name for event. Default is the actual &#8216;event&#8217; name</p>
-</div></blockquote>
-<p><strong>ylim: list</strong></p>
-<p class="last"><strong>colors: list</strong></p>
-</td>
-</tr>
-</tbody>
-</table>
+<div>Column/key name of DataFrame/dictionary &#8220;data&#8221; which contains the
+conditions by which the trials must be grouped</div></blockquote>
+<dl class="docutils">
+<dt>cond_id: list</dt>
+<dd>Which psth to plot indicated by the key in all_psth[&#8216;data&#8217;].
+If None then all are plotted.</dd>
+<dt>window: list of 2 elements</dt>
+<dd>Time interval to consider (milliseconds)</dd>
+<dt>binsize: int</dt>
+<dd>Bin size in milliseconds</dd>
+<dt>conditions_names:</dt>
+<dd>Legend names for conditions. Default are the unique values in
+df[&#8216;conditions&#8217;]</dd>
+<dt>event_name: string</dt>
+<dd>Legend name for event. Default is the actual &#8216;event&#8217; name</dd>
+</dl>
+<p>ylim: list
+colors: list</p>
 </dd></dl>
 
 </dd></dl>

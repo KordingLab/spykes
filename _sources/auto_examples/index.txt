@@ -68,6 +68,26 @@ Examples Gallery
 
 .. raw:: html
 
+    <div class="sphx-glr-thumbcontainer" tooltip="Use spykes to analyze data from UCL's Neuropixels">
+
+.. only:: html
+
+    .. figure:: /auto_examples/images/thumb/sphx_glr_plot_neuropixels_example_thumb.png
+
+        :ref:`sphx_glr_auto_examples_plot_neuropixels_example.py`
+
+.. raw:: html
+
+    </div>
+
+
+.. toctree::
+   :hidden:
+
+   /auto_examples/plot_neuropixels_example
+
+.. raw:: html
+
     <div class="sphx-glr-thumbcontainer" tooltip="Reproduce a figure from a published article with a public dataset">
 
 .. only:: html

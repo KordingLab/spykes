@@ -270,7 +270,7 @@ Score decoding performance
     Cosine distance: 0.790281
 
 
-**Total running time of the script:** ( 0 minutes  19.890 seconds)
+**Total running time of the script:** ( 0 minutes  19.554 seconds)
 
 
 

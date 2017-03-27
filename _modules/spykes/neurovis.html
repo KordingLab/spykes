@@ -378,7 +378,7 @@
                 <span class="k">print</span><span class="p">(</span><span class="s1">&#39;No trials for this condition!&#39;</span><span class="p">)</span></div>
 
     <span class="c1"># -----------------------------------------------------------------------</span>
-<div class="viewcode-block" id="NeuroVis.get_psth"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.get_psth">[docs]</a>    <span class="k">def</span> <span class="nf">get_psth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="NeuroVis.get_psth"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.get_psth">[docs]</a>    <span class="k">def</span> <span class="nf">get_psth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">event_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">conditions_names</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span> <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span> <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span> <span class="s1">&#39;#02A68E&#39;</span><span class="p">,</span>
@@ -396,6 +396,10 @@
 <span class="sd">        conditions: str</span>
 <span class="sd">            Column/key name of DataFrame/dictionary &quot;data&quot; which contains the</span>
 <span class="sd">            conditions by which the trials must be grouped</span>
+
+<span class="sd">        cond_id: list</span>
+<span class="sd">            Which psth to plot indicated by the key in all_psth[&#39;data&#39;].</span>
+<span class="sd">            If None then all are plotted.</span>
 
 <span class="sd">        df: DataFrame (or dictionary)</span>
 
@@ -469,8 +473,9 @@
 
     <span class="c1"># -----------------------------------------------------------------------</span>
 <div class="viewcode-block" id="NeuroVis.plot_psth"><a class="viewcode-back" href="../../api.html#spykes.neurovis.NeuroVis.plot_psth">[docs]</a>    <span class="k">def</span> <span class="nf">plot_psth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psth</span><span class="p">,</span> <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;event_onset&#39;</span><span class="p">,</span> <span class="n">conditions_names</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                  <span class="n">ylim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span> <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span> <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span>
-                                     <span class="s1">&#39;#02A68E&#39;</span><span class="p">,</span> <span class="s1">&#39;#FF07CD&#39;</span><span class="p">]):</span>
+                  <span class="n">cond_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span> <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span>
+                                                   <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span> <span class="s1">&#39;#02A68E&#39;</span><span class="p">,</span>
+                                                   <span class="s1">&#39;#FF07CD&#39;</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plot psth</span>
 
@@ -484,6 +489,10 @@
 <span class="sd">        conditions_names:</span>
 <span class="sd">            Legend names for conditions. Default are the keys in psth[&#39;data&#39;]</span>
 
+<span class="sd">        cond_id: list</span>
+<span class="sd">            Which psth to plot indicated by the key in all_psth[&#39;data&#39;].</span>
+<span class="sd">            If None then all are plotted.</span>
+
 <span class="sd">        ylim: list</span>
 
 <span class="sd">        colors: list</span>
@@ -493,6 +502,14 @@
         <span class="n">window</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;window&#39;</span><span class="p">]</span>
         <span class="n">binsize</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;binsize&#39;</span><span class="p">]</span>
         <span class="n">conditions</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;conditions&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">cond_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">cond_id</span>
+
+        <span class="k">if</span> <span class="n">conditions_names</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">conditions_names</span> <span class="o">=</span> <span class="n">keys</span>
 
         <span class="n">scale</span> <span class="o">=</span> <span class="mf">0.1</span>
         <span class="n">y_min</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">scale</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmin</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span>
@@ -511,16 +528,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]))):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">])):</span>
-                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">time_bins</span><span class="p">,</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">],</span>
-                         <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+                         <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)],</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]))):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">conditions</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">conditions_names</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">conditions_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">conditions_names</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">legend</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">cond_id</span><span class="p">))</span>
@@ -531,7 +548,8 @@
                 <span class="n">plt</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span><span class="n">time_bins</span><span class="p">,</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">-</span>
                                  <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">],</span>
                                  <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">+</span>
-                                 <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                 <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">],</span>
+                                 <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)],</span>
                                  <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">conditions</span><span class="p">:</span>

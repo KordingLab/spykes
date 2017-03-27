@@ -1,0 +1,484 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Neuropixels Example &mdash; spykes 0.1.dev documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="spykes 0.1.dev documentation" href="../index.html"/>
+        <link rel="up" title="Examples Gallery" href="index.html"/>
+        <link rel="next" title="Neural Coding Reward Example" href="plot_neural_coding_reward_example.html"/>
+        <link rel="prev" title="CRCNS DataSet Example" href="plot_crcns_dataset_example.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> spykes
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_neuropop_simul_example.html">Neuropop Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_popvis_example.html">PopVis Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_crcns_dataset_example.html">CRCNS DataSet Example</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Neuropixels Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#neuropixels">Neuropixels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#download-data">0 Download Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#read-in-data">1 Read In Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-data-frame">2 Create Data Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#start-plotting">3 Start Plotting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#striatum">3.1 Striatum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#frontal">3.2 Frontal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#all-neurons">3.3 All Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#striatum-vs-motor-cortex">3.4 Striatum vs. Motor Cortex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_neural_coding_reward_example.html">Neural Coding Reward Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_reaching_dataset_example.html">Reaching Dataset Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">spykes</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Examples Gallery</a> &raquo;</li>
+      
+    <li>Neuropixels Example</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/auto_examples/plot_neuropixels_example.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="neuropixels-example">
+<span id="sphx-glr-auto-examples-plot-neuropixels-example-py"></span><h1>Neuropixels Example<a class="headerlink" href="#neuropixels-example" title="Permalink to this headline">¶</a></h1>
+<p>Use spykes to analyze data from UCL&#8217;s Neuropixels</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-ticks&#39;</span><span class="p">)</span>
+<span class="c1"># plt.switch_backend(&#39;Agg&#39;)</span>
+
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span>
+<span class="kn">from</span> <span class="nn">spykes.neurovis</span> <span class="kn">import</span> <span class="n">NeuroVis</span>
+<span class="kn">from</span> <span class="nn">spykes.popvis</span> <span class="kn">import</span> <span class="n">PopVis</span>
+</pre></div>
+</div>
+<div class="section" id="neuropixels">
+<h2>Neuropixels<a class="headerlink" href="#neuropixels" title="Permalink to this headline">¶</a></h2>
+<p>Neuropixels is a new recording technique by UCL&#8217;s <a class="reference external" href="http://www.ucl.ac.uk/neuropixels">Cortex Lab</a> that is able to measure data from
+hundreds of neurons. Below we show how this data can be worked with in Spykes.</p>
+</div>
+<div class="section" id="download-data">
+<h2>0 Download Data<a class="headerlink" href="#download-data" title="Permalink to this headline">¶</a></h2>
+<p>Download all data <a class="reference external" href="http://data.cortexlab.net/dualPhase3/data/">here</a>.</p>
+</div>
+<div class="section" id="read-in-data">
+<h2>1 Read In Data<a class="headerlink" href="#read-in-data" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">folderNames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;posterior&#39;</span><span class="p">,</span> <span class="s1">&#39;frontal&#39;</span><span class="p">]</span>
+<span class="n">Fs</span> <span class="o">=</span> <span class="mf">30000.0</span>
+
+<span class="n">striatum</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">motorCtx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">thalamus</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">hippocampus</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">visualCtx</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+<span class="c1"># a lot of this code is adapted from Cortex Lab&#39;s MATLAB script</span>
+<span class="c1"># see here: http://data.cortexlab.net/dualPhase3/data/script_dualPhase3.m</span>
+
+<span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">folderNames</span><span class="p">:</span>
+
+    <span class="n">clusters</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/spike_clusters.npy&#39;</span><span class="p">))</span>
+    <span class="n">spikeTimes</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/spike_times.npy&#39;</span><span class="p">)))</span><span class="o">/</span><span class="n">Fs</span>
+    <span class="n">spikeTemplates</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/spike_templates.npy&#39;</span><span class="p">)))</span>
+
+    <span class="n">temps</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/templates.npy&#39;</span><span class="p">)))</span>
+    <span class="n">winv</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/whitening_mat_inv.npy&#39;</span><span class="p">)))</span>
+    <span class="n">yCoords</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/channel_positions.npy&#39;</span><span class="p">)))[:,</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># frontal times need to align with posterior</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;frontal&#39;</span><span class="p">):</span>
+        <span class="n">timeCorrection</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;timeCorrection.npy&#39;</span><span class="p">)</span>
+        <span class="n">spikeTimes</span> <span class="o">*=</span> <span class="n">timeCorrection</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">spikeTimes</span> <span class="o">+=</span> <span class="n">timeCorrection</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">recfromcsv</span><span class="p">(</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;/cluster_groups.csv&#39;</span><span class="p">,</span> <span class="n">delimiter</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">cids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+    <span class="n">cfg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span>
+
+
+    <span class="c1"># find good clusters and only use those spikes</span>
+    <span class="n">goodClusters</span> <span class="o">=</span> <span class="n">cids</span><span class="p">[</span><span class="n">cfg</span> <span class="o">==</span> <span class="s1">&#39;good&#39;</span><span class="p">]</span>
+    <span class="n">goodIndices</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">goodClusters</span><span class="p">))</span>
+
+    <span class="n">realSpikes</span> <span class="o">=</span> <span class="n">spikeTimes</span><span class="p">[</span><span class="n">goodIndices</span><span class="p">]</span>
+    <span class="n">realClusters</span> <span class="o">=</span> <span class="n">clusters</span><span class="p">[</span><span class="n">goodIndices</span><span class="p">]</span>
+    <span class="n">realSpikeTemplates</span> <span class="o">=</span> <span class="n">spikeTemplates</span><span class="p">[</span><span class="n">goodIndices</span><span class="p">]</span>
+
+    <span class="c1"># find how many spikes per cluster and then order spikes by which cluster they are in</span>
+
+    <span class="n">countsPerCluster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">realClusters</span><span class="p">)</span>
+
+    <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">realClusters</span><span class="p">)</span>
+    <span class="n">sortedClusters</span> <span class="o">=</span> <span class="n">realClusters</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+    <span class="n">sortedSpikes</span> <span class="o">=</span> <span class="n">realSpikes</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+    <span class="n">sortedSpikeTemplates</span> <span class="o">=</span> <span class="n">realSpikeTemplates</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+
+    <span class="c1"># find depth for each spike</span>
+    <span class="c1"># this is translated from Cortex Lab&#39;s MATLAB code</span>
+    <span class="c1"># for more details, check out the original code here:</span>
+    <span class="c1"># https://github.com/cortex-lab/spikes/blob/master/analysis/templatePositionsAmplitudes.m</span>
+
+    <span class="n">tempsUnW</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">temps</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">temps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">tempsUnW</span><span class="p">[</span><span class="n">t</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">temps</span><span class="p">[</span><span class="n">t</span><span class="p">,:,:],</span><span class="n">winv</span><span class="p">)</span>
+
+
+    <span class="n">tempChanAmps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tempsUnW</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">tempsUnW</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tempsAmps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">tempChanAmps</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">threshVals</span> <span class="o">=</span> <span class="n">tempsAmps</span> <span class="o">*</span> <span class="mf">0.3</span>
+
+    <span class="n">threshVals</span> <span class="o">=</span> <span class="p">[</span><span class="n">threshVals</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tempChanAmps</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+    <span class="n">threshVals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">threshVals</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">tempChanAmps</span><span class="p">[</span><span class="n">tempChanAmps</span> <span class="o">&lt;</span> <span class="n">threshVals</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">yCoords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">yCoords</span><span class="p">,</span> <span class="p">(</span><span class="n">yCoords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">tempDepths</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">tempChanAmps</span><span class="p">,</span><span class="n">yCoords</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">tempChanAmps</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="n">sortedSpikeDepths</span> <span class="o">=</span> <span class="n">tempDepths</span><span class="p">[</span><span class="n">sortedSpikeTemplates</span><span class="p">]</span>
+
+    <span class="c1"># create neurons and find region</span>
+
+    <span class="n">accumulator</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">countsPerCluster</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="n">spiketimes</span> <span class="o">=</span> <span class="n">sortedSpikes</span><span class="p">[</span><span class="n">accumulator</span><span class="p">:</span><span class="n">accumulator</span><span class="o">+</span><span class="n">count</span><span class="p">]</span>
+            <span class="n">neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spiketimes</span><span class="o">=</span><span class="n">spiketimes</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">clusterDepth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sortedSpikeDepths</span><span class="p">[</span><span class="n">accumulator</span><span class="p">:</span><span class="n">accumulator</span><span class="o">+</span><span class="n">count</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;frontal&#39;</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">clusterDepth</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">clusterDepth</span> <span class="o">&lt;</span> <span class="mi">1550</span><span class="p">):</span>
+                    <span class="n">striatum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">clusterDepth</span> <span class="o">&gt;</span> <span class="mi">1550</span> <span class="ow">and</span> <span class="n">clusterDepth</span> <span class="o">&lt;</span> <span class="mi">3840</span><span class="p">):</span>
+                    <span class="n">motorCtx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;posterior&#39;</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="p">(</span><span class="n">clusterDepth</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">clusterDepth</span> <span class="o">&lt;</span> <span class="mi">1634</span><span class="p">):</span>
+                    <span class="n">thalamus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">clusterDepth</span> <span class="o">&gt;</span> <span class="mi">1634</span> <span class="ow">and</span> <span class="n">clusterDepth</span> <span class="o">&lt;</span> <span class="mi">2797</span><span class="p">):</span>
+                    <span class="n">hippocampus</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="n">clusterDepth</span> <span class="o">&gt;</span> <span class="mi">2797</span> <span class="ow">and</span> <span class="n">clusterDepth</span> <span class="o">&lt;</span> <span class="mi">3840</span><span class="p">):</span>
+                    <span class="n">visualCtx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+
+            <span class="n">accumulator</span> <span class="o">+=</span> <span class="n">count</span>
+
+
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Striatum (n = </span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">striatum</span><span class="p">))</span>
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Motor Cortex (n = </span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">motorCtx</span><span class="p">))</span>
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Thalamus (n = </span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">thalamus</span><span class="p">))</span>
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Hippocampus (n = </span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">hippocampus</span><span class="p">))</span>
+<span class="k">print</span> <span class="p">(</span><span class="s2">&quot;Visual Cortex (n = </span><span class="si">%d</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">visualCtx</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">Striatum</span> <span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">Motor</span> <span class="n">Cortex</span> <span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">243</span><span class="p">)</span>
+<span class="n">Thalamus</span> <span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">244</span><span class="p">)</span>
+<span class="n">Hippocampus</span> <span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">68</span><span class="p">)</span>
+<span class="n">Visual</span> <span class="n">Cortex</span> <span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">76</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-data-frame">
+<h2>2 Create Data Frame<a class="headerlink" href="#create-data-frame" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+<span class="n">rawData</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;experiment1stimInfo.mat&#39;</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;start&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">rawData</span><span class="p">[</span><span class="s1">&#39;stimStarts&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;stop&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">rawData</span><span class="p">[</span><span class="s1">&#39;stimStops&#39;</span><span class="p">])</span>
+<span class="n">df</span><span class="p">[</span><span class="s1">&#39;stimulus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">rawData</span><span class="p">[</span><span class="s1">&#39;stimIDs&#39;</span><span class="p">])</span>
+
+<span class="k">print</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">start</span>        <span class="n">stop</span>  <span class="n">stimulus</span>
+<span class="mi">0</span>   <span class="mf">99.108333</span>  <span class="mf">101.108333</span>         <span class="mi">6</span>
+<span class="mi">1</span>  <span class="mf">101.908333</span>  <span class="mf">103.908333</span>         <span class="mi">3</span>
+<span class="mi">2</span>  <span class="mf">104.924667</span>  <span class="mf">106.924667</span>        <span class="mi">11</span>
+<span class="mi">3</span>  <span class="mf">107.574667</span>  <span class="mf">109.574667</span>         <span class="mi">7</span>
+<span class="mi">4</span>  <span class="mf">110.308000</span>  <span class="mf">112.308000</span>         <span class="mi">8</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="start-plotting">
+<h2>3 Start Plotting<a class="headerlink" href="#start-plotting" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="striatum">
+<h3>3.1 Striatum<a class="headerlink" href="#striatum" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">PopVis</span><span class="p">(</span><span class="n">striatum</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Striatum&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+
+<span class="n">all_psth</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;stimulus&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;descend&#39;</span><span class="p">,</span> <span class="n">neuron_names</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c1"># cond_id chosen randomly</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_001.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_001.png" />
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">plot_population_psth</span><span class="p">(</span><span class="n">all_psth</span><span class="o">=</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_002.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_002.png" />
+</div>
+<div class="section" id="frontal">
+<h3>3.2 Frontal<a class="headerlink" href="#frontal" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">PopVis</span><span class="p">(</span><span class="n">striatum</span> <span class="o">+</span> <span class="n">motorCtx</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Frontal&#39;</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+
+<span class="n">all_psth</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;stimulus&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;descend&#39;</span><span class="p">,</span> <span class="n">neuron_names</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_003.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_003.png" />
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">plot_population_psth</span><span class="p">(</span><span class="n">all_psth</span><span class="o">=</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_004.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_004.png" />
+</div>
+<div class="section" id="all-neurons">
+<h3>3.3 All Neurons<a class="headerlink" href="#all-neurons" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">PopVis</span><span class="p">(</span><span class="n">striatum</span> <span class="o">+</span> <span class="n">motorCtx</span> <span class="o">+</span> <span class="n">thalamus</span> <span class="o">+</span> <span class="n">hippocampus</span> <span class="o">+</span> <span class="n">visualCtx</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="mi">20</span><span class="p">))</span>
+
+<span class="n">all_psth</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;stimulus&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">13</span><span class="p">],</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;descend&#39;</span><span class="p">,</span> <span class="n">neuron_names</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_005.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_005.png" />
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pop</span><span class="o">.</span><span class="n">plot_population_psth</span><span class="p">(</span><span class="n">all_psth</span><span class="o">=</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_006.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_006.png" />
+</div>
+<div class="section" id="striatum-vs-motor-cortex">
+<h3>3.4 Striatum vs. Motor Cortex<a class="headerlink" href="#striatum-vs-motor-cortex" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">striatumPop</span> <span class="o">=</span> <span class="n">PopVis</span><span class="p">(</span><span class="n">striatum</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Striatum&#39;</span><span class="p">)</span>
+<span class="n">motorCtxPop</span> <span class="o">=</span> <span class="n">PopVis</span><span class="p">(</span><span class="n">motorCtx</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;Motor Cortex&#39;</span><span class="p">)</span>
+
+<span class="n">striatum_psth</span> <span class="o">=</span> <span class="n">striatumPop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;stimulus&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+<span class="n">motorCtx_psth</span> <span class="o">=</span> <span class="n">motorCtxPop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;stimulus&#39;</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">2000</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">striatumPop</span><span class="o">.</span><span class="n">plot_population_psth</span><span class="p">(</span><span class="n">all_psth</span><span class="o">=</span><span class="n">striatum_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_007.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_007.png" />
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">motorCtxPop</span><span class="o">.</span><span class="n">plot_population_psth</span><span class="p">(</span><span class="n">all_psth</span><span class="o">=</span><span class="n">motorCtx_psth</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">12</span><span class="p">])</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_neuropixels_example_008.png" class="align-center" src="../_images/sphx_glr_plot_neuropixels_example_008.png" />
+<p><strong>Total running time of the script:</strong> ( 1 minutes  23.639 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/plot_neuropixels_example.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_neuropixels_example.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/plot_neuropixels_example.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_neuropixels_example.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_neural_coding_reward_example.html" class="btn btn-neutral float-right" title="Neural Coding Reward Example" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_crcns_dataset_example.html" class="btn btn-neutral" title="CRCNS DataSet Example" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, KordingLab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1.dev',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
