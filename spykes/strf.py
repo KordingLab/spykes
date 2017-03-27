@@ -104,7 +104,6 @@ class STRF(object):
 
         for y in range(n_tiles.astype(int)):
             for x in range(n_tiles.astype(int)):
-                print y, x
                 gaussian_mask = self.make_2d_gaussian(center=(centers[x],
                                                               centers[y]))
                 spatial_basis.append(gaussian_mask)
