@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>API Documentation &mdash; spykes 0.1 documentation</title>
+  <title>API Documentation &mdash; spykes 0.1.dev documentation</title>
   
 
   
@@ -32,10 +32,7 @@
   
 
   
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="spykes 0.1 documentation" href="index.html"/>
+    <link rel="top" title="spykes 0.1.dev documentation" href="index.html"/>
         <link rel="prev" title="Contributing" href="contributing.html"/> 
 
   
@@ -64,7 +61,7 @@
             
             
               <div class="version">
-                0.1
+                0.1.dev
               </div>
             
           
@@ -88,20 +85,15 @@
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Examples Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-spykes.neurovis">NeuroVis</a><ul class="simple">
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-spykes.neuropop">NeuroPop</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-spykes.popvis">PopVis</a><ul class="simple">
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#module-spykes.strf">STRF</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-spykes.neuropop">NeuroPop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-spykes.popvis">PopVis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-spykes.strf">STRF</a></li>
 </ul>
 </li>
 </ul>
@@ -138,7 +130,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/api.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -451,36 +443,6 @@ f(x) = exp(<a href="#id24"><span class="problematic" id="id25">k0_</span></a> + 
 </tr>
 </tbody>
 </table>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.decode" title="spykes.neuropop.NeuroPop.decode"><code class="xref py py-obj docutils literal"><span class="pre">decode</span></code></a>(Y)</td>
-<td>Given population activity estimate the feature that generated it</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.display" title="spykes.neuropop.NeuroPop.display"><code class="xref py py-obj docutils literal"><span class="pre">display</span></code></a>(x,&nbsp;Y,&nbsp;neuron[,&nbsp;colors,&nbsp;alpha,&nbsp;ylim,&nbsp;...])</td>
-<td>Visualize data and estimated tuning curves</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.fit" title="spykes.neuropop.NeuroPop.fit"><code class="xref py py-obj docutils literal"><span class="pre">fit</span></code></a>(x,&nbsp;Y)</td>
-<td>Estimate the parameters of the tuning curve under the</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.predict" title="spykes.neuropop.NeuroPop.predict"><code class="xref py py-obj docutils literal"><span class="pre">predict</span></code></a>(x)</td>
-<td>Compute the firing rates for the population</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.score" title="spykes.neuropop.NeuroPop.score"><code class="xref py py-obj docutils literal"><span class="pre">score</span></code></a>(Y,&nbsp;Yhat[,&nbsp;Ynull,&nbsp;method])</td>
-<td>Score the model.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.set_params" title="spykes.neuropop.NeuroPop.set_params"><code class="xref py py-obj docutils literal"><span class="pre">set_params</span></code></a>([tunemodel,&nbsp;neurons,&nbsp;mu,&nbsp;k0,&nbsp;k,&nbsp;g,&nbsp;b])</td>
-<td>A function that sets tuning curve parameters as specified</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.neuropop.NeuroPop.simulate" title="spykes.neuropop.NeuroPop.simulate"><code class="xref py py-obj docutils literal"><span class="pre">simulate</span></code></a>(tunemodel[,&nbsp;n_samples,&nbsp;winsize])</td>
-<td>Simulates firing rates from a neural population by randomly sampling</td>
-</tr>
-</tbody>
-</table>
 <dl class="method">
 <dt id="spykes.neuropop.NeuroPop.decode">
 <code class="descname">decode</code><span class="sig-paren">(</span><em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/spykes/neuropop.html#NeuroPop.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.neuropop.NeuroPop.decode" title="Permalink to this definition">¶</a></dt>
@@ -646,27 +608,6 @@ visualizing firing activity of neuron populations</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>neuron_list: list of NeuroVis objects</strong></p>
 <p class="last"><strong>(see NeuroVis class in spykes.neurovis)</strong></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.popvis.PopVis.get_all_psth" title="spykes.popvis.PopVis.get_all_psth"><code class="xref py py-obj docutils literal"><span class="pre">get_all_psth</span></code></a>([event,&nbsp;df,&nbsp;conditions,&nbsp;...])</td>
-<td>Iterates through all neurons and computes their PSTH&#8217;s</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.popvis.PopVis.plot_heat_map" title="spykes.popvis.PopVis.plot_heat_map"><code class="xref py py-obj docutils literal"><span class="pre">plot_heat_map</span></code></a>(psth_dict[,&nbsp;cond_id,&nbsp;...])</td>
-<td>Plots heat map for neuron population</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.popvis.PopVis.plot_population_psth" title="spykes.popvis.PopVis.plot_population_psth"><code class="xref py py-obj docutils literal"><span class="pre">plot_population_psth</span></code></a>([all_psth,&nbsp;event,&nbsp;df,&nbsp;...])</td>
-<td><ol class="arabic simple">
-<li>Normalizes each neuron&#8217;s PSTH across condition</li>
-</ol>
 </td>
 </tr>
 </tbody>
@@ -859,42 +800,6 @@ df[&#8216;conditions&#8217;]</p>
 <div><p>number of temporal basis functions</p>
 </div></blockquote>
 </td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Methods</p>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.convolve_with_temporal_basis" title="spykes.strf.STRF.convolve_with_temporal_basis"><code class="xref py py-obj docutils literal"><span class="pre">convolve_with_temporal_basis</span></code></a>(design_matrix,&nbsp;...)</td>
-<td>Convolve each column of the design matrix</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.design_prior_covariance" title="spykes.strf.STRF.design_prior_covariance"><code class="xref py py-obj docutils literal"><span class="pre">design_prior_covariance</span></code></a>([sigma_temporal,&nbsp;...])</td>
-<td>Design a prior covariance matrix for STRF estimation</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.make_2d_gaussian" title="spykes.strf.STRF.make_2d_gaussian"><code class="xref py py-obj docutils literal"><span class="pre">make_2d_gaussian</span></code></a>([center])</td>
-<td>Makes a 2D Gaussian filter</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.make_cosine_basis" title="spykes.strf.STRF.make_cosine_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_cosine_basis</span></code></a>()</td>
-<td>Makes a spatial cosine and sine basis</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.make_gaussian_basis" title="spykes.strf.STRF.make_gaussian_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_gaussian_basis</span></code></a>()</td>
-<td>Makes a list of Gaussian filters</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.make_image_from_spatial_basis" title="spykes.strf.STRF.make_image_from_spatial_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_image_from_spatial_basis</span></code></a>(basis,&nbsp;weights)</td>
-<td>Recovers an image from a basis given a set of weights</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.make_raised_cosine_temporal_basis" title="spykes.strf.STRF.make_raised_cosine_temporal_basis"><code class="xref py py-obj docutils literal"><span class="pre">make_raised_cosine_temporal_basis</span></code></a>(...)</td>
-<td>Makes a series of raised cosine temporal basis</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="#spykes.strf.STRF.project_to_spatial_basis" title="spykes.strf.STRF.project_to_spatial_basis"><code class="xref py py-obj docutils literal"><span class="pre">project_to_spatial_basis</span></code></a>(image,&nbsp;spatial_basis)</td>
-<td>Projects a given image into a spatial basis</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="#spykes.strf.STRF.visualize_gaussian_basis" title="spykes.strf.STRF.visualize_gaussian_basis"><code class="xref py py-obj docutils literal"><span class="pre">visualize_gaussian_basis</span></code></a>(spatial_basis[,&nbsp;color])</td>
-<td>Plots spatial basis functions in a tile of images</td>
 </tr>
 </tbody>
 </table>
@@ -1173,7 +1078,7 @@ of the Gaussian. (0,0) is the center of the image</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1',
+            VERSION:'0.1.dev',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

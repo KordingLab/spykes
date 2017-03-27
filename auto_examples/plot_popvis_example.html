@@ -1,0 +1,426 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>PopVis Example &mdash; spykes 0.1.dev documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="spykes 0.1.dev documentation" href="../index.html"/>
+        <link rel="up" title="Examples Gallery" href="index.html"/>
+        <link rel="next" title="CRCNS DataSet Example" href="plot_crcns_dataset_example.html"/>
+        <link rel="prev" title="Neuropop Example" href="plot_neuropop_simul_example.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> spykes
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples Gallery</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="plot_neuropop_simul_example.html">Neuropop Example</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">PopVis Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initialization">0 Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#download-data">0.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#read-in-data">0.2 Read In Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#initialize-variables">0.3 Initialize Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#popvis">1 PopVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#create-popvis-object">1.3 Create PopVis Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="plot_crcns_dataset_example.html">CRCNS DataSet Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_neural_coding_reward_example.html">Neural Coding Reward Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot_reaching_dataset_example.html">Reaching Dataset Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">spykes</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Examples Gallery</a> &raquo;</li>
+      
+    <li>PopVis Example</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/auto_examples/plot_popvis_example.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="popvis-example">
+<span id="sphx-glr-auto-examples-plot-popvis-example-py"></span><h1>PopVis Example<a class="headerlink" href="#popvis-example" title="Permalink to this headline">¶</a></h1>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-ticks&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">switch_backend</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">spykes.neurovis</span> <span class="kn">import</span> <span class="n">NeuroVis</span>
+<span class="kn">from</span> <span class="nn">spykes.popvis</span> <span class="kn">import</span> <span class="n">PopVis</span>
+<span class="kn">import</span> <span class="nn">random</span>
+</pre></div>
+</div>
+<div class="section" id="initialization">
+<h2>0 Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="download-data">
+<h3>0.1 Download Data<a class="headerlink" href="#download-data" title="Permalink to this headline">¶</a></h3>
+<p>Download all files [<a class="reference external" href="https://figshare.com/articles/Ramkumar_et_al_2016_Premotor_and_motor_cortices_encode_reward/3573447">here</a>]
+However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4)</p>
+</div>
+<div class="section" id="read-in-data">
+<h3>0.2 Read In Data<a class="headerlink" href="#read-in-data" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.io</span>
+<span class="n">mat</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;3573447/Mihili_08062013.mat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="initialize-variables">
+<h3>0.3 Initialize Variables<a class="headerlink" href="#initialize-variables" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">event</span> <span class="o">=</span> <span class="s1">&#39;rewardTime&#39;</span>
+<span class="n">condition</span> <span class="o">=</span> <span class="s1">&#39;rewardBool&#39;</span>
+<span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">500</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]</span>
+<span class="n">binsize</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="popvis">
+<h2>1 PopVis<a class="headerlink" href="#popvis" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="initiate-all-neurons">
+<h3>1.1 Initiate all Neurons<a class="headerlink" href="#initiate-all-neurons" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_spike_time</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">neuron_number</span><span class="p">):</span>
+
+    <span class="n">spike_times</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;PMd_units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:][</span><span class="n">neuron_number</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">spike_times</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spike_times</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">spike_times</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">initiate_neurons</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+
+    <span class="n">neuron_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;PMd_units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:])</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">spike_times</span> <span class="o">=</span> <span class="n">get_spike_time</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># instantiate neuron</span>
+        <span class="n">neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;PMd </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">neuron_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">neuron_list</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">neuron_list</span> <span class="o">=</span> <span class="n">initiate_neurons</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="get-event-times">
+<h3>1.2 Get Event Times<a class="headerlink" href="#get-event-times" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">create_data_frame</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
+
+    <span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+
+    <span class="n">uncertainty_conditions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">center_target_times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">reward_times</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">reward_outcomes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+
+        <span class="n">meta_data</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;tt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">uncertainty_conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">center_target_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
+        <span class="n">reward_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">6</span><span class="p">])</span>
+        <span class="n">reward_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">7</span><span class="p">])</span>
+
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">uncertainty_conditions</span><span class="p">)</span>
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;centerTargetTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">center_target_times</span><span class="p">)</span>
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">reward_times</span><span class="p">)</span>
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardOutcome&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">reward_outcomes</span><span class="p">)</span>
+
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardBool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardOutcome&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="o">==</span> <span class="mi">32</span><span class="p">)</span>
+
+    <span class="c1"># find time in between previous reward onset and start of current trial</span>
+    <span class="c1"># shouldn&#39;t be more than 1500ms</span>
+
+    <span class="n">start_times</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;centerTargetTime&#39;</span><span class="p">]</span>
+    <span class="n">last_reward_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">diffs</span> <span class="o">=</span> <span class="n">start_times</span> <span class="o">-</span> <span class="n">last_reward_times</span>
+    <span class="n">diffs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;consecutiveBool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">diffs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">data_df</span><span class="p">[((</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">50.0</span><span class="p">))</span>
+                  <span class="o">&amp;</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;consecutiveBool&#39;</span><span class="p">]]</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">create_data_frame</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_df</span><span class="p">))</span>
+<span class="n">data_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="mi">691</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="create-popvis-object">
+<h3>1.3 Create PopVis Object<a class="headerlink" href="#create-popvis-object" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">neuron_list</span> <span class="o">=</span> <span class="n">initiate_neurons</span><span class="p">(</span><span class="n">mat</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span> <span class="c1"># let&#39;s just look at first 10 neurons</span>
+<span class="n">pop</span> <span class="o">=</span> <span class="n">PopVis</span><span class="p">(</span><span class="n">neuron_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="plot-heat-map">
+<h4>1.3.1 Plot Heat Map<a class="headerlink" href="#plot-heat-map" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">all_psth</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="n">binsize</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_popvis_example_001.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_001.png" />
+</div>
+<div class="section" id="plot-heat-map-sort-by-peak-latency">
+<h4>1.3.2 Plot Heat Map. Sort by Peak Latency<a class="headerlink" href="#plot-heat-map-sort-by-peak-latency" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;latency&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_popvis_example_002.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_002.png" />
+</div>
+<div class="section" id="plot-heat-map-sort-by-avg-firing-rate-in-ascending-order">
+<h4>1.3.3 Plot Heat Map. Sort by Avg Firing Rate in Ascending Order.<a class="headerlink" href="#plot-heat-map-sort-by-avg-firing-rate-in-ascending-order" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;ascend&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_popvis_example_003.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_003.png" />
+</div>
+<div class="section" id="plot-heat-map-normalize-each-neuron-individually">
+<h4>1.3.4 Plot Heat Map. Normalize Each Neuron Individually.<a class="headerlink" href="#plot-heat-map-normalize-each-neuron-individually" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s1">&#39;each&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_popvis_example_004.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_004.png" />
+</div>
+<div class="section" id="plot-heat-map-normalize-all-neurons-together-and-sort-in-specified-order">
+<h4>1.3.5 Plot Heat Map. Normalize All Neurons Together and Sort in Specified Order.<a class="headerlink" href="#plot-heat-map-normalize-all-neurons-together-and-sort-in-specified-order" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">random_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">random_list</span><span class="p">)</span>
+<span class="k">print</span> <span class="p">(</span><span class="n">random_list</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="n">random_list</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_popvis_example_005.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_005.png" />
+<p class="sphx-glr-script-out">Out:</p>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="plot-population-psth">
+<h4>1.3.5. Plot Population PSTH<a class="headerlink" href="#plot-population-psth" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">pop</span><span class="o">.</span><span class="n">plot_population_psth</span><span class="p">(</span><span class="n">all_psth</span><span class="o">=</span><span class="n">all_psth</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="../_images/sphx_glr_plot_popvis_example_006.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_006.png" />
+<p><strong>Total running time of the script:</strong> ( 0 minutes  21.787 seconds)</p>
+<div class="sphx-glr-footer container">
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/plot_popvis_example.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_popvis_example.py</span></code></a></div>
+<div class="sphx-glr-download container">
+<a class="reference download internal" href="../_downloads/plot_popvis_example.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_popvis_example.ipynb</span></code></a></div>
+</div>
+<p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="plot_crcns_dataset_example.html" class="btn btn-neutral float-right" title="CRCNS DataSet Example" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot_neuropop_simul_example.html" class="btn btn-neutral" title="Neuropop Example" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, KordingLab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1.dev',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
