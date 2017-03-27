@@ -3,7 +3,8 @@
 Neural Coding Reward Example
 ============================================
 
-Reproduce a figure from a published article with a public dataset
+A demonstration to use Spykes' functionality to reproduce Ramkumar et al's
+"Premotor and Motor Cortices Encode Reward."
 
 """
 

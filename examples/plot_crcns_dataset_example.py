@@ -3,7 +3,8 @@
 CRCNS DataSet Example
 ============================================
 
-A demonstration of Spykes's functionality using a dataset from CRCNS
+A demonstration of Spykes's functionality to reproduce a figure from Li et al's
+"A motor cortex circuit for motor planning and movement."
 
 """
 
@@ -27,7 +28,9 @@ from spykes.neurovis import NeuroVis
 # Li, Nuo, et al. "A motor cortex circuit for motor planning and movement." 
 # Nature 519.7541 (2015): 51-56.
 # [`link to
-# paper <http://www.nature.com/nature/journal/v519/n7541/full/nature14178.html>`__]
+# paper <http://www.nature.com/nature/journal/v519/n7541/full/nature14178.html>`__].
+# We aim to reproduce
+# `this figure <http://www.nature.com/nature/journal/v519/n7541/fig_tab/nature14178_F2.html>`__
 #
 #
 # 0.2 Dataset
