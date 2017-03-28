@@ -18,8 +18,6 @@ import deepdish as dd
 import matplotlib.pyplot as plt
 
 plt.style.use('seaborn-ticks')
-plt.switch_backend('Agg')
-
 
 ########################################################
 # Initialization

@@ -20,7 +20,6 @@ from spykes.neurovis import NeuroVis
 import scipy.io
 
 plt.style.use('seaborn-ticks')
-# plt.switch_backend('Agg')
 
 ########################################################
 # 0 Overview: Reproduce Figure

@@ -19,7 +19,6 @@ import matplotlib.pyplot as plt
 import scipy.io
 
 plt.style.use('seaborn-ticks')
-plt.switch_backend('Agg')
 
 ########################################################
 # 0 Initialization
