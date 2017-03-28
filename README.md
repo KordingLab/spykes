@@ -13,10 +13,11 @@ Yet, virtually every lab relies on a set of in-house analysis scripts to go from
 
 Spykes is a collection of Python tools to make the visualization and analysis of neural data easy and reproducible.
 
-At present, spykes comes with three classes:
+At present, spykes comes with four classes:
 - ```NeuroVis``` helps you plot beautiful spike rasters and peri-stimulus time histograms (PSTHs).
 - ```PopVis``` helps you plot population summaries of PSTHs as normalized averages or heat maps.
 - ```NeuroPop``` helps you estimate tuning curves of neural populations and decode stimuli from population vectors with maximum-likelihood decoding.
+- ```STRF``` helps you estimate spatiotemporal receptive fields.
 
 ```Spykes``` deliberately does not aim to provide tools for spike sorting or file i/o with popular electrophysiology formats, but only aims to fill the missing niche for neural data analysis and easy visualization. For file i/o, see [Neo](http://neuralensemble.org/neo/) and [OpenElectrophy](http://neuralensemble.org/OpenElectrophy/). For spike sorting, see [Klusta](http://klusta.readthedocs.io/en/latest/).
 
@@ -42,18 +43,20 @@ $ pip install -e ./
 ### How to use ```NeuroVis```?
 
 See:
-- [crcns_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/crcns_dataset_example.ipynb)
-- [reaching_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/reaching_dataset_example.ipynb)
+- [CRCNS Dataset Example](http://kordinglab.com/spykes/auto_examples/plot_crcns_dataset_example.html#sphx-glr-auto-examples-plot-crcns-dataset-example-py)
+- [Reaching Dataset Example](http://kordinglab.com/spykes/auto_examples/plot_reaching_dataset_example.html#sphx-glr-auto-examples-plot-reaching-dataset-example-py)
+- [Neural Coding Reward Example](http://kordinglab.com/spykes/auto_examples/plot_neural_coding_reward_example.html#sphx-glr-auto-examples-plot-neural-coding-reward-example-py)
 
 ### How to use ```PopVis```?
 See:
-- [popvis_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/popvis_example.ipynb)
+- [PopVis Example](http://kordinglab.com/spykes/auto_examples/plot_popvis_example.html#sphx-glr-auto-examples-plot-popvis-example-py)
+- [Neuropixels Example](http://kordinglab.com/spykes/auto_examples/plot_neuropixels_example.html#sphx-glr-auto-examples-plot-neuropixels-example-py)
 
 ### How to use ```NeuroPop```?
 
 See:
-- [neuropop_simul_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/neuropop_simul_example.ipynb)
-- [reaching_dataset_example.ipynb](https://github.com/KordingLab/spykes/blob/master/notebooks_examples/reaching_dataset_example.ipynb)
+- [Neuropop Simul Example](http://kordinglab.com/spykes/auto_examples/plot_neuropop_simul_example.html#sphx-glr-auto-examples-plot-neuropop-simul-example-py)
+- [Reaching Dataset Example](http://kordinglab.com/spykes/auto_examples/plot_reaching_dataset_example.html#sphx-glr-auto-examples-plot-reaching-dataset-example-py)
 
 ### Dependencies
 
@@ -64,7 +67,7 @@ Already distributed with [Anaconda](https://www.continuum.io/downloads) and [Can
 
 ### Datasets
 
-The example notebooks use two real datasets. Instructions for downloading these datasets are included in the notebooks. We recommend [deepdish](https://github.com/uchicago-cs/deepdish) for reading the HDF5 datafile.
+The examples use real datasets. Instructions for downloading these datasets are included in the notebooks. We recommend [deepdish](https://github.com/uchicago-cs/deepdish) for reading the HDF5 datafile.
 
 ### Authors
 

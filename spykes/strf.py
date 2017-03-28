@@ -102,8 +102,8 @@ class STRF(object):
                                     n_pixels / (n_tiles + 1.)),
                               num=n_tiles)
 
-        for y in np.arange(n_tiles):
-            for x in np.arange(n_tiles):
+        for y in range(n_tiles.astype(int)):
+            for x in range(n_tiles.astype(int)):
                 gaussian_mask = self.make_2d_gaussian(center=(centers[x],
                                                               centers[y]))
                 spatial_basis.append(gaussian_mask)
