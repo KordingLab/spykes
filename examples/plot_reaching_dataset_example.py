@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from spykes.neurovis import NeuroVis
 from spykes.neuropop import NeuroPop
-import deepdish as dd
+from spykes.datasets import load_reaching_data
 import matplotlib.pyplot as plt
 
 plt.style.use('seaborn-ticks')
@@ -31,7 +31,7 @@ plt.style.use('seaborn-ticks')
 #
 # Load Data
 
-reach_data = dd.io.load('reaching_dataset.h5')
+reach_data = load_reaching_data()
 
 print('dataset keys:', reach_data.keys())
 print('events:', reach_data['events'].keys())

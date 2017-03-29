@@ -14,10 +14,11 @@ Use spykes to analyze data from UCL's Neuropixels
 
 import numpy as np
 import pandas as pd
-import scipy.io
 from spykes.neurovis import NeuroVis
 from spykes.popvis import PopVis
 import matplotlib.pyplot as plt
+from spykes.datasets import load_neuropixels_data
+
 
 plt.style.use('seaborn-ticks')
 
@@ -48,23 +49,24 @@ visual_ctx = list()
 # a lot of this code is adapted from Cortex Lab's MATLAB script
 # see here: http://data.cortexlab.net/dualPhase3/data/script_dualPhase3.m
 
+data_dict = load_neuropixels_data()
+
 for name in folder_names:
 
-    clusters = np.squeeze(np.load(name + '/spike_clusters.npy'))
-    spike_times = (np.squeeze(np.load(name + '/spike_times.npy'))) / Fs
-    spike_templates = (np.squeeze(np.load(name + '/spike_templates.npy')))
-
-    temps = (np.squeeze(np.load(name + '/templates.npy')))
-    winv = (np.squeeze(np.load(name + '/whitening_mat_inv.npy')))
-    y_coords = (np.squeeze(np.load(name + '/channel_positions.npy')))[:, 1]
+    clusters = np.squeeze(data_dict[name + '/spike_clusters.npy'])
+    spike_times = (np.squeeze(data_dict[(name + '/spike_times.npy')])) / Fs
+    spike_templates = (np.squeeze(data_dict[(name + '/spike_templates.npy')]))
+    temps = (np.squeeze(data_dict[(name + '/templates.npy')]))
+    winv = (np.squeeze(data_dict[(name + '/whitening_mat_inv.npy')]))
+    y_coords = (np.squeeze(data_dict[(name + '/channel_positions.npy')]))[:, 1]
 
     # frontal times need to align with posterior
     if (name == 'frontal'):
-        time_correction = np.load('time_correction.npy')
+        time_correction = data_dict[('timeCorrection.npy')]
         spike_times *= time_correction[0]
         spike_times += time_correction[1]
 
-    data = np.recfromcsv(name + '/cluster_groups.csv', delimiter='\t')
+    data = data_dict[(name + '/cluster_groups.csv')]
     cids = np.array([x[0] for x in data])
     cfg = np.array([x[1] for x in data])
 
@@ -120,7 +122,7 @@ for name in folder_names:
         if count > 0:
 
             spike_times = sorted_spikes[accumulator:accumulator + count]
-            neuron = NeuroVis(spike_times=spike_times, name='%d' % (idx))
+            neuron = NeuroVis(spiketimes=spike_times, name='%d' % (idx))
             cluster_depth = np.mean(
                 sorted_spike_depths[accumulator:accumulator + count])
 
@@ -155,7 +157,7 @@ print("Visual Cortex (n = %d)" % len(visual_ctx))
 
 df = pd.DataFrame()
 
-raw_data = scipy.io.loadmat('experiment1stimInfo.mat')
+raw_data = data_dict['experiment1stimInfo.mat']
 
 df['start'] = np.squeeze(raw_data['stimStarts'])
 df['stop'] = np.squeeze(raw_data['stimStops'])

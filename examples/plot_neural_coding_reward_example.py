@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from spykes.neurovis import NeuroVis
-import scipy.io
+from spykes.datasets import load_reward_data
 
 plt.style.use('seaborn-ticks')
 
@@ -57,7 +57,7 @@ binsize = 10
 # 1 First Graph of Panel A
 # --------------------
 
-mat = scipy.io.loadmat('3573447/Mihili_08062013.mat')
+sess_one, sess_four = load_reward_data()
 
 ########################################################
 #
@@ -92,7 +92,7 @@ def initiate_neurons(raw_data):
 
 ########################################################
 
-neuron_list = initiate_neurons(mat)
+neuron_list = initiate_neurons(sess_four)
 
 ########################################################
 #
@@ -142,7 +142,7 @@ def create_data_frame(raw_data):
 
 ########################################################
 
-data_df = create_data_frame(mat)
+data_df = create_data_frame(sess_four)
 print(len(data_df))
 data_df.head()
 
@@ -190,7 +190,7 @@ def find_velocities_in_range(raw_data, dataframe, min_vel, max_vel, min_time,
 ########################################################
 
 trials_df = find_velocities_in_range(
-    mat, data_df.reset_index(), 11, 16, .55, .95)
+    sess_four, data_df.reset_index(), 11, 16, .55, .95)
 print(len(trials_df))
 trials_df.head()
 
@@ -238,9 +238,8 @@ plt.show()
 # 2 First Graph of Panel C
 # --------------------
 
-mat = scipy.io.loadmat('3573447/Mihili_07112013.mat')
-neuron_list = initiate_neurons(mat)
-data_df = create_data_frame(mat)
+neuron_list = initiate_neurons(sess_one)
+data_df = create_data_frame(sess_one)
 
 ########################################################
 #
