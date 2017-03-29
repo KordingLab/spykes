@@ -7,9 +7,9 @@ dependencies:
     - pip install sphinx-gallery
     - pip install scipy
     - pip install scikit-learn
+    - pip install numpy
     - pip install -e ./
     - pip install pandas
-    - pip install numpy
     - pip install sphinx_bootstrap_theme numpydoc
     # we need to do this here so the datasets will be cached
     # pipefail is necessary to propagate exit codes
