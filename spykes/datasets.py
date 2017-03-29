@@ -1,3 +1,7 @@
+"""
+Functions that allow examples to fetch data from online resources
+"""
+
 import os
 import urllib
 import scipy.io
@@ -6,6 +10,25 @@ import deepdish as dd
 
 
 def load_reward_data(dpath='spykes_data/reward/'):
+
+    """
+    Downloads and returns data for Neural Coding Reward Example as well as
+    PopVis Example. Dataset comes from Ramkumar et al's "Premotor and Motor
+    Cortices Encode Reward" paper located at
+    http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0160851
+
+    Parameters
+    ----------
+    dpath: str
+        specifies path to which the data files should be downloaded
+
+    Returns
+    -------
+    sess_one_mat: .mat file
+        Monkey M, Session 1
+    sess_four_mat: .mat file
+        Monkey M, Session 4
+    """
 
     if not os.path.exists(dpath):
         os.makedirs(dpath)
@@ -32,6 +55,22 @@ def load_reward_data(dpath='spykes_data/reward/'):
 
 
 def load_neuropixels_data(dpath='spykes_data/neuropixels/'):
+
+    """
+    Downloads and returns data for Neuropixels Example. Dataset comes from
+    UCL's Cortex Lab, which is located at
+    http://data.cortexlab.net/dualPhase3/data/
+
+    Parameters
+    ----------
+    dpath: str
+        specifies path to which the data files should be downloaded
+
+    Returns
+    -------
+    data_dict
+        dictionary, where every key corresponds to a needed file
+    """
 
     if not os.path.exists(dpath):
         os.makedirs(dpath)
@@ -82,6 +121,21 @@ def load_neuropixels_data(dpath='spykes_data/neuropixels/'):
 
 def load_reaching_data(dpath='spykes_data/reaching/'):
 
+    """
+    Downloads and returns data for Reaching Dataset Example. Dataset is
+    publicly available at
+    https://northwestern.app.box.com/s/xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8
+
+    Parameters
+    ----------
+    dpath: str
+        specifies path to which the data files should be downloaded
+
+    Returns
+    -------
+    deep dish loaded dataset
+    """
+
     if not os.path.exists(dpath):
         os.makedirs(dpath)
 
@@ -96,6 +150,20 @@ def load_reaching_data(dpath='spykes_data/reaching/'):
 
 
 def _load_file(fname):
+
+    """
+    Helper function to check whether a file is a .mat or .npy file and then
+    load it
+
+    Parameters
+    ----------
+    fname: str
+        specifies exact path of where data will be downloaded to
+
+    Returns
+    -------
+    mat or numpy loaded dataset
+    """
 
     if fname[-4:] == '.mat':
         return scipy.io.loadmat(fname)
