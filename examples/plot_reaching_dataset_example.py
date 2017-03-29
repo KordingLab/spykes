@@ -17,8 +17,6 @@ from spykes.neuropop import NeuroPop
 from spykes.datasets import load_reaching_data
 import matplotlib.pyplot as plt
 
-plt.style.use('seaborn-ticks')
-
 ########################################################
 # Initialization
 # -----------------------------

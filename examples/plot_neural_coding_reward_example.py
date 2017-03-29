@@ -19,8 +19,6 @@ import pandas as pd
 from spykes.neurovis import NeuroVis
 from spykes.datasets import load_reward_data
 
-plt.style.use('seaborn-ticks')
-
 ########################################################
 # 0 Overview: Reproduce Figure
 # -----------------------------

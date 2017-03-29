@@ -1,4 +1,3 @@
-import os
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
@@ -7,12 +6,6 @@ from fractions import gcd
 
 from spykes.neurovis import NeuroVis
 from . import utils
-
-plt.style.use(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        '../mpl_styles/spykes.mplstyle')
-)
 
 
 class PopVis(object):

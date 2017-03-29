@@ -9,13 +9,18 @@ def slow_exp(z, eta):
     """
     A slowly rising exponential
     that linearizes above threshold parameter eta
+
     Parameters
     ----------
     z: array
+        ????
     eta: float, threshold parameter
+        ???
+
     Returns
     -------
-    qu: array, the resulting slow exponential
+    qu: array
+        The resulting slow exponential
     """
     qu = np.zeros(z.shape)
     slope = np.exp(eta)
