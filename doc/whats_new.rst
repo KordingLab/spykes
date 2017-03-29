@@ -37,9 +37,6 @@ Changelog
     - Add NeuroPop class by `Hugo Fernandes`_ and `Pavan Ramkumar`_
     - Add PopVis class by `Mayank Agrawal`_
     - Add STRF class by `Pavan Ramkumar`_
-    - Add Sphinx Documentation `Mayank Agrawal`_
-    - Add Travis CI by `Mayank Agrawal`_
-    - Add Circle CI by `Mainak Jas`_ and `Mayank Agrawal`_
 
 .. _Hugo Fernandes: http:/github.com/hugoguh
 .. _Mainak Jas: https://perso.telecom-paristech.fr/mjas/
