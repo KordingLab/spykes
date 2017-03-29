@@ -9,7 +9,7 @@ import numpy as np
 import deepdish as dd
 
 
-def load_reward_data(dpath='spykes_data/reward/'):
+def load_reward_data(dpath='~/spykes_data/reward/'):
 
     """
     Downloads and returns data for Neural Coding Reward Example as well as
@@ -54,7 +54,7 @@ def load_reward_data(dpath='spykes_data/reward/'):
     return sess_one_mat, sess_four_mat
 
 
-def load_neuropixels_data(dpath='spykes_data/neuropixels/'):
+def load_neuropixels_data(dpath='~/spykes_data/neuropixels/'):
 
     """
     Downloads and returns data for Neuropixels Example. Dataset comes from
@@ -119,7 +119,7 @@ def load_neuropixels_data(dpath='spykes_data/neuropixels/'):
     return file_dict
 
 
-def load_reaching_data(dpath='spykes_data/reaching/'):
+def load_reaching_data(dpath='~/spykes_data/reaching/'):
 
     """
     Downloads and returns data for Reaching Dataset Example. Dataset is
