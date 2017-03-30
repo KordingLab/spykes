@@ -32,10 +32,7 @@
   
 
   
-    <link rel="top" title="spykes  documentation" href="../index.html"/>
-        <link rel="up" title="Examples Gallery" href="index.html"/>
-        <link rel="next" title="Neuropixels Example" href="plot_neuropixels_example.html"/>
-        <link rel="prev" title="PopVis Example" href="plot_popvis_example.html"/> 
+    <link rel="top" title="spykes  documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -80,41 +77,10 @@
           
             
             
-                <ul class="current">
+                <ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorial</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="index.html">Examples Gallery</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="plot_neuropop_simul_example.html">Neuropop Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_popvis_example.html">PopVis Example</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">CRCNS DataSet Example</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#article">0.1 Article</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#dataset">0.2 Dataset</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#data">1 Data</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#download-data">1.1 Download Data</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#load-data">1.2 Load Data</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#get-spike-times">2 Get Spike Times</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-event-times">3 Get Event Times</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-features">4 Get Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#define-features">5 Define Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#plots">6 Plots</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#rasters">6.1 Rasters</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#psth">6.2 PSTH</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#reproduce-figure">6.3 Reproduce Figure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#ggplot">6.4 ggplot</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="plot_neuropixels_example.html">Neuropixels Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_neural_coding_reward_example.html">Neural Coding Reward Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot_reaching_dataset_example.html">Reaching Dataset Example</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Examples Gallery</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../whats_new.html">Current</a></li>
@@ -149,13 +115,11 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-          <li><a href="index.html">Examples Gallery</a> &raquo;</li>
-      
     <li>CRCNS DataSet Example</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/auto_examples/plot_crcns_dataset_example.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/auto_examples/crcns_dataset_example.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -166,7 +130,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="crcns-dataset-example">
-<span id="sphx-glr-auto-examples-plot-crcns-dataset-example-py"></span><h1>CRCNS DataSet Example<a class="headerlink" href="#crcns-dataset-example" title="Permalink to this headline">¶</a></h1>
+<span id="sphx-glr-auto-examples-crcns-dataset-example-py"></span><h1>CRCNS DataSet Example<a class="headerlink" href="#crcns-dataset-example" title="Permalink to this headline">¶</a></h1>
 <p>A demonstration of Spykes&#8217;s functionality to reproduce a figure from Li et al&#8217;s
 &#8220;A motor cortex circuit for motor planning and movement.&#8221;</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Authors: Eric Larson &lt;larson.eric.d@gmail.com&gt;</span>
@@ -228,10 +192,6 @@ dataset</a>]</p>
 <span class="n">neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">neuron_n</span><span class="p">)</span>
 <span class="k">print</span><span class="p">(</span><span class="s1">&#39;neuron </span><span class="si">%d</span><span class="s1"> has a firing rate of </span><span class="si">%0.2f</span><span class="s1"> spikes per second&#39;</span> <span class="o">%</span>
       <span class="p">(</span><span class="n">neuron_n</span><span class="p">,</span> <span class="n">neuron</span><span class="o">.</span><span class="n">firingrate</span><span class="p">))</span>
-</pre></div>
-</div>
-<p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="n">neuron</span> <span class="mi">9</span> <span class="n">has</span> <span class="n">a</span> <span class="n">firing</span> <span class="n">rate</span> <span class="n">of</span> <span class="mf">5.07</span> <span class="n">spikes</span> <span class="n">per</span> <span class="n">second</span>
 </pre></div>
 </div>
 <p>Let&#8217;s use all the goodness of <code class="docutils literal"><span class="pre">pandas</span></code> to define all our conditions.
@@ -312,7 +272,6 @@ which we will use everywhere below.</p>
                                    <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;ascend&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="../_images/sphx_glr_plot_crcns_dataset_example_001.png" class="align-center" src="../_images/sphx_glr_plot_crcns_dataset_example_001.png" />
 </div>
 <div class="section" id="psth">
 <h3>6.2 PSTH<a class="headerlink" href="#psth" title="Permalink to this headline">¶</a></h3>
@@ -326,7 +285,6 @@ which we will use everywhere below.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/sphx_glr_plot_crcns_dataset_example_002.png" class="align-center" src="../_images/sphx_glr_plot_crcns_dataset_example_002.png" />
 </div>
 <div class="section" id="reproduce-figure">
 <h3>6.3 Reproduce Figure<a class="headerlink" href="#reproduce-figure" title="Permalink to this headline">¶</a></h3>
@@ -372,7 +330,6 @@ which we will use everywhere below.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/sphx_glr_plot_crcns_dataset_example_003.png" class="align-center" src="../_images/sphx_glr_plot_crcns_dataset_example_003.png" />
 </div>
 <div class="section" id="ggplot">
 <h3>6.4 ggplot<a class="headerlink" href="#ggplot" title="Permalink to this headline">¶</a></h3>
@@ -390,13 +347,12 @@ which we will use everywhere below.</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<img alt="../_images/sphx_glr_plot_crcns_dataset_example_004.png" class="align-center" src="../_images/sphx_glr_plot_crcns_dataset_example_004.png" />
-<p><strong>Total running time of the script:</strong> ( 0 minutes  11.676 seconds)</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.000 seconds)</p>
 <div class="sphx-glr-footer container">
 <div class="sphx-glr-download container">
-<a class="reference download internal" href="../_downloads/plot_crcns_dataset_example.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_crcns_dataset_example.py</span></code></a></div>
+<a class="reference download internal" href="../_downloads/crcns_dataset_example.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">crcns_dataset_example.py</span></code></a></div>
 <div class="sphx-glr-download container">
-<a class="reference download internal" href="../_downloads/plot_crcns_dataset_example.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_crcns_dataset_example.ipynb</span></code></a></div>
+<a class="reference download internal" href="../_downloads/crcns_dataset_example.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">crcns_dataset_example.ipynb</span></code></a></div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="http://sphinx-gallery.readthedocs.io">Generated by Sphinx-Gallery</a></p>
 </div>
@@ -407,15 +363,6 @@ which we will use everywhere below.</p>
            </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="plot_neuropixels_example.html" class="btn btn-neutral float-right" title="Neuropixels Example" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="plot_popvis_example.html" class="btn btn-neutral" title="PopVis Example" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

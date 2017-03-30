@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>PopVis Example &mdash; spykes 0.1.dev documentation</title>
+  <title>PopVis Example &mdash; spykes  documentation</title>
   
 
   
@@ -32,7 +32,7 @@
   
 
   
-    <link rel="top" title="spykes 0.1.dev documentation" href="../index.html"/>
+    <link rel="top" title="spykes  documentation" href="../index.html"/>
         <link rel="up" title="Examples Gallery" href="index.html"/>
         <link rel="next" title="CRCNS DataSet Example" href="plot_crcns_dataset_example.html"/>
         <link rel="prev" title="Neuropop Example" href="plot_neuropop_simul_example.html"/> 
@@ -61,10 +61,6 @@
 
           
             
-            
-              <div class="version">
-                0.1.dev
-              </div>
             
           
 
@@ -112,6 +108,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">Current</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html#version-0-1">Version 0.1</a></li>
 </ul>
 
             
@@ -160,14 +158,18 @@
             
   <div class="section" id="popvis-example">
 <span id="sphx-glr-auto-examples-plot-popvis-example-py"></span><h1>PopVis Example<a class="headerlink" href="#popvis-example" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-ticks&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">switch_backend</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Authors: Mayank Agrawal &lt;mayankagrawal96@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># License: MIT</span>
+</pre></div>
+</div>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">spykes.neurovis</span> <span class="kn">import</span> <span class="n">NeuroVis</span>
 <span class="kn">from</span> <span class="nn">spykes.popvis</span> <span class="kn">import</span> <span class="n">PopVis</span>
+<span class="kn">from</span> <span class="nn">spykes.datasets</span> <span class="kn">import</span> <span class="n">load_reward_data</span>
 <span class="kn">import</span> <span class="nn">random</span>
 </pre></div>
 </div>
@@ -180,8 +182,7 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
 </div>
 <div class="section" id="read-in-data">
 <h3>0.2 Read In Data<a class="headerlink" href="#read-in-data" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.io</span>
-<span class="n">mat</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;3573447/Mihili_08062013.mat&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">_</span><span class="p">,</span> <span class="n">mat</span> <span class="o">=</span> <span class="n">load_reward_data</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -201,7 +202,8 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
 <h3>1.1 Initiate all Neurons<a class="headerlink" href="#initiate-all-neurons" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_spike_time</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">neuron_number</span><span class="p">):</span>
 
-    <span class="n">spike_times</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;PMd_units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:][</span><span class="n">neuron_number</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">spike_times</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span>
+        <span class="s1">&#39;PMd_units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:][</span><span class="n">neuron_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
     <span class="n">spike_times</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">spike_times</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">spike_times</span>
@@ -212,10 +214,10 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
     <span class="n">neuron_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;PMd_units&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">][:])</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-        <span class="n">spike_times</span> <span class="o">=</span> <span class="n">get_spike_time</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">spike_times</span> <span class="o">=</span> <span class="n">get_spike_time</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># instantiate neuron</span>
-        <span class="n">neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;PMd </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+        <span class="n">neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PMd </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">neuron_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">neuron_list</span>
@@ -240,10 +242,10 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
 
         <span class="n">meta_data</span> <span class="o">=</span> <span class="n">raw_data</span><span class="p">[</span><span class="s1">&#39;alldays&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;tt&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="n">uncertainty_conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">center_target_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">3</span><span class="p">])</span>
-        <span class="n">reward_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">6</span><span class="p">])</span>
-        <span class="n">reward_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span><span class="mi">7</span><span class="p">])</span>
+        <span class="n">uncertainty_conditions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">center_target_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="n">reward_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span> <span class="mi">6</span><span class="p">])</span>
+        <span class="n">reward_outcomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">meta_data</span><span class="p">[:,</span> <span class="mi">7</span><span class="p">])</span>
 
     <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">uncertainty_conditions</span><span class="p">)</span>
     <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;centerTargetTime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">center_target_times</span><span class="p">)</span>
@@ -263,12 +265,13 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
 
     <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;consecutiveBool&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">diffs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="mf">1.5</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">data_df</span><span class="p">[((</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">50.0</span><span class="p">))</span>
-                  <span class="o">&amp;</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;consecutiveBool&#39;</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">data_df</span><span class="p">[((</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">|</span>
+                   <span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;uncertaintyCondition&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">50.0</span><span class="p">))</span> <span class="o">&amp;</span>
+                   <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;consecutiveBool&#39;</span><span class="p">]]</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">create_data_frame</span><span class="p">(</span><span class="n">mat</span><span class="p">)</span>
-<span class="k">print</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_df</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data_df</span><span class="p">))</span>
 <span class="n">data_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -279,22 +282,24 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
 </div>
 <div class="section" id="create-popvis-object">
 <h3>1.3 Create PopVis Object<a class="headerlink" href="#create-popvis-object" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">neuron_list</span> <span class="o">=</span> <span class="n">initiate_neurons</span><span class="p">(</span><span class="n">mat</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span> <span class="c1"># let&#39;s just look at first 10 neurons</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">neuron_list</span> <span class="o">=</span> <span class="n">initiate_neurons</span><span class="p">(</span><span class="n">mat</span><span class="p">)[:</span><span class="mi">10</span><span class="p">]</span>  <span class="c1"># let&#39;s just look at first 10 neurons</span>
 <span class="n">pop</span> <span class="o">=</span> <span class="n">PopVis</span><span class="p">(</span><span class="n">neuron_list</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="plot-heat-map">
 <h4>1.3.1 Plot Heat Map<a class="headerlink" href="#plot-heat-map" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">all_psth</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="n">binsize</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">all_psth</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span>
+    <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="n">condition</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span>
+    <span class="n">binsize</span><span class="o">=</span><span class="n">binsize</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/sphx_glr_plot_popvis_example_001.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_001.png" />
 </div>
 <div class="section" id="plot-heat-map-sort-by-peak-latency">
 <h4>1.3.2 Plot Heat Map. Sort by Peak Latency<a class="headerlink" href="#plot-heat-map-sort-by-peak-latency" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;latency&#39;</span><span class="p">)</span>
 </pre></div>
@@ -303,7 +308,7 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
 </div>
 <div class="section" id="plot-heat-map-sort-by-avg-firing-rate-in-ascending-order">
 <h4>1.3.3 Plot Heat Map. Sort by Avg Firing Rate in Ascending Order.<a class="headerlink" href="#plot-heat-map-sort-by-avg-firing-rate-in-ascending-order" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;ascend&#39;</span><span class="p">)</span>
 </pre></div>
@@ -312,37 +317,37 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
 </div>
 <div class="section" id="plot-heat-map-normalize-each-neuron-individually">
 <h4>1.3.4 Plot Heat Map. Normalize Each Neuron Individually.<a class="headerlink" href="#plot-heat-map-normalize-each-neuron-individually" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s1">&#39;each&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/sphx_glr_plot_popvis_example_004.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_004.png" />
 </div>
-<div class="section" id="plot-heat-map-normalize-all-neurons-together-and-sort-in-specified-order">
-<h4>1.3.5 Plot Heat Map. Normalize All Neurons Together and Sort in Specified Order.<a class="headerlink" href="#plot-heat-map-normalize-all-neurons-together-and-sort-in-specified-order" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="plot-heat-map-normalize-all-neurons-and-sort-in-specified-order">
+<h4>1.3.5 Plot Heat Map. Normalize All Neurons and Sort in Specified Order.<a class="headerlink" href="#plot-heat-map-normalize-all-neurons-and-sort-in-specified-order" title="Permalink to this headline">¶</a></h4>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">random_list</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">random_list</span><span class="p">)</span>
-<span class="k">print</span> <span class="p">(</span><span class="n">random_list</span><span class="p">)</span>
-<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">random_list</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
 <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=.</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">pop</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span><span class="n">all_psth</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">sortby</span><span class="o">=</span><span class="n">random_list</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/sphx_glr_plot_popvis_example_005.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_005.png" />
 <p class="sphx-glr-script-out">Out:</p>
-<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
+<div class="sphx-glr-script-out highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="plot-population-psth">
 <h4>1.3.5. Plot Population PSTH<a class="headerlink" href="#plot-population-psth" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">pop</span><span class="o">.</span><span class="n">plot_population_psth</span><span class="p">(</span><span class="n">all_psth</span><span class="o">=</span><span class="n">all_psth</span><span class="p">)</span>
 </pre></div>
 </div>
 <img alt="../_images/sphx_glr_plot_popvis_example_006.png" class="align-center" src="../_images/sphx_glr_plot_popvis_example_006.png" />
-<p><strong>Total running time of the script:</strong> ( 0 minutes  21.925 seconds)</p>
+<p><strong>Total running time of the script:</strong> ( 0 minutes  39.858 seconds)</p>
 <div class="sphx-glr-footer container">
 <div class="sphx-glr-download container">
 <a class="reference download internal" href="../_downloads/plot_popvis_example.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_popvis_example.py</span></code></a></div>
@@ -396,7 +401,7 @@ However, we&#8217;ll only be looking at Mihili_08062013.mat (Monkey M, Session 4
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.1.dev',
+            VERSION:'',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

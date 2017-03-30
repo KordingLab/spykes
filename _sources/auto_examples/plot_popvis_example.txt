@@ -3,9 +3,22 @@
 .. _sphx_glr_auto_examples_plot_popvis_example.py:
 
 
-============================================
+==============
 PopVis Example
-============================================
+==============
+
+
+
+
+.. code-block:: python
+
+    # Authors: Mayank Agrawal <mayankagrawal96@gmail.com>
+    #
+    # License: MIT
+
+
+
+
 
 
 
@@ -13,14 +26,13 @@ PopVis Example
 .. code-block:: python
 
 
-    import matplotlib.pyplot as plt
-    plt.style.use('seaborn-ticks')
-    plt.switch_backend('Agg')
-
     import numpy as np
+    import matplotlib.pyplot as plt
+
     import pandas as pd
     from spykes.neurovis import NeuroVis
     from spykes.popvis import PopVis
+    from spykes.datasets import load_reward_data
     import random
 
 
@@ -46,8 +58,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 
 .. code-block:: python
 
-    import scipy.io
-    mat = scipy.io.loadmat('3573447/Mihili_08062013.mat')
+    _, mat = load_reward_data()
 
 
 
@@ -84,11 +95,13 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
+
     def get_spike_time(raw_data, neuron_number):
-    
-        spike_times = raw_data['alldays'][0]['PMd_units'][0][:][neuron_number-1][0][1:]
+
+        spike_times = raw_data['alldays'][0][
+            'PMd_units'][0][:][neuron_number - 1][0][1:]
         spike_times = [i[0] for i in spike_times]
-    
+
         return spike_times
 
 
@@ -101,17 +114,18 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
+
     def initiate_neurons(raw_data):
-    
+
         neuron_list = list()
-    
+
         for i in range((raw_data['alldays'][0]['PMd_units'][0][:]).shape[0]):
-            spike_times = get_spike_time(raw_data, i+1)
+            spike_times = get_spike_time(raw_data, i + 1)
 
             # instantiate neuron
-            neuron = NeuroVis(spike_times, name = 'PMd %d' % (i+1))
+            neuron = NeuroVis(spike_times, name='PMd %d' % (i + 1))
             neuron_list.append(neuron)
-        
+
         return neuron_list
 
 
@@ -140,44 +154,46 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
+
     def create_data_frame(raw_data):
 
         data_df = pd.DataFrame()
-    
+
         uncertainty_conditions = list()
         center_target_times = list()
         reward_times = list()
         reward_outcomes = list()
-    
+
         for i in range(raw_data['alldays'].shape[0]):
-            
+
             meta_data = raw_data['alldays'][i]['tt'][0]
-        
-            uncertainty_conditions.append(meta_data[:,2])
-            center_target_times.append(meta_data[:,3])
-            reward_times.append(meta_data[:,6])
-            reward_outcomes.append(meta_data[:,7])
-        
+
+            uncertainty_conditions.append(meta_data[:, 2])
+            center_target_times.append(meta_data[:, 3])
+            reward_times.append(meta_data[:, 6])
+            reward_outcomes.append(meta_data[:, 7])
+
         data_df['uncertaintyCondition'] = np.concatenate(uncertainty_conditions)
         data_df['centerTargetTime'] = np.concatenate(center_target_times)
         data_df['rewardTime'] = np.concatenate(reward_times)
         data_df['rewardOutcome'] = np.concatenate(reward_outcomes)
-        
+
         data_df['rewardBool'] = data_df['rewardOutcome'].map(lambda s: s == 32)
-    
+
         # find time in between previous reward onset and start of current trial
         # shouldn't be more than 1500ms
-    
+
         start_times = data_df['centerTargetTime']
         last_reward_times = np.roll(data_df['rewardTime'], 1)
-    
+
         diffs = start_times - last_reward_times
         diffs[0] = 0
-    
+
         data_df['consecutiveBool'] = diffs.map(lambda s: s <= 1.5)
-        
-        return data_df[((data_df['uncertaintyCondition'] == 5.0) | (data_df['uncertaintyCondition'] == 50.0)) 
-                      & data_df['consecutiveBool']]  
+
+        return data_df[((data_df['uncertaintyCondition'] == 5.0) |
+                       (data_df['uncertaintyCondition'] == 50.0)) &
+                       data_df['consecutiveBool']]
 
 
 
@@ -190,7 +206,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 
 
     data_df = create_data_frame(mat)
-    print (len(data_df))
+    print(len(data_df))
     data_df.head()
 
 
@@ -212,7 +228,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
-    neuron_list = initiate_neurons(mat)[:10] # let's just look at first 10 neurons
+    neuron_list = initiate_neurons(mat)[:10]  # let's just look at first 10 neurons
     pop = PopVis(neuron_list)
 
 
@@ -229,9 +245,11 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10, 10))
     fig.subplots_adjust(hspace=.3)
-    all_psth = pop.get_all_psth(event=event, df=data_df, conditions=condition, window=window, binsize=binsize, plot=True)
+    all_psth = pop.get_all_psth(
+        event=event, df=data_df, conditions=condition, window=window,
+        binsize=binsize, plot=True)
 
 
 
@@ -250,7 +268,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10, 10))
     fig.subplots_adjust(hspace=.3)
     pop.plot_heat_map(all_psth, sortby='latency')
 
@@ -271,7 +289,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10, 10))
     fig.subplots_adjust(hspace=.3)
     pop.plot_heat_map(all_psth, sortby='rate', sortorder='ascend')
 
@@ -292,7 +310,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
-    fig = plt.figure(figsize=(10,10))
+    fig = plt.figure(figsize=(10, 10))
     fig.subplots_adjust(hspace=.3)
     pop.plot_heat_map(all_psth, normalize='each')
 
@@ -305,7 +323,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 
 
 
-1.3.5 Plot Heat Map. Normalize All Neurons Together and Sort in Specified Order.
+1.3.5 Plot Heat Map. Normalize All Neurons and Sort in Specified Order.
 ^^^^^^^^^^^^^^^^^^^
 
 
@@ -315,8 +333,8 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 
     random_list = range(10)
     random.shuffle(random_list)
-    print (random_list)
-    fig = plt.figure(figsize=(10,10))
+    print(random_list)
+    fig = plt.figure(figsize=(10, 10))
     fig.subplots_adjust(hspace=.3)
     pop.plot_heat_map(all_psth, normalize='all', sortby=random_list)
 
@@ -331,7 +349,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 
  Out::
 
-    [7, 5, 1, 2, 6, 0, 9, 3, 4, 8]
+    [8, 2, 0, 9, 6, 3, 5, 1, 4, 7]
 
 
 1.3.5. Plot Population PSTH
@@ -342,7 +360,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 .. code-block:: python
 
 
-    plt.figure(figsize=(10,5))
+    plt.figure(figsize=(10, 5))
     pop.plot_population_psth(all_psth=all_psth)
 
 
@@ -353,7 +371,7 @@ However, we'll only be looking at Mihili_08062013.mat (Monkey M, Session 4)
 
 
 
-**Total running time of the script:** ( 0 minutes  21.925 seconds)
+**Total running time of the script:** ( 0 minutes  39.858 seconds)
 
 
 

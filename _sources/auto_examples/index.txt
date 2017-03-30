@@ -48,7 +48,7 @@ Examples Gallery
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="A demonstration of Spykes's functionality using a dataset from CRCNS">
+    <div class="sphx-glr-thumbcontainer" tooltip="A demonstration of Spykes's functionality to reproduce a figure from Li et al's "A motor cortex...">
 
 .. only:: html
 
@@ -88,7 +88,7 @@ Examples Gallery
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="Reproduce a figure from a published article with a public dataset">
+    <div class="sphx-glr-thumbcontainer" tooltip="A demonstration to use Spykes' functionality to reproduce Ramkumar et al's "Premotor and Motor ...">
 
 .. only:: html
 
@@ -108,7 +108,7 @@ Examples Gallery
 
 .. raw:: html
 
-    <div class="sphx-glr-thumbcontainer" tooltip="">
+    <div class="sphx-glr-thumbcontainer" tooltip="A demonstration of Spykes' functionality using the reaching dataset.">
 
 .. only:: html
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Reaching Dataset Example &mdash; spykes 0.1.dev documentation</title>
+  <title>Reaching Dataset Example &mdash; spykes  documentation</title>
   
 
   
@@ -32,7 +32,7 @@
   
 
   
-    <link rel="top" title="spykes 0.1.dev documentation" href="../index.html"/>
+    <link rel="top" title="spykes  documentation" href="../index.html"/>
         <link rel="up" title="Examples Gallery" href="index.html"/>
         <link rel="next" title="Contributing" href="../contributing.html"/>
         <link rel="prev" title="Neural Coding Reward Example" href="plot_neural_coding_reward_example.html"/> 
@@ -61,10 +61,6 @@
 
           
             
-            
-              <div class="version">
-                0.1.dev
-              </div>
             
           
 
@@ -101,6 +97,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#part-i-neurovis">Part I: NeuroVis</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#instantiate-example-pmd-neuron">Instantiate Example PMd Neuron</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#raster-plot-and-psth-aligned-to-target-onset">Raster plot and PSTH aligned to target onset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#events">Events</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#features">Features</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#example-1-reward-vs-no-reward">Example 1: Reward vs No Reward</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#example-2-according-to-quadrant-of-reaching-direction">Example 2: according to quadrant of reaching direction</a></li>
@@ -127,6 +124,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api.html">API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html">Current</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../whats_new.html#version-0-1">Version 0.1</a></li>
 </ul>
 
             
@@ -175,14 +174,13 @@
             
   <div class="section" id="reaching-dataset-example">
 <span id="sphx-glr-auto-examples-plot-reaching-dataset-example-py"></span><h1>Reaching Dataset Example<a class="headerlink" href="#reaching-dataset-example" title="Permalink to this headline">¶</a></h1>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s1">&#39;seaborn-ticks&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">switch_backend</span><span class="p">(</span><span class="s1">&#39;Agg&#39;</span><span class="p">)</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<p>A demonstration of Spykes&#8217; functionality using the reaching dataset.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">spykes.neurovis</span> <span class="kn">import</span> <span class="n">NeuroVis</span>
 <span class="kn">from</span> <span class="nn">spykes.neuropop</span> <span class="kn">import</span> <span class="n">NeuroPop</span>
+<span class="kn">from</span> <span class="nn">spykes.datasets</span> <span class="kn">import</span> <span class="n">load_reaching_data</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 <div class="section" id="initialization">
@@ -191,14 +189,13 @@
 <h3>Download Reaching Dataset<a class="headerlink" href="#download-reaching-dataset" title="Permalink to this headline">¶</a></h3>
 <p>[<a class="reference external" href="https://northwestern.app.box.com/s/xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8">download link</a>]</p>
 <p>Load Data</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">deepdish</span> <span class="kn">as</span> <span class="nn">dd</span>
-<span class="n">reach_data</span> <span class="o">=</span> <span class="n">dd</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;reaching_dataset.h5&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">reach_data</span> <span class="o">=</span> <span class="n">load_reaching_data</span><span class="p">()</span>
 
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;dataset keys:&#39;</span><span class="p">,</span> <span class="n">reach_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;events:&#39;</span><span class="p">,</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;number of PMd neurons:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_PMd&#39;</span><span class="p">]))</span>
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;number of M1 neurons:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;dataset keys:&#39;</span><span class="p">,</span> <span class="n">reach_data</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;events:&#39;</span><span class="p">,</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;features&#39;</span><span class="p">,</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;number of PMd neurons:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_PMd&#39;</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;number of M1 neurons:&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">]))</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
@@ -216,8 +213,8 @@
 <div class="section" id="instantiate-example-pmd-neuron">
 <h3>Instantiate Example PMd Neuron<a class="headerlink" href="#instantiate-example-pmd-neuron" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">neuron_number</span> <span class="o">=</span> <span class="mi">91</span>
-<span class="n">spike_times</span> <span class="o">=</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_PMd&#39;</span><span class="p">][</span><span class="n">neuron_number</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">neuron_PMd</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;PMd </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">neuron_number</span><span class="p">)</span>
+<span class="n">spike_times</span> <span class="o">=</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_PMd&#39;</span><span class="p">][</span><span class="n">neuron_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">neuron_PMd</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PMd </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">neuron_number</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -232,10 +229,11 @@
 </div>
 <img alt="../_images/sphx_glr_plot_reaching_dataset_example_002.png" class="align-center" src="../_images/sphx_glr_plot_reaching_dataset_example_002.png" />
 <p>Let&#8217;s put the data into a DataFrame</p>
-<blockquote>
-<div></div></blockquote>
+</div>
+<div class="section" id="events">
+<h3>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
-<span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;targetOnTime&#39;</span><span class="p">,</span> <span class="s1">&#39;goCueTime&#39;</span><span class="p">,</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">]</span>
+<span class="n">events</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;targetOnTime&#39;</span><span class="p">,</span> <span class="s1">&#39;goCueTime&#39;</span><span class="p">,</span> <span class="s1">&#39;rewardTime&#39;</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
     <span class="n">data_df</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
@@ -247,10 +245,11 @@
 </div>
 <div class="section" id="features">
 <h3>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span>
+    <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">])</span>
 <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;reward_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="s1">&#39;reward&#39;</span><span class="p">]</span>
 
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">,</span><span class="s1">&#39;reward_code&#39;</span><span class="p">]</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">,</span> <span class="s1">&#39;reward_code&#39;</span><span class="p">]</span>
 <span class="n">data_df</span><span class="p">[</span><span class="n">features</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -259,7 +258,8 @@
 <div class="section" id="example-1-reward-vs-no-reward">
 <h3>Example 1: Reward vs No Reward<a class="headerlink" href="#example-1-reward-vs-no-reward" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># We could use &#39;reward_code&#39; but let&#39;s create a boolean feature for reward</span>
-<span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;reward&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;reward_code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="p">{</span><span class="mi">32</span><span class="p">:</span><span class="bp">True</span><span class="p">,</span> <span class="mi">34</span><span class="p">:</span><span class="bp">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">}[</span><span class="n">s</span><span class="p">])</span>
+<span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;reward&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;reward_code&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="p">{</span><span class="mi">32</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="mi">34</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">}[</span><span class="n">s</span><span class="p">])</span>
 <span class="n">data_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -271,11 +271,11 @@
 </div>
 <img alt="../_images/sphx_glr_plot_reaching_dataset_example_003.png" class="align-center" src="../_images/sphx_glr_plot_reaching_dataset_example_003.png" />
 <p>Make it look nicer</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">psth</span> <span class="o">=</span> <span class="n">neuron_PMd</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">,</span>
                            <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;reward&#39;</span><span class="p">,</span>
                            <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span>
-                           <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="mi">600</span><span class="p">],</span>
+                           <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span>
                            <span class="n">binsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
                            <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;Reward Time&#39;</span><span class="p">)</span>
 
@@ -287,15 +287,16 @@
 </div>
 <div class="section" id="example-2-according-to-quadrant-of-reaching-direction">
 <h3>Example 2: according to quadrant of reaching direction<a class="headerlink" href="#example-2-according-to-quadrant-of-reaching-direction" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span>
+    <span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">360</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">data_df</span><span class="p">[[</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">,</span> <span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">psth_PMd</span> <span class="o">=</span> <span class="n">neuron_PMd</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;targetOnTime&#39;</span><span class="p">,</span>
                                <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">,</span>
                                <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span>
-                               <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="mi">1000</span><span class="p">],</span>
+                               <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
                                <span class="n">binsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
                                <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;target onset&#39;</span><span class="p">)</span>
 
@@ -305,27 +306,27 @@
 </div>
 <img alt="../_images/sphx_glr_plot_reaching_dataset_example_005.png" class="align-center" src="../_images/sphx_glr_plot_reaching_dataset_example_005.png" />
 <p>Raster plots for the same neuron and conditions</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#get rasters</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># get rasters</span>
 <span class="n">rasters_PMd</span> <span class="o">=</span> <span class="n">neuron_PMd</span><span class="o">.</span><span class="n">get_raster</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;targetOnTime&#39;</span><span class="p">,</span>
                                     <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">,</span>
                                     <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span>
-                                    <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span><span class="mi">1000</span><span class="p">],</span>
+                                    <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">200</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span>
                                     <span class="n">binsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-                                    <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">);</span>
+                                    <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 
-<span class="c1">#plot rasters</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
-<span class="n">plot_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">cmap</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Oranges&#39;</span><span class="p">,</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span><span class="s1">&#39;Reds&#39;</span><span class="p">,</span><span class="s1">&#39;Greens&#39;</span><span class="p">]</span>
+<span class="c1"># plot rasters</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plot_order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">cmap</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Oranges&#39;</span><span class="p">,</span> <span class="s1">&#39;Blues&#39;</span><span class="p">,</span> <span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="s1">&#39;Greens&#39;</span><span class="p">]</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rasters_PMd</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="n">plot_order</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">plot_order</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
     <span class="n">neuron_PMd</span><span class="o">.</span><span class="n">plot_raster</span><span class="p">(</span><span class="n">rasters_PMd</span><span class="p">,</span>
-                           <span class="n">cond_id</span> <span class="o">=</span> <span class="n">cond_id</span><span class="p">,</span>
-                           <span class="n">cmap</span> <span class="o">=</span> <span class="n">cmap</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                           <span class="n">cond_name</span><span class="o">=</span> <span class="s1">&#39;reach angle: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cond_id</span><span class="p">,</span>
+                           <span class="n">cond_id</span><span class="o">=</span><span class="n">cond_id</span><span class="p">,</span>
+                           <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                           <span class="n">cond_name</span><span class="o">=</span><span class="s1">&#39;reach angle: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">cond_id</span><span class="p">,</span>
                            <span class="n">sortby</span><span class="o">=</span><span class="s1">&#39;rate&#39;</span><span class="p">,</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;ascend&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">plot_order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">plot_order</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -334,18 +335,18 @@
 <div class="section" id="example-3-same-as-example-2-but-for-an-m1-neuron-and-aligned-at-gocuetime">
 <h3>Example 3: Same as Example 2 but for an M1 neuron and aligned at goCueTime<a class="headerlink" href="#example-3-same-as-example-2-but-for-an-m1-neuron-and-aligned-at-gocuetime" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">neuron_number</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">spike_times</span> <span class="o">=</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">][</span><span class="n">neuron_number</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-<span class="n">neuron_M1</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;M1 </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">neuron_number</span><span class="p">)</span>
+<span class="n">spike_times</span> <span class="o">=</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">][</span><span class="n">neuron_number</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">neuron_M1</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spike_times</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;M1 </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">neuron_number</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">psth_M1</span> <span class="o">=</span> <span class="n">neuron_M1</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;goCueTime&#39;</span><span class="p">,</span>
                              <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span>
                              <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">,</span>
-                             <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">2000</span><span class="p">],</span>
+                             <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">],</span>
                              <span class="n">binsize</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
                              <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                             <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">70</span><span class="p">],</span>
+                             <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span>
                              <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;Go Cue&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -354,18 +355,18 @@
 </div>
 <div class="section" id="example-4-sorted-by-direction-only-for-the-trials-with-reward">
 <h3>Example 4: sorted by direction only for the trials with reward<a class="headerlink" href="#example-4-sorted-by-direction-only-for-the-trials-with-reward" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1">#use standard pandas filtering to isolate trials of interest</span>
-<span class="n">trials_df</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;reward&#39;</span><span class="p">]</span><span class="o">==</span><span class="bp">True</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># use standard pandas filtering to isolate trials of interest</span>
+<span class="n">trials_df</span> <span class="o">=</span> <span class="n">data_df</span><span class="p">[</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;reward&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">True</span><span class="p">]</span>
 <span class="n">trials_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">psth_M1</span> <span class="o">=</span> <span class="n">neuron_M1</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;rewardTime&#39;</span><span class="p">,</span>
                              <span class="n">conditions</span><span class="o">=</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">,</span>
                              <span class="n">df</span><span class="o">=</span><span class="n">trials_df</span><span class="p">,</span>
-                             <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span><span class="mi">2000</span><span class="p">],</span>
+                             <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">],</span>
                              <span class="n">binsize</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-                             <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">70</span><span class="p">],</span>
+                             <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span>
                              <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;Reward Time&#39;</span>
                              <span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -373,8 +374,10 @@
 </div>
 <img alt="../_images/sphx_glr_plot_reaching_dataset_example_008.png" class="align-center" src="../_images/sphx_glr_plot_reaching_dataset_example_008.png" />
 <p>One last thing before moving on to <cite>spykes.neuropop</cite>
-We can use <cite>get_spikecounts()</cite> to count the number of spikes within a certain time window relative to event onset</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">spike_counts</span> <span class="o">=</span> <span class="n">neuron_PMd</span><span class="o">.</span><span class="n">get_spikecounts</span><span class="p">(</span><span class="s1">&#39;targetOnTime&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">])</span>
+We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
+certain time window relative to event onset</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">spike_counts</span> <span class="o">=</span> <span class="n">neuron_PMd</span><span class="o">.</span><span class="n">get_spikecounts</span><span class="p">(</span>
+    <span class="s1">&#39;targetOnTime&#39;</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">])</span>
 </pre></div>
 </div>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">conditions_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">])</span>
@@ -383,18 +386,19 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 </pre></div>
 </div>
 <p>Let&#8217;s visualize the spike counts per trial for each condition</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">colors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span> <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span> <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span> <span class="s1">&#39;#02A68E&#39;</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span> <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span> <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span> <span class="s1">&#39;#02A68E&#39;</span><span class="p">]</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">conditions_names</span><span class="p">):</span>
-    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">cond</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">x_noise</span> <span class="o">=</span> <span class="mf">0.08</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="n">x_noise</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">spike_counts</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data_df</span><span class="p">[</span><span class="s1">&#39;endpointOfReach_quad&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cond</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">x_noise</span> <span class="o">=</span> <span class="mf">0.08</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">idx</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">x_noise</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">spike_counts</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+             <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;condition&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;number of spikes&#39;</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">conditions_names</span><span class="p">))</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="n">conditions_names</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
@@ -413,8 +417,10 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 <div class="section" id="extract-reach-direction-x">
 <h3>Extract reach direction x<a class="headerlink" href="#extract-reach-direction-x" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Get reach direction, ensure it is between [-pi, pi]</span>
-<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.0</span><span class="p">),</span>
-               <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.0</span><span class="p">))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">]</span> <span class="o">*</span>
+               <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">),</span>
+               <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">]</span> <span class="o">*</span>
+               <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
@@ -433,24 +439,26 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 <span class="n">align</span> <span class="o">=</span> <span class="s1">&#39;goCueTime&#39;</span>
 
 <span class="c1"># Specify a window of around the go cue for spike counts</span>
-<span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">500.</span><span class="p">]</span> <span class="c1"># milliseconds</span>
+<span class="n">window</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">500.</span><span class="p">]</span>  <span class="c1"># milliseconds</span>
 
 <span class="c1"># Get spike counts</span>
 <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">])])</span>
 
 <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">])):</span>
-    <span class="n">this_neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spiketimes</span> <span class="o">=</span> <span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
-    <span class="n">Y</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">this_neuron</span><span class="o">.</span><span class="n">get_spikecounts</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">align</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">))</span>
+    <span class="n">this_neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spiketimes</span><span class="o">=</span><span class="n">reach_data</span><span class="p">[</span><span class="s1">&#39;neurons_M1&#39;</span><span class="p">][</span><span class="n">n</span><span class="p">])</span>
+    <span class="n">Y</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span>
+        <span class="n">this_neuron</span><span class="o">.</span><span class="n">get_spikecounts</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="n">align</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="n">data_df</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">))</span>
 
     <span class="c1"># Short list a few high-firing neurons</span>
     <span class="k">if</span> <span class="n">this_neuron</span><span class="o">.</span><span class="n">firingrate</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">:</span>
         <span class="n">M1_select</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
 
 <span class="c1"># Rescale spike counts to units of spikes/s</span>
-<span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">*</span><span class="mf">1e3</span>
+<span class="n">Y</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1e3</span>
 
 <span class="c1"># How many neurons shortlisted?</span>
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> M1 neurons had firing rates over </span><span class="si">%4.1f</span><span class="s1"> spks/s&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M1_select</span><span class="p">),</span> <span class="n">threshold</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%d</span><span class="s1"> M1 neurons had firing rates over </span><span class="si">%4.1f</span><span class="s1"> spks/s&#39;</span> <span class="o">%</span>
+      <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M1_select</span><span class="p">),</span> <span class="n">threshold</span><span class="p">))</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
@@ -460,8 +468,9 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 </div>
 <div class="section" id="split-into-train-and-test-sets">
 <h3>Split into train and test sets<a class="headerlink" href="#split-into-train-and-test-sets" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="kn">import</span> <span class="n">train_test_split</span>
-<span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.cross_validation</span> <span class="kn">import</span> <span class="n">train_test_split</span> <span class="c1"># noqa</span>
+<span class="n">Y_train</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">,</span> <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">Y</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.33</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -469,7 +478,7 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 <h3>Create an instance of NeuroPop<a class="headerlink" href="#create-an-instance-of-neuropop" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">pop</span> <span class="o">=</span> <span class="n">NeuroPop</span><span class="p">(</span><span class="n">n_neurons</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">M1_select</span><span class="p">),</span>
                <span class="n">tunemodel</span><span class="o">=</span><span class="s1">&#39;gvm&#39;</span><span class="p">,</span>
-               <span class="n">n_repeats</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+               <span class="n">n_repeats</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
                <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 <span class="c1"># Let&#39;s fit tuning curves to the population</span>
@@ -489,11 +498,12 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 <h3>Score the prediction<a class="headerlink" href="#score-the-prediction" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># calculate and plot the pseudo R2</span>
 <span class="n">Ynull</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Y_train</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">pseudo_R2</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">Y_test</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">],</span> <span class="n">Yhat_test</span><span class="p">,</span> <span class="n">Ynull</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;pseudo_R2&#39;</span><span class="p">)</span>
+<span class="n">pseudo_R2</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">score</span><span class="p">(</span>
+    <span class="n">Y_test</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">],</span> <span class="n">Yhat_test</span><span class="p">,</span> <span class="n">Ynull</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;pseudo_R2&#39;</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pseudo_R2</span><span class="p">,</span> <span class="s1">&#39;co&#39;</span><span class="p">,</span> <span class="n">markeredgecolor</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">markersize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">M1_select</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">M1_select</span><span class="p">)</span> <span class="o">+</span> <span class="mi">5</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;neurons&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;pseudo-$R^2$ (test)&#39;</span><span class="p">)</span>
@@ -508,13 +518,14 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 </div>
 <div class="section" id="visualize-tuning-curves">
 <h3>Visualize tuning curves<a class="headerlink" href="#visualize-tuning-curves" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">70</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">70</span><span class="p">])</span>
 
 <span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">M1_select</span><span class="p">)):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="n">neuron</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">neuron</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     <span class="n">pop</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">Y_test</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">[</span><span class="n">neuron</span><span class="p">]],</span> <span class="n">neuron</span><span class="o">=</span><span class="n">neuron</span><span class="p">,</span>
-                <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Y_test</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">[</span><span class="n">neuron</span><span class="p">]]),</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y_test</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">[</span><span class="n">neuron</span><span class="p">]])])</span>
-    <span class="c1">#plt.axis(&#39;off&#39;)</span>
+                <span class="n">ylim</span><span class="o">=</span><span class="p">[</span><span class="mf">0.8</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Y_test</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">[</span><span class="n">neuron</span><span class="p">]]),</span>
+                <span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Y_test</span><span class="p">[:,</span> <span class="n">M1_select</span><span class="p">[</span><span class="n">neuron</span><span class="p">]])])</span>
+    <span class="c1"># plt.axis(&#39;off&#39;)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
@@ -529,11 +540,11 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 </div>
 <div class="section" id="visualize-decoded-reach-direction">
 <h3>Visualize decoded reach direction<a class="headerlink" href="#visualize-decoded-reach-direction" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">xhat_test</span><span class="p">,</span> <span class="s1">&#39;k.&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">1.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mf">1.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Ground truth [radians]&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Decoded [radians]&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
@@ -542,8 +553,8 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;top&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s1">&#39;right&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span>
-<span class="n">jitter</span> <span class="o">=</span> <span class="mf">0.2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">jitter</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">,</span> <span class="n">polar</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">jitter</span><span class="p">,</span> <span class="s1">&#39;ko&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Ground truth&#39;</span><span class="p">)</span>
@@ -564,9 +575,9 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 <div class="section" id="score-decoding-performance">
 <h3>Score decoding performance<a class="headerlink" href="#score-decoding-performance" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">circ_corr</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">xhat_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;circ_corr&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;Circular Correlation: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">circ_corr</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Circular Correlation: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">circ_corr</span><span class="p">))</span>
 <span class="n">cosine_dist</span> <span class="o">=</span> <span class="n">pop</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">xhat_test</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;cosine_dist&#39;</span><span class="p">)</span>
-<span class="k">print</span> <span class="p">(</span><span class="s1">&#39;Cosine Distance: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cosine_dist</span><span class="p">))</span>
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Cosine Distance: </span><span class="si">%f</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cosine_dist</span><span class="p">))</span>
 </pre></div>
 </div>
 <p class="sphx-glr-script-out">Out:</p>
@@ -574,7 +585,7 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
 <span class="n">Cosine</span> <span class="n">Distance</span><span class="p">:</span> <span class="mf">0.806964</span>
 </pre></div>
 </div>
-<p><strong>Total running time of the script:</strong> ( 1 minutes  7.248 seconds)</p>
+<p><strong>Total running time of the script:</strong> ( 1 minutes  40.230 seconds)</p>
 <div class="sphx-glr-footer container">
 <div class="sphx-glr-download container">
 <a class="reference download internal" href="../_downloads/plot_reaching_dataset_example.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_reaching_dataset_example.py</span></code></a></div>
@@ -627,7 +638,7 @@ We can use <cite>get_spikecounts()</cite> to count the number of spikes within a
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.1.dev',
+            VERSION:'',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

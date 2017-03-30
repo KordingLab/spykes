@@ -1,6 +1,6 @@
 
 
-.. _sphx_glr_auto_examples_plot_crcns_dataset_example.py:
+.. _sphx_glr_auto_examples_crcns_dataset_example.py:
 
 
 =====================
@@ -21,11 +21,6 @@ A demonstration of Spykes's functionality to reproduce a figure from Li et al's
 
 
 
-
-
-
-
-
 .. code-block:: python
 
 
@@ -36,11 +31,6 @@ A demonstration of Spykes's functionality to reproduce a figure from Li et al's
     import scipy.io
 
     plt.style.use('seaborn-ticks')
-
-
-
-
-
 
 
 0 Overview: Reproduce Figure
@@ -93,11 +83,6 @@ Unzip it and you will find file ``data_structure_ANM218457_20131006.mat``
     mat = scipy.io.loadmat('data_structure_ANM218457_20131006.mat')
 
 
-
-
-
-
-
 2 Get Spike Times
 --------------------
 
@@ -116,16 +101,6 @@ Unzip it and you will find file ``data_structure_ANM218457_20131006.mat``
     print('neuron %d has a firing rate of %0.2f spikes per second' %
           (neuron_n, neuron.firingrate))
 
-
-
-
-
-
-.. rst-class:: sphx-glr-script-out
-
- Out::
-
-    neuron 9 has a firing rate of 5.07 spikes per second
 
 
 Let's use all the goodness of ``pandas`` to define all our conditions.
@@ -155,11 +130,6 @@ Tidy Data <http://vita.had.co.nz/papers/tidy-data.pdf>`__.
     data_df[events].head()
 
 
-
-
-
-
-
 4 Get Features
 --------------------
 
@@ -185,11 +155,6 @@ Tidy Data <http://vita.had.co.nz/papers/tidy-data.pdf>`__.
     data_df[features].head()
 
 
-
-
-
-
-
 5 Define Features
 --------------------
 
@@ -210,11 +175,6 @@ Tidy Data <http://vita.had.co.nz/papers/tidy-data.pdf>`__.
     data_df[['HitR', 'HitL', 'ErrR', 'ErrL', 'correct', 'response']].head()
 
 
-
-
-
-
-
 Let's put the events and the augmented features into a new data frame
 which we will use everywhere below.
 
@@ -226,11 +186,6 @@ which we will use everywhere below.
     # isolate trials of interest
     trials_df = data_df[((data_df['GoodTrials'] == True) &
                         (data_df['correct'] == True))]
-
-
-
-
-
 
 
 6 Plots
@@ -256,14 +211,6 @@ which we will use everywhere below.
                                        sortby='rate',
                                        sortorder='ascend')
 
-
-
-.. image:: /auto_examples/images/sphx_glr_plot_crcns_dataset_example_001.png
-    :align: center
-
-
-
-
 6.2 PSTH
 ~~~~~~~~~~~~~~~~~~~
 
@@ -280,14 +227,6 @@ which we will use everywhere below.
                     binsize=100)
     plt.title('')
     plt.show()
-
-
-
-
-.. image:: /auto_examples/images/sphx_glr_plot_crcns_dataset_example_002.png
-    :align: center
-
-
 
 
 6.3 Reproduce Figure
@@ -341,14 +280,6 @@ which we will use everywhere below.
 
 
 
-
-
-.. image:: /auto_examples/images/sphx_glr_plot_crcns_dataset_example_003.png
-    :align: center
-
-
-
-
 6.4 ggplot
 ~~~~~~~~~~~~
 
@@ -370,15 +301,7 @@ which we will use everywhere below.
     plt.title('')
     plt.show()
 
-
-
-.. image:: /auto_examples/images/sphx_glr_plot_crcns_dataset_example_004.png
-    :align: center
-
-
-
-
-**Total running time of the script:** ( 0 minutes  11.676 seconds)
+**Total running time of the script:** ( 0 minutes  0.000 seconds)
 
 
 
@@ -387,13 +310,13 @@ which we will use everywhere below.
 
   .. container:: sphx-glr-download
 
-     :download:`Download Python source code: plot_crcns_dataset_example.py <plot_crcns_dataset_example.py>`
+     :download:`Download Python source code: crcns_dataset_example.py <crcns_dataset_example.py>`
 
 
 
   .. container:: sphx-glr-download
 
-     :download:`Download Jupyter notebook: plot_crcns_dataset_example.ipynb <plot_crcns_dataset_example.ipynb>`
+     :download:`Download Jupyter notebook: crcns_dataset_example.ipynb <crcns_dataset_example.ipynb>`
 
 .. rst-class:: sphx-glr-signature
 

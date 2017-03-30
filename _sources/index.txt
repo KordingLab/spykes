@@ -13,11 +13,12 @@ Yet, virtually every lab relies on a set of in-house analysis scripts to go from
 
 Spykes is a collection of Python tools to make the visualization and analysis of neural data easy and reproducible.
 
-At present, spykes comes with three classes:
+At present, spykes comes with four classes:
 
-- ``NeuroVis`` helps you plot beautiful spike rasters and peri-stimulus time histograms (PSTHs).
-- ``PopVis`` helps you plot population summaries of PSTHs as normalized averages or heat maps.
-- ``NeuroPop`` helps you estimate tuning curves of neural populations and decode stimuli from population vectors with maximum-likelihood decoding.
+- ```NeuroVis``` helps you plot beautiful spike rasters and peri-stimulus time histograms (PSTHs).
+- ```PopVis``` helps you plot population summaries of PSTHs as normalized averages or heat maps.
+- ```NeuroPop``` helps you estimate tuning curves of neural populations and decode stimuli from population vectors with maximum-likelihood decoding.
+- ```STRF``` helps you estimate spatiotemporal receptive fields.
 
 ``Spykes`` deliberately does not aim to provide tools for spike sorting or file i/o with popular electrophysiology formats, but only aims to fill the missing niche for neural data analysis and easy visualization. For file i/o, see `Neo <http://neuralensemble.org/neo/>`__ and `OpenElectrophy <http://neuralensemble.org/OpenElectrophy/>`__. For spike sorting, see `Klusta <http://klusta.readthedocs.io/en/latest/>`__.
 
@@ -35,6 +36,7 @@ Contents
    auto_examples/index
    contributing
    api
+   whats_new
 
 Bugs
 =========================
