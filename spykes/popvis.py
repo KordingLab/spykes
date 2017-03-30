@@ -202,10 +202,6 @@ class PopVis(object):
                                window[1] + xtic_len, xtic_len))
             xtic_locs = [(j - window[0]) / binsize - 0.5 for j in xtic_labels]
 
-            if 0 not in xtic_labels:
-                xtic_labels.append(0)
-                xtic_locs.append(-window[0] / binsize - 0.5)
-
             plt.xticks(xtic_locs, xtic_labels)
 
             plt.axvline((-window[0]) / binsize - 0.5, color='r',
