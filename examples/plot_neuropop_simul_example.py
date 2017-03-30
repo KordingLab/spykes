@@ -10,11 +10,10 @@ A demonstration of Neuropop using simulated data
 ########################################################
 
 import numpy as np
-from spykes.neuropop import NeuroPop
 import matplotlib.pyplot as plt
-from sklearn.cross_validation import train_test_split
 
-plt.style.use('seaborn-ticks')
+from spykes.neuropop import NeuroPop
+from sklearn.cross_validation import train_test_split
 
 ########################################################
 # Create a NeuroPop object

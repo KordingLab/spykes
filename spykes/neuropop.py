@@ -4,12 +4,6 @@ from copy import deepcopy
 import matplotlib.pyplot as plt
 from .utils import slow_exp, grad_slow_exp, log_likelihood, circ_corr
 
-plt.style.use(
-    os.path.join(
-        os.path.dirname(os.path.realpath(__file__)),
-        '../mpl_styles/spykes.mplstyle')
-)
-
 
 class NeuroPop(object):
 

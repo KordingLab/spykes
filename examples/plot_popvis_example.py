@@ -11,14 +11,13 @@ PopVis Example
 ########################################################
 
 import numpy as np
+import matplotlib.pyplot as plt
+
 import pandas as pd
 from spykes.neurovis import NeuroVis
 from spykes.popvis import PopVis
+from spykes.datasets import load_reward_data
 import random
-import matplotlib.pyplot as plt
-import scipy.io
-
-plt.style.use('seaborn-ticks')
 
 ########################################################
 # 0 Initialization
@@ -33,7 +32,7 @@ plt.style.use('seaborn-ticks')
 #
 # 0.2 Read In Data
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-mat = scipy.io.loadmat('3573447/Mihili_08062013.mat')
+_, mat = load_reward_data()
 
 ########################################################
 #
