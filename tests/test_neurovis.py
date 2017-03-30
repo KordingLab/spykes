@@ -8,6 +8,8 @@ from spykes.neurovis import NeuroVis  # noqa
 
 def test_neurovis():
 
+    np.random.seed(1738)
+
     num_spikes = 500
     num_trials = 10
 

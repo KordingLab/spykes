@@ -9,6 +9,8 @@ from spykes.neurovis import NeuroVis  # noqa
 
 def test_popvis():
 
+    np.random.seed()
+
     num_spikes = 500
     num_trials = 10
 
