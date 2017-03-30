@@ -33,10 +33,10 @@ Version 0.1
 Changelog
 ~~~~~~~~~
 
-    - Add NeuroVis class by `Hugo Fernandes`_ and `Pavan Ramkumar`_
-    - Add NeuroPop class by `Hugo Fernandes`_ and `Pavan Ramkumar`_
-    - Add PopVis class by `Mayank Agrawal`_
-    - Add STRF class by `Pavan Ramkumar`_
+    - Add :class:`spykes.NeuroVis` by `Hugo Fernandes`_ and `Pavan Ramkumar`_
+    - Add :class:`spykes.NeuroPop` by `Hugo Fernandes`_ and `Pavan Ramkumar`_
+    - Add :class:`spykes.PopVis` by `Mayank Agrawal`_
+    - Add :class:`spykes.STRF` by `Pavan Ramkumar`_
 
 .. _Hugo Fernandes: http:/github.com/hugoguh
 .. _Mainak Jas: https://perso.telecom-paristech.fr/mjas/
