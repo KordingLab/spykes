@@ -171,7 +171,7 @@ class PopVis(object):
             xtic_len = gcd(abs(window[0]), window[1])
             xtic_labels = range(window[0], window[1] + xtic_len, xtic_len)
             xtic_locs = [(j - window[0]) / binsize for j in xtic_labels]
-            
+
             plt.xticks(xtic_locs, xtic_labels)
 
             plt.axvline((-window[0]) / binsize, color='r',
