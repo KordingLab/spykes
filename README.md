@@ -2,6 +2,7 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/KordingLab/spykes/blob/master/LICENSE) [![Join the chat at https://gitter.im/KordingLab/spykes](https://badges.gitter.im/KordingLab/spykes.svg)](https://gitter.im/KordingLab/spykes?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Travis](https://api.travis-ci.org/pavanramkumar/pyglmnet.svg?branch=master "Travis")](https://travis-ci.org/KordingLab/spykes)
+[![Circle](https://circleci.com/gh/KordingLab/spykes/tree/master.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/KordingLab/spykes/tree/master.svg?style=shield&circle-token=:circle-token)
 [![Coverage Status](https://coveralls.io/repos/github/KordingLab/spykes/badge.svg?branch=master)](https://coveralls.io/github/KordingLab/spykes?branch=master)
 
 <img src="spykes-logo.png" width="400" />
