@@ -3,6 +3,7 @@ A few miscellaneous helper functions for spykes
 """
 import numpy as np
 from scipy import stats
+import matplotlib # noqa
 
 
 def slow_exp(z, eta):
@@ -118,3 +119,28 @@ def get_sort_indices(data, sortby=None, sortorder='descend'):
             return sort_idx
         else:
             return sort_idx[::-1]
+
+
+def set_matplotlib_defaults(plt):
+
+    """
+    Set publication quality defaults for matplotlib.
+    Parameters
+    ----------
+    plt : instance of matplotlib.pyplot
+        The plt instance.
+    """
+
+    params = {'font.family': 'sans-serif',
+              'font.sans-serif': 'Bitsream Vera Sans',
+              'font.size': 13,
+              'axes.titlesize': 12,
+              'xtick.labelsize': 10,
+              'ytick.labelsize': 10,
+              'xtick.direction': 'out',
+              'ytick.direction': 'out',
+              'xtick.major.size': 6,
+              'ytick.major.size': 6,
+              'legend.fontsize': 11}
+
+    plt.rcParams.update(params)
