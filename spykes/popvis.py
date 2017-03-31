@@ -87,14 +87,15 @@ class PopVis(object):
                                    conditions=conditions, window=window,
                                    binsize=binsize, plot=False)
 
-            for cond_id in np.sort(psth['data'].keys()):
+            for cond_id in np.sort(list(psth['data'].keys())):
 
                 if cond_id not in all_psth['data']:
                     all_psth['data'][cond_id] = list()
 
-                all_psth['data'][cond_id].append(psth['data'][cond_id]['mean'])
+                all_psth['data'][cond_id].append(
+                    psth['data'][cond_id]['mean'])
 
-        for cond_id in np.sort(all_psth['data'].keys()):
+        for cond_id in np.sort(list(all_psth['data'].keys())):
             all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
 
         if plot is True:
@@ -143,7 +144,7 @@ class PopVis(object):
         conditions = psth_dict['conditions']
 
         if cond_id is None:
-            keys = np.sort(psth_dict['data'].keys())
+            keys = np.sort(list(psth_dict['data'].keys()))
         else:
             keys = cond_id
 
@@ -251,7 +252,7 @@ class PopVis(object):
         else:
             psth = copy.deepcopy(all_psth)
 
-        keys = np.sort(psth['data'].keys())
+        keys = np.sort(list(psth['data'].keys()))
 
         # normalize each neuron across all conditions
 

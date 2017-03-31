@@ -32,7 +32,8 @@ def test_popvis():
     condition_num = 'responseNum'
     condition_bool = 'responseBool'
 
-    start_times = rand_spiketimes[0::num_spikes / num_trials]
+    start_times = rand_spiketimes[0::int(num_spikes/num_trials)]
+
     df['trialStart'] = start_times
 
     df[event] = df['trialStart'] + np.random.rand(num_trials)
@@ -61,8 +62,8 @@ def test_popvis():
         assert_equal(all_psth['data'][cond_id].shape[1],
                      (window[1] - window[0]) / binsize)
 
-    assert_raises(ValueError, pop.plot_heat_map, all_psth,
-                  sortby=range(num_trials - 1))
+    assert_raises(ValueError, pop.plot_heat_map, all_psth, 
+        sortby=list(range(num_trials-1)))
 
     pop.plot_heat_map(all_psth, sortby=range(num_trials))
     pop.plot_heat_map(all_psth, sortby='rate')

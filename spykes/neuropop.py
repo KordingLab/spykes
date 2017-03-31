@@ -1,8 +1,7 @@
-import os
 import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
-from .utils import slow_exp, grad_slow_exp, log_likelihood, circ_corr
+from . import utils
 
 
 class NeuroPop(object):
@@ -188,7 +187,8 @@ class NeuroPop(object):
         -------
         Y: float, n_samples x 1, firing rates
         """
-        y = b + g * slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x), self.eta)
+        y = b + g * utils.slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x),
+                                   self.eta)
         return y
 
     # -----------------------------------------------------------------------
@@ -245,16 +245,16 @@ class NeuroPop(object):
         lmb = self._tunefun(x, k0, k1, k2, g, b)
 
         n_samples = np.float(x.shape[0])
-        grad_k1 = 1. / n_samples * np.sum(g * grad_slow_exp(k0 + k1 *
+        grad_k1 = 1. / n_samples * np.sum(g * utils.grad_slow_exp(k0 + k1 *
                                           np.cos(x) + k2 * np.sin(x),
                                           self.eta) * np.cos(x) * (
                                           1 - y / lmb))
-        grad_k2 = 1. / n_samples * np.sum(g * grad_slow_exp(k0 + k1 *
+        grad_k2 = 1. / n_samples * np.sum(g * utils.grad_slow_exp(k0 + k1 *
                                           np.cos(x) + k2 * np.sin(x),
                                           self.eta) * np.sin(x) *
                                           (1 - y / lmb))
         if tunemodel == 'glm':
-            grad_k0 = 1. / n_samples * np.sum(grad_slow_exp(k0 + k1 *
+            grad_k0 = 1. / n_samples * np.sum(utils.grad_slow_exp(k0 + k1 *
                                               np.cos(x) + k2 * np.sin(x),
                                               self.eta) * (1 - y / lmb))
             grad_g = 0.0
@@ -262,8 +262,8 @@ class NeuroPop(object):
         elif tunemodel == 'gvm':
             grad_k0 = 0.0
             grad_g = 1. / n_samples *\
-                np.sum(slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x),
-                                self.eta) * (1 - y / lmb))
+                np.sum(utils.slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x),
+                                      self.eta) * (1 - y / lmb))
             grad_b = 1. / n_samples * np.sum((1 - y / lmb))
 
         return grad_k0, grad_k1, grad_k2, grad_g, grad_b
@@ -291,10 +291,11 @@ class NeuroPop(object):
         n_neurons = np.float(self.n_neurons)
 
         lmb = self._tunefun(x, k0, k1, k2, g, b)
-        grad_x = 1. / n_neurons * np.sum(g * grad_slow_exp(k0 + k1 *
-                                                           np.cos(x) + k2 *
-                                                           np.sin(x),
-                                                           self.eta) *
+        grad_x = 1. / n_neurons * np.sum(g * utils.grad_slow_exp(k0 + k1 *
+                                                                 np.cos(x) +
+                                                                 k2 *
+                                                                 np.sin(x),
+                                                                 self.eta) *
                                          (k2 * np.cos(x) - k1 * np.sin(x)) *
                                          (1 - y / lmb))
         return grad_x
@@ -582,8 +583,7 @@ class NeuroPop(object):
         ylitter: bool, whether to add jitter to y variable while plotting
         """
 
-        plt.style.use(os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                                   style))
+        utils.set_matplotlib_defaults(plt)
 
         if xjitter is True:
             x_jitter = np.pi / 32 * np.random.standard_normal(x.shape)
@@ -639,18 +639,18 @@ class NeuroPop(object):
                 # each neuron
                 score = list()
                 for neuron in range(Y.shape[1]):
-                    L1 = log_likelihood(Y[:, neuron], Yhat[:, neuron])
-                    LS = log_likelihood(Y[:, neuron], Y[:, neuron])
-                    L0 = log_likelihood(Y[:, neuron], Ynull[neuron])
+                    L1 = utils.log_likelihood(Y[:, neuron], Yhat[:, neuron])
+                    LS = utils.log_likelihood(Y[:, neuron], Y[:, neuron])
+                    L0 = utils.log_likelihood(Y[:, neuron], Ynull[neuron])
                     score.append(1 - (LS - L1) / (LS - L0))
             else:
-                L1 = log_likelihood(Y, Yhat)
-                LS = log_likelihood(Y, Y)
-                L0 = log_likelihood(Y, Ynull)
+                L1 = utils.log_likelihood(Y, Yhat)
+                LS = utils.log_likelihood(Y, Y)
+                L0 = utils.log_likelihood(Y, Ynull)
                 score = 1 - (LS - L1) / (LS - L0)
 
         elif method == 'circ_corr':
-            score = circ_corr(np.squeeze(Y), np.squeeze(Yhat))
+            score = utils.circ_corr(np.squeeze(Y), np.squeeze(Yhat))
 
         elif method == 'cosine_dist':
             score = np.mean(np.cos(np.squeeze(Y) - np.squeeze(Yhat)))
