@@ -74,6 +74,7 @@ The examples use real datasets. Instructions for downloading these datasets are 
 
 * [Pavan Ramkumar](http:/github.com/pavanramkumar)
 * [Hugo Fernandes](http:/github.com/hugoguh)
+* [Ari S. Benjamin](http:/github.com/aribenjamin)
 
 ### Acknowledgments
 
