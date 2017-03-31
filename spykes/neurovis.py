@@ -361,8 +361,8 @@ class NeuroVis(object):
         binsize = psth['binsize']
         conditions = psth['conditions']
 
-        if cond_id is None and len(psth['data'].keys()) > 0:
-            keys = np.sort(psth['data'].keys())
+        if cond_id is None and len(list(psth['data'].keys())) > 0:
+            keys = np.sort(list(psth['data'].keys()))
         else:
             keys = cond_id
 

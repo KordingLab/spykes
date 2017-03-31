@@ -87,7 +87,7 @@ class PopVis(object):
                                    conditions=conditions, window=window,
                                    binsize=binsize, plot=False)
 
-            keys = psth['data'].keys()
+            keys = list(psth['data'].keys())
 
             if len(keys) > 0:
 
@@ -99,7 +99,7 @@ class PopVis(object):
                     all_psth['data'][cond_id].append(
                         psth['data'][cond_id]['mean'])
 
-        all_keys = all_psth['data'].keys()
+        all_keys = list(all_psth['data'].keys())
 
         if len(all_keys) > 0:
 
@@ -151,8 +151,8 @@ class PopVis(object):
         binsize = psth_dict['binsize']
         conditions = psth_dict['conditions']
 
-        if cond_id is None and len(psth_dict['data'].keys()) > 0:
-            keys = np.sort(psth_dict['data'].keys())
+        if cond_id is None and len(list(psth_dict['data'].keys())) > 0:
+            keys = np.sort(list(psth_dict['data'].keys()))
         else:
             keys = cond_id
 
@@ -265,7 +265,7 @@ class PopVis(object):
             psth = copy.deepcopy(all_psth)
 
         if len(psth['data'].keys()) > 0:
-            keys = np.sort(psth['data'].keys())
+            keys = np.sort(list(psth['data'].keys()))
         else:
             return
 
