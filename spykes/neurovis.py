@@ -394,7 +394,7 @@ class NeuroVis(object):
                          color=colors[i % len(colors)], lw=1.5)
 
         for i, cond_id in enumerate(keys):
-            if conditions > 0:
+            if conditions is not None:
                 if conditions_names is not None:
                     legend.append('%s' % conditions_names[i])
                 else:
