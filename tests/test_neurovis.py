@@ -25,7 +25,7 @@ def test_neurovis():
     condition_num = 'responseNum'
     condition_bool = 'responseBool'
 
-    start_times = rand_spiketimes[0::num_spikes/num_trials]
+    start_times = rand_spiketimes[0::int(num_spikes/num_trials)]
     df['trialStart'] = start_times
 
     df[event] = df['trialStart']+ np.random.rand(num_trials)
