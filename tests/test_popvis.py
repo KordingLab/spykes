@@ -2,7 +2,7 @@ from nose.tools import assert_true, assert_equal, assert_raises
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-plt.switch_backend('Qt4Agg')
+plt.switch_backend('Agg')
 from spykes.popvis import PopVis  # noqa
 from spykes.neurovis import NeuroVis  # noqa
 

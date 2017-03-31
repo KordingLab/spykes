@@ -1,7 +1,7 @@
 from nose.tools import assert_equal
 import numpy as np
 import matplotlib.pyplot as plt
-plt.switch_backend('Qt4Agg')
+plt.switch_backend('Agg')
 from spykes.strf import STRF  # noqa
 
 
