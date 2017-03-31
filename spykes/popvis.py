@@ -87,20 +87,29 @@ class PopVis(object):
                                    conditions=conditions, window=window,
                                    binsize=binsize, plot=False)
 
-            for cond_id in np.sort(psth['data'].keys()):
+            keys = psth['data'].keys()
 
-                if cond_id not in all_psth['data']:
-                    all_psth['data'][cond_id] = list()
+            if len(keys) > 0:
 
-                all_psth['data'][cond_id].append(psth['data'][cond_id]['mean'])
+                for cond_id in np.sort(keys):
 
-        for cond_id in np.sort(all_psth['data'].keys()):
-            all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
+                    if cond_id not in all_psth['data']:
+                        all_psth['data'][cond_id] = list()
 
-        if plot is True:
+                    all_psth['data'][cond_id].append(
+                        psth['data'][cond_id]['mean'])
 
-            self.plot_heat_map(all_psth, conditions_names=conditions_names,
-                               colors=colors)
+        all_keys = all_psth['data'].keys()
+
+        if len(all_keys > 0):
+
+            for cond_id in np.sort(all_keys):
+                all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
+
+            if plot is True:
+
+                self.plot_heat_map(all_psth, conditions_names=conditions_names,
+                                   colors=colors)
 
         return all_psth
 
@@ -142,7 +151,7 @@ class PopVis(object):
         binsize = psth_dict['binsize']
         conditions = psth_dict['conditions']
 
-        if cond_id is None:
+        if cond_id is None and len(psth_dict['data'].keys()) > 0:
             keys = np.sort(psth_dict['data'].keys())
         else:
             keys = cond_id
@@ -255,7 +264,10 @@ class PopVis(object):
         else:
             psth = copy.deepcopy(all_psth)
 
-        keys = np.sort(psth['data'].keys())
+        if len(psth['data'].keys()) > 0:
+            keys = np.sort(psth['data'].keys())
+        else:
+            return
 
         # normalize each neuron across all conditions
 
