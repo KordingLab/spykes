@@ -87,29 +87,21 @@ class PopVis(object):
                                    conditions=conditions, window=window,
                                    binsize=binsize, plot=False)
 
-            keys = list(psth['data'].keys())
+            for cond_id in np.sort(list(psth['data'].keys())):
 
-            if len(keys) > 0:
+                if cond_id not in all_psth['data']:
+                    all_psth['data'][cond_id] = list()
 
-                for cond_id in np.sort(keys):
+                all_psth['data'][cond_id].append(
+                    psth['data'][cond_id]['mean'])
 
-                    if cond_id not in all_psth['data']:
-                        all_psth['data'][cond_id] = list()
+        for cond_id in np.sort(list(all_psth['data'].keys())):
+            all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
 
-                    all_psth['data'][cond_id].append(
-                        psth['data'][cond_id]['mean'])
+        if plot is True:
 
-        all_keys = list(all_psth['data'].keys())
-
-        if len(all_keys) > 0:
-
-            for cond_id in np.sort(all_keys):
-                all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
-
-            if plot is True:
-
-                self.plot_heat_map(all_psth, conditions_names=conditions_names,
-                                   colors=colors)
+            self.plot_heat_map(all_psth, conditions_names=conditions_names,
+                               colors=colors)
 
         return all_psth
 
@@ -151,7 +143,7 @@ class PopVis(object):
         binsize = psth_dict['binsize']
         conditions = psth_dict['conditions']
 
-        if cond_id is None and len(list(psth_dict['data'].keys())) > 0:
+        if cond_id is None:
             keys = np.sort(list(psth_dict['data'].keys()))
         else:
             keys = cond_id
@@ -264,10 +256,7 @@ class PopVis(object):
         else:
             psth = copy.deepcopy(all_psth)
 
-        if len(psth['data'].keys()) > 0:
-            keys = np.sort(list(psth['data'].keys()))
-        else:
-            return
+        keys = np.sort(list(psth['data'].keys()))
 
         # normalize each neuron across all conditions
 
