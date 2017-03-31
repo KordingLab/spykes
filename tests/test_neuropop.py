@@ -1,8 +1,8 @@
 from nose.tools import assert_equal
 import numpy as np
 from sklearn.cross_validation import train_test_split
-import matplotlib.pyplot as p
-p.switch_backend('Agg')
+import matplotlib.pyplot as plt
+plt.switch_backend('Qt4Agg')
 from spykes.neuropop import NeuroPop  # noqa
 
 
