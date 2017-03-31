@@ -101,7 +101,7 @@ class PopVis(object):
 
         all_keys = all_psth['data'].keys()
 
-        if len(all_keys > 0):
+        if len(all_keys) > 0:
 
             for cond_id in np.sort(all_keys):
                 all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
