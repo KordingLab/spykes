@@ -7,6 +7,7 @@ import urllib
 import scipy.io
 import numpy as np
 import deepdish as dd
+from mne.utils import _fetch_file
 
 
 def load_reward_data(dpath='~/spykes_data/reward/'):
@@ -29,7 +30,7 @@ def load_reward_data(dpath='~/spykes_data/reward/'):
     sess_four_mat: .mat file
         Monkey M, Session 4
     """
-
+    dpath = os.path.expanduser(dpath)
     if not os.path.exists(dpath):
         os.makedirs(dpath)
 
@@ -37,8 +38,7 @@ def load_reward_data(dpath='~/spykes_data/reward/'):
 
     if not os.path.exists(fname):
 
-        urllib.urlretrieve('https://ndownloader.figshare.com/files/5652051',
-                           fname)
+        _fetch_file('https://ndownloader.figshare.com/files/5652051', fname)
 
     sess_one_mat = _load_file(fname)
 
@@ -46,8 +46,7 @@ def load_reward_data(dpath='~/spykes_data/reward/'):
 
     if not os.path.exists(fname):
 
-        urllib.urlretrieve('https://ndownloader.figshare.com/files/5652060',
-                           fname)
+        _fetch_file('https://ndownloader.figshare.com/files/5652060', fname)
 
     sess_four_mat = _load_file(fname)
 
@@ -71,7 +70,7 @@ def load_neuropixels_data(dpath='~/spykes_data/neuropixels/'):
     data_dict
         dictionary, where every key corresponds to a needed file
     """
-
+    dpath = os.path.expanduser(dpath)
     if not os.path.exists(dpath):
         os.makedirs(dpath)
 
@@ -94,7 +93,7 @@ def load_neuropixels_data(dpath='~/spykes_data/neuropixels/'):
         fname = os.path.join(dpath, name)
         url = os.path.join(base_url, name)
         if not os.path.exists(fname):
-            urllib.urlretrieve(url, fname)
+            urlretrieve(url, fname)
         file_dict[name] = _load_file(fname)
 
     for directory in parent_dir:
@@ -107,7 +106,7 @@ def load_neuropixels_data(dpath='~/spykes_data/neuropixels/'):
             url = os.path.join(base_url, directory, subdir)
 
             if not os.path.exists(fname):
-                urllib.urlretrieve(url, fname)
+                urlretrieve(url, fname)
 
             key = os.path.join(directory, subdir)
 
@@ -135,7 +134,7 @@ def load_reaching_data(dpath='~/spykes_data/reaching/'):
     -------
     deep dish loaded dataset
     """
-
+    dpath = os.path.expanduser(dpath)
     if not os.path.exists(dpath):
         os.makedirs(dpath)
 
@@ -144,7 +143,7 @@ def load_reaching_data(dpath='~/spykes_data/reaching/'):
     fname = os.path.join(dpath, 'reaching_dataset.h5')
 
     if not os.path.exists(fname):
-        urllib.urlretrieve(url, fname)
+        urlretrieve(url, fname)
 
     return dd.io.load(fname)
 
