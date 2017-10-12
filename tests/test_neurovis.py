@@ -1,10 +1,17 @@
-import matplotlib.pyplot as p
-p.switch_backend('Agg')
-from spykes.neurovis import NeuroVis
-from nose.tools import assert_true, assert_equal, assert_raises
+from __future__ import absolute_import
+
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as p
+from nose.tools import (
+    assert_true,
+    assert_equal,
+    assert_raises,
+)
 
+from spykes.neurovis import NeuroVis
+
+p.switch_backend('Agg')
 
 
 def test_neurovis():
@@ -38,7 +45,7 @@ def test_neurovis():
     df[condition_num] = np.random.rand(num_trials)
     df[condition_bool] = df[condition_num] < 0.5
 
-    raster = neuron.get_raster(event=event, conditions=condition_bool, df=df, 
+    raster = neuron.get_raster(event=event, conditions=condition_bool, df=df,
         plot=True, binsize=binsize, window=window)
 
     assert_equal(raster['event'], event)
@@ -51,13 +58,13 @@ def test_neurovis():
     for cond_id in raster['data'].keys():
 
         assert_true(cond_id in df[condition_bool])
-        assert_equal(raster['data'][cond_id].shape[1], 
+        assert_equal(raster['data'][cond_id].shape[1],
             (window[1]-window[0])/binsize)
         total_trials += raster['data'][cond_id].shape[0]
 
     assert_equal(total_trials, num_trials)
 
-    psth = neuron.get_psth(event=event, conditions=condition_bool, df=df, 
+    psth = neuron.get_psth(event=event, conditions=condition_bool, df=df,
         plot=True, binsize=binsize, window=window)
 
     assert_equal(psth['window'], window)
@@ -68,15 +75,10 @@ def test_neurovis():
     for cond_id in psth['data'].keys():
 
         assert_true(cond_id in df[condition_bool])
-        assert_equal(psth['data'][cond_id]['mean'].shape[0], 
+        assert_equal(psth['data'][cond_id]['mean'].shape[0],
             (window[1]-window[0])/binsize)
-        assert_equal(psth['data'][cond_id]['sem'].shape[0], 
+        assert_equal(psth['data'][cond_id]['sem'].shape[0],
             (window[1]-window[0])/binsize)
 
-    spikecounts = neuron.get_spikecounts(event=event, df=df, 
+    spikecounts = neuron.get_spikecounts(event=event, df=df,
         window=[0,num_trials])
-
-
-
-
-

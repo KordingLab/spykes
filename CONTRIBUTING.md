@@ -13,8 +13,8 @@ pip install flake8 nose
 Make sure that tests are passing for both Python 2.7 and Python 3.6:
 
 ```bash
-nosetests tests/ --with-coverage  # Unit tests
-flake8 --count spkyes  # Linting
+python setup.py test  # Unit tests
+python setup.py flake  # Linting
 ```
 
 Making sure these steps pass will help the continuous integration step go smoothly.

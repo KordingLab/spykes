@@ -1,17 +1,25 @@
-import matplotlib.pyplot as p
-p.switch_backend('Agg')
-from spykes.popvis import PopVis
-from spykes.neurovis import NeuroVis
-from nose.tools import assert_true, assert_equal, assert_raises
+from __future__ import absolute_import
+
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as p
+from nose.tools import (
+    assert_true,
+    assert_equal,
+    assert_raises,
+)
+
+from spykes.popvis import PopVis
+from spykes.neurovis import NeuroVis
+
+p.switch_backend('Agg')
 
 
 def test_popvis():
 
     num_spikes = 500
     num_trials = 10
-    
+
     binsize = 100
     window = [-500, 1500]
 
@@ -44,7 +52,7 @@ def test_popvis():
     df[condition_bool] = df[condition_num] < 0.5
 
 
-    all_psth = pop.get_all_psth(event=event, conditions=condition_bool, df=df, 
+    all_psth = pop.get_all_psth(event=event, conditions=condition_bool, df=df,
         plot=True, binsize=binsize, window=window)
 
     assert_equal(all_psth['window'], window)
@@ -55,12 +63,12 @@ def test_popvis():
     for cond_id in all_psth['data'].keys():
 
         assert_true(cond_id in df[condition_bool])
-        assert_equal(all_psth['data'][cond_id].shape[0], 
+        assert_equal(all_psth['data'][cond_id].shape[0],
             num_neurons)
-        assert_equal(all_psth['data'][cond_id].shape[1], 
+        assert_equal(all_psth['data'][cond_id].shape[1],
             (window[1]-window[0])/binsize)
 
-    assert_raises(ValueError, pop.plot_heat_map, all_psth, 
+    assert_raises(ValueError, pop.plot_heat_map, all_psth,
         sortby=list(range(num_trials-1)))
 
     pop.plot_population_psth(all_psth=all_psth)
