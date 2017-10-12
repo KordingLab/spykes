@@ -6,5 +6,4 @@ from .popvis import PopVis
 from .strf import STRF
 from . import utils
 
-__version__ = '0.1.dev'
 __all__ = ['NeuroVis', 'NeuroPop', 'PopVis', 'STRF', 'utils']
