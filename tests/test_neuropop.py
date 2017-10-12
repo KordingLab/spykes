@@ -1,9 +1,17 @@
-import matplotlib.pyplot as p
-p.switch_backend('Agg')
-from spykes.neuropop import NeuroPop
-from nose.tools import assert_true, assert_equal, assert_raises
-import numpy as np
+from __future__ import absolute_import
 
+import numpy as np
+import matplotlib.pyplot as p
+from nose.tools import (
+    assert_true,
+    assert_equal,
+    assert_raises,
+)
+
+from spykes.neuropop import NeuroPop
+
+np.random.seed(42)
+p.switch_backend('Agg')
 
 
 def test_neuropop():
@@ -17,9 +25,12 @@ def test_neuropop():
         pop.set_params()
         x, Y, mu, k0, k, g, b = pop.simulate(tunemodel)
 
-        from sklearn.cross_validation import train_test_split
-        Y_train, Y_test, x_train, x_test = train_test_split(Y, x, test_size=0.5, 
-            random_state=42)
+        # Splits into training and testing parts.
+        N = int(Y.shape[0] * 0.5)
+        idxs = np.arange(Y.shape[0])
+        train_idxs, test_idxs =  Y[idxs[:N]], Y[idxs[N:]]
+        Y_train, Y_test = Y[idxs[:N]], Y[idxs[N:]]
+        x_train, x_test = x[idxs[:N]], x[idxs[N:]]
 
         pop.fit(x_train, Y_train)
 

@@ -1,8 +1,13 @@
-import matplotlib.pyplot as p
-p.switch_backend('Agg')
-from spykes.strf import STRF
-from nose.tools import assert_equal
+from __future__ import absolute_import
+
 import numpy as np
+import matplotlib.pyplot as p
+from nose.tools import assert_equal
+
+from spykes.strf import STRF
+
+p.switch_backend('Agg')
+
 
 def test_strf():
 
