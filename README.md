@@ -28,7 +28,15 @@ Documentation, tutorials and examples are coming soon! Check out the notebooks f
 
 ### Installation
 
-#### Regular
+#### Stable
+
+To install the stable version (which is currently used for demos), use:
+
+```
+pip install spykes==0.1.dev1
+```
+
+#### Bleeding Edge
 
 To install the most up-to-date version, use:
 

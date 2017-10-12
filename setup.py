@@ -1,14 +1,13 @@
 #! /usr/bin/env python
-import setuptools  # noqa; we are using a setuptools namespace
-from numpy.distutils.core import setup
+from setuptools import setup
 
 DISTNAME = 'spykes'
 DESCRIPTION = """Basic tools for neural data analysis and visualization."""
 MAINTAINER = 'Pavan Ramkumar and Hugo Fernandes'
 MAINTAINER_EMAIL = 'pavan.ramkumar@gmail.com'
 LICENSE = 'MIT'
-DOWNLOAD_URL = 'https://github.com/KordingLab/spykes.git'
-VERSION = '0.1.dev0'
+URL = 'https://github.com/KordingLab/spykes.git'
+VERSION = '0.1.dev1'
 
 if __name__ == "__main__":
     setup(
@@ -18,7 +17,7 @@ if __name__ == "__main__":
         description=DESCRIPTION,
         license=LICENSE,
         version=VERSION,
-        download_url=DOWNLOAD_URL,
+        url=URL,
         long_description=open('README.md').read(),
         classifiers=[
             'Intended Audience :: Science/Research',
