@@ -28,7 +28,17 @@ Documentation, tutorials and examples are coming soon! Check out the notebooks f
 
 ### Installation
 
-Clone the repository.
+#### Regular
+
+To install the most up-to-date version, use:
+
+```bash
+pip install git+git://github.com/KordingLab/spykes
+```
+
+#### Editable
+
+To install an editable version, use:
 
 ```bash
 $ git clone http://github.com/KordingLab/spykes
