@@ -6,7 +6,6 @@ import os
 import urllib
 import scipy.io
 import numpy as np
-import deepdish as dd
 
 
 def load_reward_data(dpath='~/spykes_data/reward/'):
@@ -136,6 +135,13 @@ def load_reaching_data(dpath='~/spykes_data/reaching/'):
     deep dish loaded dataset
     """
 
+    # Import is performed here so that deepdish is not required for all of
+    # the "datasets" functions.
+    try:
+        import deepdish
+    except ImportError:
+        raise RuntimeError('deepdish is required to load the reaching dataset.')
+
     if not os.path.exists(dpath):
         os.makedirs(dpath)
 
@@ -146,7 +152,7 @@ def load_reaching_data(dpath='~/spykes_data/reaching/'):
     if not os.path.exists(fname):
         urllib.urlretrieve(url, fname)
 
-    return dd.io.load(fname)
+    return deepdish.io.load(fname)
 
 
 def _load_file(fname):
