@@ -6,7 +6,6 @@ import os
 import urllib
 import scipy.io
 import numpy as np
-import deepdish as dd
 
 
 def load_reward_data(dpath='~/spykes_data/reward/'):
@@ -136,17 +135,24 @@ def load_reaching_data(dpath='~/spykes_data/reaching/'):
     deep dish loaded dataset
     """
 
+    # Import is performed here so that deepdish is not required for all of
+    # the "datasets" functions.
+    import deepdish
+
     if not os.path.exists(dpath):
         os.makedirs(dpath)
 
-    url = 'https://northwestern.app.box.com/index.php?rm=box_download_shared_file&shared_name=xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8&file_id=f_71457089609' # noqa
+    url = ('https://northwestern.app.box.com/index.php?'
+           'rm=box_download_shared_file&'
+           'shared_name=xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8&'
+           'file_id=f_71457089609')
 
     fname = os.path.join(dpath, 'reaching_dataset.h5')
 
     if not os.path.exists(fname):
         urllib.urlretrieve(url, fname)
 
-    return dd.io.load(fname)
+    return deepdish.io.load(fname)
 
 
 def _load_file(fname):

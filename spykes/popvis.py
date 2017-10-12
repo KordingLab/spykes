@@ -1,10 +1,12 @@
+from __future__ import absolute_import
+
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
 
 from fractions import gcd
 
-from spykes.neurovis import NeuroVis
+from .neurovis import NeuroVis
 from . import utils
 
 
