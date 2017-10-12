@@ -137,15 +137,15 @@ def load_reaching_data(dpath='~/spykes_data/reaching/'):
 
     # Import is performed here so that deepdish is not required for all of
     # the "datasets" functions.
-    try:
-        import deepdish
-    except ImportError:
-        raise RuntimeError('deepdish is required to load the reaching dataset.')
+    import deepdish
 
     if not os.path.exists(dpath):
         os.makedirs(dpath)
 
-    url = 'https://northwestern.app.box.com/index.php?rm=box_download_shared_file&shared_name=xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8&file_id=f_71457089609' # noqa
+    url = ('https://northwestern.app.box.com/index.php?'
+           'rm=box_download_shared_file&'
+           'shared_name=xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8&'
+           'file_id=f_71457089609')
 
     fname = os.path.join(dpath, 'reaching_dataset.h5')
 
