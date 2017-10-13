@@ -277,9 +277,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'spykes', u'spykes Documentation',
-     author, 'spykes', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'spykes',
+        u'spykes Documentation',
+        author,
+        'spykes',
+        'One line description of project.',
+        'Miscellaneous',
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -296,5 +302,6 @@ texinfo_documents = [
 
 sphinx_gallery_conf = {
     'examples_dirs': '../examples',
-    'gallery_dirs': 'auto_examples'
-    }
+    'gallery_dirs': 'auto_examples',
+    'backreferences_dir': False,
+}

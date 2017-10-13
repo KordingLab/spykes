@@ -15,9 +15,11 @@ A demonstration of Spykes's functionality to reproduce a figure from Li et al's
 
 import numpy as np
 import pandas as pd
-from spykes.neurovis import NeuroVis
 import matplotlib.pyplot as plt
 import scipy.io
+
+from spykes.plot.neurovis import NeuroVis
+from spykes.io.datasets import load_reaching_data
 
 plt.style.use('seaborn-ticks')
 

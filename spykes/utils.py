@@ -6,6 +6,55 @@ from scipy import stats
 import matplotlib # noqa
 
 
+def train_test_split(*datasets, **split):
+    '''Splits test data into training and testing data.
+    This is a replacement for the Scikit Learn version of the function.
+    Args:
+        datasets: list of Numpy arrays, where the first dimension is the batch
+            dimension.
+        n: int, number of test samples to split off (only split_num
+            or split_prct may be specified).
+        percent: int, percentange of test samples to split off.
+    Returns:
+        list of pairs of Numpy arrays, the split test data.
+    '''
+    if not datasets: return []  # Guarentee there's at least one dataset.
+    num_batches = int(datasets[0].shape[0])
+
+    # Checks the input shapes.
+    if not all(d.shape[0] == num_batches for d in datasets):
+        raise ValueError('Not all of the datasets have the same batch size. '
+                         'Received batch sizes: {batch_sizes}'
+                         .format(batch_sizes=[d.shape[0] for d in datasets]))
+
+    # Gets the split num or split percent.
+    split_num = split.get('n', None)
+    split_prct = split.get('percent', None)
+
+    # Checks the splits
+    if (split_num and split_prct) or not (split_num or split_prct):
+        raise ValueError('Must specify either `split_num` or `split_prct`')
+
+    # Splits all of the datasets.
+    if split_prct is None:
+        num_test = split_num
+    else:
+        num_test = int(num_batches * split_prct)
+
+    # Checks that the test number is less than the number of batches.
+    if num_test >= num_batches:
+        raise ValueError('Invalid split number: {num_test} There are only '
+                         '{num_batches} samples.'
+                         .format(num_test=num_test, num_batches=num_batches))
+
+    # Splits each of the datasets.
+    idxs = np.arange(num_batches)
+    np.random.shuffle(idxs)
+    train_idxs, test_idxs = idxs[num_test:], idxs[:num_test]
+    datasets = [(d[train_idxs], d[test_idxs]) for d in datasets]
+    return datasets if len(datasets) > 1 else datasets[0]
+
+
 def slow_exp(z, eta):
     """
     A slowly rising exponential

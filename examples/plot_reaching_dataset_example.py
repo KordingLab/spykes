@@ -12,9 +12,9 @@ A demonstration of Spykes' functionality using the reaching dataset.
 
 import numpy as np
 import pandas as pd
-from spykes.neurovis import NeuroVis
-from spykes.neuropop import NeuroPop
-from spykes.datasets import load_reaching_data
+from spykes.plot.neurovis import NeuroVis
+from spykes.ml.neuropop import NeuroPop
+from spykes.io.datasets import load_reaching_data
 import matplotlib.pyplot as plt
 
 ########################################################

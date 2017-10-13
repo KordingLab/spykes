@@ -7,7 +7,7 @@ import copy
 from fractions import gcd
 
 from .neurovis import NeuroVis
-from . import utils
+from .. import utils
 
 
 class PopVis(object):

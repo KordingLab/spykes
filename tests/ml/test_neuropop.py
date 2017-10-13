@@ -8,7 +8,8 @@ from nose.tools import (
     assert_raises,
 )
 
-from spykes.neuropop import NeuroPop
+from spykes.ml.neuropop import NeuroPop
+from spykes.utils import train_test_split
 
 np.random.seed(42)
 p.switch_backend('Agg')
@@ -26,11 +27,8 @@ def test_neuropop():
         x, Y, mu, k0, k, g, b = pop.simulate(tunemodel)
 
         # Splits into training and testing parts.
-        N = int(Y.shape[0] * 0.5)
-        idxs = np.arange(Y.shape[0])
-        train_idxs, test_idxs =  Y[idxs[:N]], Y[idxs[N:]]
-        Y_train, Y_test = Y[idxs[:N]], Y[idxs[N:]]
-        x_train, x_test = x[idxs[:N]], x[idxs[N:]]
+        x_split, Y_split = train_test_split(x, Y, percent=0.5)
+        (x_train, x_test), (Y_train, Y_test) = x_split, Y_split
 
         pop.fit(x_train, Y_train)
 

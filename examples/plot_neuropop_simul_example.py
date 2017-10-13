@@ -12,8 +12,8 @@ A demonstration of Neuropop using simulated data
 import numpy as np
 import matplotlib.pyplot as plt
 
-from spykes.neuropop import NeuroPop
-from sklearn.cross_validation import train_test_split
+from spykes.ml.neuropop import NeuroPop
+from spykes.utils import train_test_split
 
 ########################################################
 # Create a NeuroPop object
@@ -34,8 +34,8 @@ x, Y, mu, k0, k, g, b = pop.simulate(pop.tunemodel, n_samples=n_samples,
 # Split into training and testing sets
 # -----------------------------
 
-Y_train, Y_test, x_train, x_test = train_test_split(
-    Y, x, test_size=0.5, random_state=42)
+np.random.seed(42)
+(Y_train, Y_test), (x_train, x_test) = train_test_split(Y, x, percent=0.5)
 
 ########################################################
 # Fit the tuning curves with gradient descent

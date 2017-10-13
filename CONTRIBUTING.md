@@ -1,6 +1,7 @@
 # Guidelines
 
 - Check the [Gitter](https://gitter.im/KordingLab/spykes) to discuss the issue
+- Please follow [Google's Python style guide](https://google.github.io/styleguide/pyguide.html), mostly
 
 # Testing
 

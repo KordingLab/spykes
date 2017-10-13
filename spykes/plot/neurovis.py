@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import numpy as np
 import matplotlib.pyplot as plt
 
-from . import utils
+from .. import utils
 
 
 class NeuroVis(object):

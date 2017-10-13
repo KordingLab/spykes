@@ -4,7 +4,7 @@ import numpy as np
 from copy import deepcopy
 import matplotlib.pyplot as plt
 
-from . import utils
+from .. import utils
 
 
 class NeuroPop(object):
