@@ -10,31 +10,41 @@ from .. import config
 
 def _load_file(fpath):
     '''Checks whether a file is a .mat or .npy file and loads it.
-    Args:
-        fpath: str, the exact path of where data will be downloaded to
-    Returns:
-        mat or numpy loaded dataset
+    This is a convenience method for the other loading functions.
+    Parameters
+    ----------
+    fpath: str
+        The exact path of where data will be downloaded to
+    Returns
+    -------
+    data: mat or numpy array
+        The loaded dataset
     '''
     if fpath[-4:] == '.mat':
-        return scipy.io.loadmat(fpath)
+        data = scipy.io.loadmat(fpath)
     elif fpath[-4:] == '.npy':
-        return np.load(fpath)
+        data = np.load(fpath)
     else:
         raise ValueError('Invalid file type: {}'.format(fpath))
+    return data
 
 
 def load_reward_data(dir_name='reward'):
     '''Downloads and returns the data for the PopVis example.
     Downloads and returns data for Neural Coding Reward Example as well as
     PopVis Example. Dataset comes from Ramkumar et al's "Premotor and Motor
-    Cortices Encode Reward" paper located at
-    http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0160851
-    Args:
-        dpath: str, specifies path to which the data files should be
-            downloaded. This is concatenated with the user-set data directory.
-    Returns:
-        sess_one_mat: .mat file, Monkey M, Session 1
-        sess_four_mat: .mat file, Monkey M, Session 4
+    Cortices Encode Reward" paper
+    Parameters
+    ----------
+    dir_name: str
+        Specifies the directory to which the data files should be downloaded.
+        This is concatenated with the user-set data directory.
+    Returns
+    -------
+    sess_one_mat: .mat file
+        Monkey M, Session 1
+    sess_four_mat: .mat file
+        Monkey M, Session 4
     '''
     dpath = os.path.join(config.get_data_directory(), dir_name)
     if not os.path.exists(dpath):
@@ -64,13 +74,17 @@ def load_reward_data(dir_name='reward'):
 
 def load_neuropixels_data(dir_name='neuropixels'):
     '''Downloads and returns data for the Neuropixels example.
-    The dataset comes from UCL's Cortex Lab, which is located at:
-        http://data.cortexlab.net/dualPhase3/data/
-    Args:
-        dir_name: str, the name of the directory where the data is located.
-            This is concatenated with the user-set data directory.
-    Returns:
-        a dict, where every key corresponds to a needed file
+    The dataset comes from UCL's Cortex Lab, which is located
+    [here](http://data.cortexlab.net/dualPhase3/data/)
+    Parameters
+    ----------
+    dir_name: str
+        Specifies the directory to which the data files should be downloaded.
+        This is concatenated with the user-set data directory.
+    Returns
+    -------
+    file_dict: dict
+        Each key corresponds to a needed file
     '''
     dpath = os.path.join(config.get_data_directory(), dir_name)
     if not os.path.exists(dpath):
@@ -126,13 +140,17 @@ def load_neuropixels_data(dir_name='neuropixels'):
 
 def load_reaching_data(dir_name='reaching'):
     '''Downloads and returns data for the Reaching Dataset example.
-    The dataset is publicly available at:
-        https://northwestern.app.box.com/s/xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8
-    Args:
-        dir_name: str, the name of the directory where the data is located.
-            This is concatenated with the user-set data directory.
-    Returns:
-        deep dish loaded dataset
+    The dataset is publicly available
+    [here](https://northwestern.app.box.com/s/xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8)
+    Parameters
+    ----------
+    dir_name: str
+        Specifies the directory to which the data files should be downloaded.
+        This is concatenated with the user-set data directory.
+    Returns
+    -------
+    data: deep dish dataset
+        The dataset, loaded using `deepdish.io.load`
     '''
     # Import is performed here so that deepdish is not required for all of
     # the "datasets" functions.
@@ -151,4 +169,5 @@ def load_reaching_data(dir_name='reaching'):
                            'it to {fpath} from {url}'
                            .format(fpath=fpath, url=url))
 
-    return deepdish.io.load(fpath)
+    data = deepdish.io.load(fpath)
+    return data
