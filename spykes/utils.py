@@ -18,7 +18,8 @@ def train_test_split(*datasets, **split):
     Returns:
         list of pairs of Numpy arrays, the split test data.
     '''
-    if not datasets: return []  # Guarentee there's at least one dataset.
+    if not datasets:
+        return []  # Guarentee there's at least one dataset.
     num_batches = int(datasets[0].shape[0])
 
     # Checks the input shapes.
