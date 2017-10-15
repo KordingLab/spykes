@@ -143,7 +143,10 @@ def load_neuropixels_data(dir_name='neuropixels'):
 def load_reaching_data(dir_name='reaching'):
     '''Downloads and returns data for the Reaching Dataset example.
 
-    The dataset is publicly available `here <http://goo.gl/eXeUz8>`_.
+    The dataset is publicly available `here <http://goo.gl/eXeUz8>`_. Because
+    this is hosted on DropBox, you have to manually visit the link, then
+    download it to the appropriate location (usually
+    :data:`~/.spykes/reaching/reaching_dataset.h5`).
 
     Args:
         dir_name (str): Specifies the directory to which the data files

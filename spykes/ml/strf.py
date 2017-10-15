@@ -138,7 +138,7 @@ class STRF(object):
 
         Returns:
             numpy array: 2D array of size :data:`(patch_size, patch_size)`, the
-                resulting image.
+            resulting image.
         '''
         image = np.zeros(basis[0].shape)
         n_basis = len(basis)

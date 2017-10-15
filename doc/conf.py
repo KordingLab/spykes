@@ -38,12 +38,11 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.napoleon',
     'm2r',
-    # 'sphinx_gallery.gen_gallery'
+    'sphinx_gallery.gen_gallery'
 ]
 
 # generate autosummary even if no references
 autosummary_generate = True
-numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -306,8 +305,8 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
-# sphinx_gallery_conf = {
-#     'examples_dirs': '../examples',
-#     'gallery_dirs': 'auto_examples',
-#     'backreferences_dir': False,
-# }
+sphinx_gallery_conf = {
+    'examples_dirs': '../examples',
+    'gallery_dirs': 'auto_examples',
+    'backreferences_dir': False,
+}

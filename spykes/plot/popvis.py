@@ -300,7 +300,7 @@ class PopVis(object):
 
         Returns:
             array: The original data array, divided such
-                that all values fall between 0 and 1.
+            that all values fall between 0 and 1.
         '''
         max_rates = np.amax(data, axis=1)
 
