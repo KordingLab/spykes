@@ -114,7 +114,8 @@ class STRF(object):
 
         Args:
             image (numpy array): Image that must be projected into the
-                spatial basis 2D array of size :data:`(patch_size, patch_size)`.
+                spatial basis 2D array of size :data:`(patch_size,
+                patch_size)`.
             spatial_basis (list): A list where each entry is a 2D array of size
                 :data:`(patch_size, patch_size)` specifing the spatial basis.
 

@@ -267,8 +267,9 @@ class NeuroPop(object):
         (:data:`mu`, :data:`k0`, :data:`k`, :data:`g`, :data:`b`).
 
         Args:
-            tunemodel (str): Can be either :data:`gvm`, the Generalized von Mises
-                model, or :data:`glm`, the Poisson generalized linear model.
+            tunemodel (str): Can be either :data:`gvm`, the Generalized von
+                Mises model, or :data:`glm`, the Poisson generalized linear
+                model.
             n_samples (int): Number of samples required.
             winsize (float): Time interval in which to simulate spike counts,
                 milliseconds.

@@ -308,9 +308,9 @@ class PopVis(object):
         if normalize == 'all':
             norm_factors = np.ones([data.shape[0], 1]) * np.amax(max_rates)
         elif normalize == 'each':
-            norm_factors = np.reshape(
-                max_rates,
-                (max_rates.shape[0], 1)) * np.ones([1, data.shape[1]],
+            norm_factors = (
+                np.reshape(max_rates, (max_rates.shape[0], 1)) *
+                np.ones((1, data.shape[1]))
             )
         elif normalize is None:
             norm_factors = np.ones([data.shape[0], 1])

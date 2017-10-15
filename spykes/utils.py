@@ -62,6 +62,7 @@ def train_test_split(*datasets, **split):
     datasets = [(d[train_idxs], d[test_idxs]) for d in datasets]
     return datasets if len(datasets) > 1 else datasets[0]
 
+
 def slow_exp(z, eta):
     '''Applies a slowly rising exponential function to some data.
 
@@ -156,17 +157,17 @@ def get_sort_indices(data, by=None, order='descend'):
         list: The sort indices as a Numpy array, with one index per element in
         :data:`data` (i.e. :data:`data[sort_idxs]` gives the sorted data).
     '''
-    # Checks if the sortby indices are a list or array.
-    if isinstance(sortby, list):
-        sortby = np.array(sortby)
-    if isinstance(sortby, np.ndarray):
-        if np.array_equal(np.sort(sortby), list(range(data.shape[0]))):
-            return sortby  # Returns if it is a proper permutation.
+    # Checks if the by indices are a list or array.
+    if isinstance(by, list):
+        by = np.array(by)
+    if isinstance(by, np.ndarray):
+        if np.array_equal(np.sort(by), list(range(data.shape[0]))):
+            return by  # Returns if it is a proper permutation.
         else:
             raise ValueError('The sorting indices not a proper permutation: {}'
-                             .format(sortby))
+                             .format(by))
 
-    # Converts the sortby array to
+    # Converts the by array to
     if by == 'rate':
         sort_idx = np.sum(data, axis=1).argsort()
     elif by == 'latency':

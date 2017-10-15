@@ -375,9 +375,9 @@ class NeuroVis(object):
 
         spikecounts = np.asarray([
             np.sum(np.all((
-                spiketimes >= event + 1e-3 * window[0],
-                spiketimes <= event + 1e-3 * window[1],
+                spiketimes >= e + 1e-3 * window[0],
+                spiketimes <= e + 1e-3 * window[1],
             ), axis=0))
-            for event in events
+            for e in events
         ])
         return spikecounts
