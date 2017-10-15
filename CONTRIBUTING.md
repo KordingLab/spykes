@@ -19,3 +19,20 @@ python setup.py flake  # Linting
 ```
 
 Making sure these steps pass will help the continuous integration step go smoothly.
+
+# Building Documentation
+
+The requirements to build the documentation are
+
+- [sphinx](https://github.com/sphinx-doc/sphinx/)
+- [numpydoc](https://github.com/numpy/numdoc/)
+
+```bash
+pip install sphinx numpydoc
+```
+
+To build the documentation locally, run
+
+```bash
+make html
+```

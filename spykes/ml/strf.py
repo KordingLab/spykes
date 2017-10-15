@@ -3,67 +3,34 @@ import matplotlib.pyplot as plt
 
 
 class STRF(object):
-    """
-    This class allows the estimation of spatiotemporal receptive fields
+    '''Allows the estimation of spatiotemporal receptive fields
 
-    Parameters
-    ----------
-    patch_size: int
-        dimension of the square patch spanned by the spatial basis
-
-    sigma: float
-        standard deviation of the Gaussian distribution
-
-    n_spatial_basis: int
-        number of spatial basis functions for the Gaussian basis
-        (has to be a perfect square)
-
-    n_temporal_basis: int
-        number of temporal basis functions
-
-    Internal variables
-    ------------------
-
-    Callable methods
-    ----------------
-    make_2d_gaussian
-    make_gaussian_basis
-    make_cosine_basis
-    visualize_spatial_basis
-    project_to_basis
-    make_image_from_basis
-    make_raised_cosine_basis
-    convolve_with_temporal_basis
-
-    Class methods
-    -------------
-    """
-
+    Args:
+        patch_size (int): Dimension of the square patch spanned by the
+            spatial basis.
+        sigma (float): Standard deviation of the Gaussian distribution.
+        n_spatial_basis (int): Number of spatial basis functions for the
+            Gaussian basis (has to be a perfect square).
+        n_temporal_basis (int): Number of temporal basis functions.
+    '''
     def __init__(self, patch_size=100, sigma=0.5,
                  n_spatial_basis=25, n_temporal_basis=3):
-        """
-        Initialize the object
-        """
         self.patch_size = patch_size
         self.sigma = sigma
         self.n_spatial_basis = n_spatial_basis
         self.n_temporal_basis = n_temporal_basis
 
     def make_2d_gaussian(self, center=(0, 0)):
-        """
-        Makes a 2D Gaussian filter
-        with arbitary center and standard deviation
+        '''Makes a 2D Gaussian filter with arbitary mean and variance.
 
-        Parameters
-        ----------
-        center: tuple
-            (row, col) specifiying co-ordinates of the center
-            of the Gaussian. (0,0) is the center of the image
+        Args:
+            center (tuple): The coordinates of the center of the Gaussian,
+                specified as :data:`(row, col)`. The center of the image is
+                :data:`(0, 0)`.
 
-        Returns
-        -------
-        gaussian_mask: numpy array
-        """
+        Returns:
+            numpy array: The Gaussian mask.
+        '''
         sigma = self.sigma
         n_rows = (self.patch_size - 1.) / 2.
         n_cols = (self.patch_size - 1.) / 2.
@@ -79,14 +46,12 @@ class STRF(object):
         return gaussian_mask
 
     def make_gaussian_basis(self):
-        """
-        Makes a list of Gaussian filters
+        '''Makes a list of Gaussian filters.
 
-        Returns
-        -------
-        spatial_basis: list
-            each entry is a 2-d array of patch_size x patch_size
-        """
+        Returns:
+            list: A list where each entry is a 2D array of size
+            :data:`(patch_size, patch_size)` specifing the spatial basis.
+        '''
         spatial_basis = list()
         n_tiles = np.sqrt(self.n_spatial_basis)
         n_pixels = self.patch_size
@@ -104,14 +69,12 @@ class STRF(object):
         return spatial_basis
 
     def make_cosine_basis(self):
-        """
-        Makes a spatial cosine and sine basis
+        '''Makes a spatial cosine and sine basis.
 
-        Returns
-        -------
-        spatial_basis: list
-            each entry is a 2-d array of patch_size x patch_size
-        """
+        Returns:
+            list: A list where each entry is a 2D array of size
+            :data:`(patch_size, patch_size)` specifing the spatial basis.
+        '''
         patch_size = self.patch_size
         cosine_mask = np.zeros((patch_size, patch_size))
         sine_mask = np.zeros((patch_size, patch_size))
@@ -126,15 +89,16 @@ class STRF(object):
         spatial_basis.append(sine_mask)
         return spatial_basis
 
-    def visualize_gaussian_basis(self, spatial_basis, color='Greys'):
-        """
-        Plots spatial basis functions in a tile of images
+    def visualize_gaussian_basis(self, spatial_basis, color='Greys',
+                                 show=True):
+        '''Plots spatial basis functions in a tile of images.
 
-        Parameters
-        ----------
-        spatial_basis: list
-            each entry is a 2-d array of patch_size x patch_size
-        """
+        Args:
+            spatial_basis (list): A list where each entry is a 2D array of size
+                :data:`(patch_size, patch_size)` specifing the spatial basis.
+            color (str): The color for the figure.
+            show (bool): Whether or not to show the image when it is plotted.
+        '''
         n_spatial_basis = len(spatial_basis)
         n_tiles = np.sqrt(n_spatial_basis)
         plt.figure(figsize=(7, 7))
@@ -142,26 +106,21 @@ class STRF(object):
             plt.subplot(np.int(n_tiles), np.int(n_tiles), i + 1)
             plt.imshow(spatial_basis[i], cmap=color)
             plt.axis('off')
-        plt.show()
+        if show:
+            plt.show()
 
     def project_to_spatial_basis(self, image, spatial_basis):
-        """
-        Projects a given image into a spatial basis
+        '''Projects a given image into a spatial basis.
 
-        Parameters
-        ----------
-        image: numpy array
-            image that must be projected into the spatial basis
-            2-d array of patch_size x patch_size
+        Args:
+            image (numpy array): Image that must be projected into the
+                spatial basis 2D array of size :data:`(patch_size, patch_size)`.
+            spatial_basis (list): A list where each entry is a 2D array of size
+                :data:`(patch_size, patch_size)` specifing the spatial basis.
 
-        spatial_basis: list
-            each entry is a 2-d array of patch_size x patch_size
-
-        Returns
-        -------
-        weights: numpy array
-            1-d array, coefficients
-        """
+        Returns:
+            numpy array: A 1D array of coefficients for the projection.
+        '''
         n_spatial_basis = len(spatial_basis)
         weights = np.zeros(n_spatial_basis)
         for b in range(n_spatial_basis):
@@ -169,22 +128,17 @@ class STRF(object):
         return weights
 
     def make_image_from_spatial_basis(self, basis, weights):
-        """
-        Recovers an image from a basis given a set of weights
+        '''Recovers an image from a basis given a set of weights.
 
-        Parameters
-        ----------
-        spatial_basis: list
-            each entry is a 2-d array of patch_size x patch_size
+        Args:
+            spatial_basis (list): A list where each entry is a 2D array of size
+                :data:`(patch_size, patch_size)` specifing the spatial basis.
+            weights (numpy array): A 1D array of coefficients.
 
-        weights: numpy array
-            1-d array, coefficients
-
-        Returns
-        -------
-        image: numpy array
-            2-d array of patch_size x patch_size
-        """
+        Returns:
+            numpy array: 2D array of size :data:`(patch_size, patch_size)`, the
+                resulting image.
+        '''
         image = np.zeros(basis[0].shape)
         n_basis = len(basis)
         for b in range(n_basis):
@@ -192,27 +146,21 @@ class STRF(object):
         return image
 
     def make_raised_cosine_temporal_basis(self, time_points, centers, widths):
-        """
-        Makes a series of raised cosine temporal basis
+        '''Makes a series of raised cosine temporal basis.
 
-        Parameters
-        ----------
-        time_points: numpy array
-            list of time points at which the basis function is computed
+        Args:
+            time_points (numpy array): List of time points at which the basis
+                function is computed.
+            centers (numpy array or list): List of coordinates at which each
+                basis function is centered 1D array of size
+                :data:`(n_temporal_basis)`.
+            widths (numpy array or list): List of widths, one per basis
+                function; each is a 1D array of size
+                :data:`(n_temporal_basis)`.
 
-        centers: numpy array or list
-            list of coordinates at which each basis function is centered
-            1-d array of (n_temporal_basis,)
-
-        widths: numpy array or list
-            list of widths, one per basis function
-            1-d array of (n_temporal_basis,)
-
-        Returns
-        -------
-        temporal_basis: numpy array
-            2-d array of n_basis x n_timepoints
-        """
+        Returns:
+            numpy array: 2D array of size :data:`(n_basis, n_timepoints)`.
+        '''
         temporal_basis = list()
         for idx, center in enumerate(centers):
             this_basis = np.zeros(len(time_points))
@@ -225,23 +173,21 @@ class STRF(object):
         return temporal_basis
 
     def convolve_with_temporal_basis(self, design_matrix, temporal_basis):
-        """
-        Convolve each column of the design matrix
-        with a series of temporal basis functions
+        '''Convolves a design matrix with a temporal basis function.
 
-        Parameters
-        ----------
-        design_matrix: numpy array
-            2-d array of n_samples x n_features
+        Convolves each column of the design matrix with a series of temporal
+        basis functions.
 
-        temporal_basis: numpy array
-            2-d array of n_basis x n_timepoints
+        Args:
+            design_matrix (numpy array): 2D array of size
+                :data:`(n_samples, n_features)`.
+            temporal_basis (numpy array): 2D array of size
+                :data:`(n_basis, n_timepoints)`.
 
-        Returns
-        -------
-        convolved_design_matrix: numpy array
-            2-d array of n_samples x (n_features * n_basis)
-        """
+        Returns:
+            numpy array: 2D array of size
+            :data:`(n_samples, n_features * n_basis)`.
+        '''
         n_temporal_basis = temporal_basis.shape[1]
         n_features = design_matrix.shape[1]
         convolved_design_matrix = list()
@@ -255,26 +201,20 @@ class STRF(object):
         return convolved_design_matrix
 
     def design_prior_covariance(self, sigma_temporal=2., sigma_spatial=5.):
-        """
-        Design a prior covariance matrix for STRF estimation
+        '''Design a prior covariance matrix for STRF estimation.
 
-        Parameters
-        ----------
-        sigma_temporal: float
-            standard deviation of temporal prior covariance
+        Args:
+            sigma_temporal (float): Standard deviation of temporal prior
+                covariance.
+            sigma_spatial (float): Standard deviation of spatial prior
+                covariance.
 
-        sigma_spatial: float
-            standard deviation of spatial prior covariance
-
-        Returns
-        -------
-        prior_covariance: numpy array
-            2-d array of (n_spatial_basis * n_temporal_basis) x
-                         (n_spatial_basis * n_temporal_basis)
-            the ordering of rows and columns is so that
-            all temporal basis are consecutive for each spatial basis
-        """
-
+        Returns:
+            numpy array: 2-d array of size :data:`(n_spatial_basis *
+            n_temporal_basis, n_spatial_basis * n_temporal_basis)`, the
+            ordering of rows and columns is so that all temporal basis are
+            consecutive for each spatial basis.
+        '''
         n_spatial_basis = self.n_spatial_basis
         n_temporal_basis = self.n_temporal_basis
 

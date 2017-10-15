@@ -4,87 +4,56 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from .. import utils
+from ..config import DEFAULT_POPULATION_COLORS
 
 
 class NeuroVis(object):
+    '''This class is used to visualize firing activity of single neurons.
 
-    """
-    This class implements several conveniences for
-    visualizing firing activity of single neurons
+    This class implements several conveniences for visualizing firing
+    activity of single neurons.
 
-    Parameters
-    ----------
-    spiketimes: float, array of spike times
-
-
-    Methods
-    -------
-    get_raster
-    plot_raster
-    get_psth
-    plot_psth
-    get_spikecounts
-
-    """
-
+    Args:
+        spiketimes (Numpy array): Array of spike times.
+        name (str): The name of the visualization.
+    '''
     def __init__(self, spiketimes, name='neuron'):
-        """
-        Initialize the object
-        """
         self.name = name
         self.spiketimes = np.squeeze(np.sort(spiketimes))
         n_seconds = (self.spiketimes[-1] - self.spiketimes[0])
         n_spikes = np.size(spiketimes)
         self.firingrate = (n_spikes / n_seconds)
 
-    # -----------------------------------------------------------------------
     def get_raster(self, event=None, conditions=None, df=None,
                    window=[-100, 500], binsize=10, plot=True,
                    sortby=None, sortorder='descend'):
-        """
-        Compute the raster and plot it
+        '''Computes the raster and plots it.
 
-        Parameters
-        ----------
-        event: str
-            Column/key name of DataFrame/dictionary "data" which contains
-            event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
-            etc.)
+        Args:
+            event (str): Column/key name of DataFrame/dictionary "data" which
+                contains event times in milliseconds (e.g.
+                stimulus/trial/fixation onset, etc.)
+            conditions (str): Column/key name of DataFrame/dictionary
+                :data:`data` which contains the conditions by which the trials
+                must be grouped.
+            df (DataFrame or dictionary): The dataframe containing the data,
+                or a dictionary with the equivalent structure.
+            window (list of 2 elements): Time interval to consider, in
+                milliseconds.
+            binsize (int): Bin size in milliseconds
+            plot (bool): If True then plot
+            sortby (str or list): If :data:`rate`, sort by firing rate. If
+                :data:`latency`, sort by peak latency. If a list, integers to
+                be used as sorting indices.
+            sortorder (str): Direction to sort, either :data:`descend` or
+                :data:`ascend`.
 
-        conditions: str
-            Column/key name of DataFrame/dictionary "data" which contains the
-            conditions by which the trials must be grouped
-
-        df: DataFrame (or dictionary)
-
-        window: list of 2 elements
-            Time interval to consider (milliseconds)
-
-        binsize: int
-            Bin size in milliseconds
-
-        plot: bool
-            If True then plot
-
-        sortby: str or list
-            None:
-            'rate': sort by firing rate
-            'latency': sort by peak latency
-            list: list of integer indices to be used as sorting indicces
-
-        sortorder: direction to sort in
-            'descend'
-            'ascend'
-
-
-        Returns
-        -------
-        rasters : dictionary
-            With keys: 'event', 'conditions', 'binsize','window', and 'data'.
-            rasters['data'] is a dictionary where each value is a raster for
-            each unique entry of df['conditions']
-
-        """
+        Returns:
+            dict: :data:`rasters` with keys :data:`event`, :data:`conditions`,
+            :data:`binsize`, :data:`window`, and :data:`data`.
+            :data:`rasters['data']` is a dictionary where each value is a
+            raster for each unique entry of :data:`df['conditions']`.
+        '''
 
         if not type(df) is dict:
             df = df.reset_index()
@@ -104,12 +73,13 @@ class NeuroVis(object):
             trials[0] = np.where(np.ones(np.size(df[event])))[0]
 
         # Initialize rasters
-        rasters = dict()
-        rasters['event'] = event
-        rasters['conditions'] = conditions
-        rasters['window'] = window
-        rasters['binsize'] = binsize
-        rasters['data'] = dict()
+        rasters = {
+            'event': event,
+            'conditions': conditions,
+            'window': window,
+            'binsize': binsize,
+            'data': {},
+        }
 
         # Loop over each raster
         for cond_id in trials:
@@ -148,41 +118,23 @@ class NeuroVis(object):
         # Return all the rasters
         return rasters
 
-    # -----------------------------------------------------------------------
     def plot_raster(self, rasters, cond_id=None, cond_name=None, sortby=None,
                     sortorder='descend', cmap='Greys', has_title=True):
-        """
-        Plot one raster
+        '''Plot a single raster.
 
-        Parameters
-        ----------
-        rasters: dict
-            Output of get_raster method
-
-        cond_id
-            Which raster to plot indicated by the key in rasters['data'].
-            If None then all are plotted.
-
-        cond_name: str
-            Name to appear in the title
-
-        sortby: str or list
-            None:
-            'rate': sort by firing rate
-            'latency': sort by peak latency
-            list: list of integer indices to be used as sorting indicces
-
-        sortorder: direction to sort in
-            'descend'
-            'ascend'
-
-        cmap: str
-            Colormap for raster
-
-        has_title: bool
-            If True then adds title
-
-        """
+        Args:
+            rasters (dict): Output of get_raster method
+            cond_id (str): Which raster to plot indicated by the key in
+                :data:`rasters['data']`. If None then all are plotted.
+            cond_name (str): Name to appear in the title.
+            sortby (str or list): If :data:`rate`, sort by firing rate. If
+                :data:`latency`, sort by peak latency. If a list, integers to
+                be used as sorting indices.
+            sortorder (str): Direction to sort in, either :data:`descend` or
+                :data:`ascend`.
+            cmap (str): Colormap for raster.
+            has_title (bool): If True then adds title.
+        '''
         window = rasters['window']
         binsize = rasters['binsize']
 
@@ -201,9 +153,11 @@ class NeuroVis(object):
             raster = rasters['data'][cond_id]
 
             if len(raster) > 0:
-
-                sort_idx = utils.get_sort_indices(data=raster, sortby=sortby,
-                                                  sortorder=sortorder)
+                sort_idx = utils.get_sort_indices(
+                    data=raster,
+                    by=sortby,
+                    order=sortorder,
+                )
                 raster_sorted = raster[sort_idx]
 
                 plt.imshow(raster_sorted, aspect='auto',
@@ -238,60 +192,39 @@ class NeuroVis(object):
             else:
                 print('No trials for this condition!')
 
-    # -----------------------------------------------------------------------
     def get_psth(self, event=None, df=None, conditions=None, cond_id=None,
                  window=[-100, 500], binsize=10, plot=True, event_name=None,
                  conditions_names=None, ylim=None,
-                 colors=['#F5A21E', '#134B64', '#EF3E34', '#02A68E',
-                         '#FF07CD']):
-        """
-        Compute the psth and plot it
+                 colors=DEFAULT_POPULATION_COLORS):
+        '''Compute the PSTH and plot it.
 
-        Parameters
-        ----------
-        event: str
-            Column/key name of DataFrame/dictionary "data" which contains
-            event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
-            etc.)
+        Args:
+            event (str): Column/key name of DataFrame/dictionary :data:`data`
+                which contains event times in milliseconds (e.g.
+                stimulus/trial/fixation onset, etc.)
+            conditions (str): Column/key name of DataFrame/dictionary
+                :data:`data` which contains the conditions by which the trials
+                must be grouped.
+            cond_id (list): Which psth to plot indicated by the key in
+                :data:`all_psth['data']``. If None then all are plotted.
+            df (DataFrame or dictionary): The dataframe containing the data.
+            window (list of 2 elements): Time interval to consider, in
+                milliseconds.
+            binsize (int): Bin size in milliseconds.
+            plot (bool): If True then plot.
+            event_name (string): Legend name for event. Default is the actual
+                event name
+            conditions_names (TODO): Legend names for conditions. Default are
+                the unique values in :data:`df['conditions']`.
+            ylim (list): The lower and upper limits for Y.
+            colors (list): The colors for the plot.
 
-        conditions: str
-            Column/key name of DataFrame/dictionary "data" which contains the
-            conditions by which the trials must be grouped
-
-        cond_id: list
-            Which psth to plot indicated by the key in all_psth['data'].
-            If None then all are plotted.
-
-        df: DataFrame (or dictionary)
-
-        window: list of 2 elements
-            Time interval to consider (milliseconds)
-
-        binsize: int
-            Bin size in milliseconds
-
-        plot: bool
-            If True then plot
-
-        event_name: string
-            Legend name for event. Default is the actual 'event' name
-
-        conditions_names:
-            Legend names for conditions. Default are the unique values in
-            df['conditions']
-
-        ylim: list with 2 elements
-
-        colors: list
-
-        Returns
-        -------
-        psth : dictionary
-            With keys: 'event', 'conditions', 'binsize', 'window', and 'data'.
-            Each entry in psth['data'] is itself a dictionary with keys 'mean'
-            and 'sem' that correspond to the mean and sem of the psth for that
-            condition
-        """
+        Returns:
+            dict: :data:`rasters` with keys :data:`event`, :data:`conditions`,
+            :data:`binsize`, :data:`window`, and :data:`data`.
+            :data:`rasters['data']` is a dictionary where each value is a
+            raster for each unique entry of :data:`df['conditions']`.
+        '''
 
         window = [np.floor(window[0] / binsize) * binsize,
                   np.ceil(window[1] / binsize) * binsize]
@@ -311,7 +244,6 @@ class NeuroVis(object):
 
         # Compute the PSTH
         for cond_id in np.sort(list(rasters['data'])):
-
             psth['data'][cond_id] = dict()
             raster = rasters['data'][cond_id]
             mean_psth = np.mean(raster, axis=0) / (1e-3 * binsize)
@@ -332,33 +264,21 @@ class NeuroVis(object):
 
         return psth
 
-    # -----------------------------------------------------------------------
     def plot_psth(self, psth, event_name='event_onset', conditions_names=None,
-                  cond_id=None, ylim=None, colors=['#F5A21E', '#134B64',
-                                                   '#EF3E34', '#02A68E',
-                                                   '#FF07CD']):
-        """
-        Plot psth
+                  cond_id=None, ylim=None, colors=DEFAULT_POPULATION_COLORS):
+        '''Plots PSTH.
 
-        Parameters
-        ----------
-        psth: dict, output of get_psth method
-
-        event_name: string
-            Legend name for event. Default is the actual 'event' name
-
-        conditions_names:
-            Legend names for conditions. Default are the keys in psth['data']
-
-        cond_id: list
-            Which psth to plot indicated by the key in all_psth['data'].
-            If None then all are plotted.
-
-        ylim: list
-
-        colors: list
-
-        """
+        Args:
+            psth (dict): Output of :meth:`get_psth`.
+            event_name (string): Legend name for event. Default is the actual
+                event name.
+            conditions_names (list of str): Legend names for conditions.
+                Default are the keys in :data:`psth['data']`.
+            cond_id (list): Which psth to plot indicated by the key in
+                :data:`all_psth['data']``. If None then all are plotted.
+            ylim (list): The lower and upper limits for Y.
+            colors (list): The colors for the plot.
+        '''
 
         window = psth['window']
         binsize = psth['binsize']
@@ -435,33 +355,29 @@ class NeuroVis(object):
 
         plt.legend(legend, frameon=False)
 
-    # -----------------------------------------------------------------------
     def get_spikecounts(self, event=None, df=None,
                         window=np.array([50.0, 100.0])):
-        """
-        Parameters
-        ----------
-        event: str
-            Column/key name of DataFrame/dictionary "data" which contains
-            event times in milliseconds (e.g. stimulus/ trial/ fixation onset,
-            etc.)
+        '''Counts spikes in the dataframe.
 
-        window: list of 2 elements
-            Time interval to consider (milliseconds)
+        Args:
+            event (str): Column/key name of DataFrame/dictionary :data:`data`
+                which contains event times in milliseconds (e.g.
+                stimulus/trial/fixation onset, etc.)
+            window (list of 2 elements): Time interval to consider, in
+                milliseconds.
 
-        Returns
-        -------
-        spikecounts: float, n x 1 array of spike counts
-
-        """
+        Return:
+            array: An :data:`n x 1` array of spike counts.
+        '''
         events = df[event].values
         spiketimes = self.spiketimes
         spikecounts = np.zeros(events.shape)
 
-        for i, eve in enumerate(events):
-            spikecounts[i] = np.sum(np.all((spiketimes >= eve +
-                                            1e-3 * window[0],
-                                            spiketimes <= eve +
-                                            1e-3 * window[1]),
-                                           axis=0))
+        spikecounts = np.asarray([
+            np.sum(np.all((
+                spiketimes >= event + 1e-3 * window[0],
+                spiketimes <= event + 1e-3 * window[1],
+            ), axis=0))
+            for event in events
+        ])
         return spikecounts

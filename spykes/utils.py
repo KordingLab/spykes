@@ -1,22 +1,29 @@
-"""
-A few miscellaneous helper functions for spykes
-"""
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import numpy as np
 from scipy import stats
-import matplotlib # noqa
+import matplotlib.pyplot
 
 
 def train_test_split(*datasets, **split):
     '''Splits test data into training and testing data.
-    This is a replacement for the Scikit Learn version of the function.
+
+    This is a replacement for the Scikit Learn version of the function (which
+    is being deprecated).
+
     Args:
-        datasets: list of Numpy arrays, where the first dimension is the batch
-            dimension.
-        n: int, number of test samples to split off (only split_num
-            or split_prct may be specified).
-        percent: int, percentange of test samples to split off.
+        datasets (list of Numpy arrays): The datasets as Numpy arrays, where
+            the first dimension is the batch dimension.
+        n (int): Number of test samples to split off (only `n` or `percent`
+            may be specified).
+        percent (int): Percentange of test samples to split off.
+
     Returns:
-        list of pairs of Numpy arrays, the split test data.
+        tuple of train / test data, or list of tuples: If only one dataset is
+        provided, this method returns a tuple of training and testing data;
+        otherwise, it returns a list of such tuples.
     '''
     if not datasets:
         return []  # Guarentee there's at least one dataset.
@@ -55,24 +62,29 @@ def train_test_split(*datasets, **split):
     datasets = [(d[train_idxs], d[test_idxs]) for d in datasets]
     return datasets if len(datasets) > 1 else datasets[0]
 
-
 def slow_exp(z, eta):
-    """
-    A slowly rising exponential
-    that linearizes above threshold parameter eta
+    '''Applies a slowly rising exponential function to some data.
 
-    Parameters
-    ----------
-    z: array
-        ????
-    eta: float, threshold parameter
-        ???
+    This function defines a slowly rising exponential that linearizes above
+    the threshold parameter :data:`eta`. Mathematically, this is defined as:
 
-    Returns
-    -------
-    qu: array
-        The resulting slow exponential
-    """
+    .. math::
+
+        q = \\begin{cases}
+            (z + 1 - eta) * \\exp(eta)  & \\text{if } z > eta \\\\
+            \\exp(eta)                  & \\text{if } z \\leq eta
+        \\end{cases}
+
+    The gradient of this function is defined in :meth:`grad_slow_exp`.
+
+    Args:
+        z (array): The data to apply the :func:`slow_exp` function to.
+        eta (float): The threshold parameter.
+
+    Returns:
+        array: The resulting slow exponential, with the same shape as
+        :data:`z`.
+    '''
     qu = np.zeros(z.shape)
     slope = np.exp(eta)
     intercept = (1 - eta) * slope
@@ -82,18 +94,27 @@ def slow_exp(z, eta):
 
 
 def grad_slow_exp(z, eta):
-    """
-    Gradient of a slowly rising exponential
-    that linearizes above threshold parameter eta
-    Parameters
-    ----------
-    z: array
-    eta: float, threshold parameter
-    Returns
-    -------
-    dqu_dz: array, the resulting gradient of the slow exponential
-    """
+    '''Computes the gradient of a slowly rising exponential function.
 
+    This is defined as:
+
+    .. math::
+
+        \\nabla q = \\begin{cases}
+            \\exp(eta)  & \\text{if } z > eta \\\\
+            \\exp(z)    & \\text{if } z \\leq eta
+        \\end{cases}
+
+    Args:
+        z (array): The dependent variable, before calling the :func:`slow_exp`
+            function.
+        eta (float): The threshold parameter used in the original
+            :func:`slow_exp` call.
+
+    Returns:
+        array: The gradient with respect to :data:`z` of the output of
+        :func:`slow_exp`.
+    '''
     dqu_dz = np.zeros(z.shape)
     slope = np.exp(eta)
     dqu_dz[z > eta] = slope
@@ -102,13 +123,13 @@ def grad_slow_exp(z, eta):
 
 
 def log_likelihood(y, yhat):
-    """Helper to compute the log likelihood."""
+    '''Helper function to compute the log likelihood.'''
     eps = np.spacing(1)
     return np.nansum(y * np.log(eps + yhat) - yhat)
 
 
 def circ_corr(alpha1, alpha2):
-    """Helper to compute the circular correlation."""
+    '''Helper function to compute the circular correlation.'''
     alpha1_bar = stats.circmean(alpha1)
     alpha2_bar = stats.circmean(alpha2)
     num = np.sum(np.sin(alpha1 - alpha1_bar) * np.sin(alpha2 - alpha2_bar))
@@ -118,79 +139,71 @@ def circ_corr(alpha1, alpha2):
     return rho
 
 
-def get_sort_indices(data, sortby=None, sortorder='descend'):
-    """
-    Helper function to calculate sorting indices given sorting condition
+def get_sort_indices(data, by=None, order='descend'):
+    '''Helper function to calculate sorting indices given sorting condition.
 
-    Parameters
-    ----------
-    data : 2-D numpy array
-        n_neurons x n_bins
+    Args:
+        data (2-D numpy array): Array with shape :data:`(n_neurons, n_bins)`.
+        by (str or list): If :data:`rate`, sort by firing rate. If
+            :data:`latency`, sort by peak latency. If a list or array is
+            provided, it must correspond to integer indices to be used as
+            sorting indices. If no sort order is provided, the data is
+            returned as-is.
+        order (str): Direction to sort in (either :data:`descend` or
+            :data:`ascend`).
 
-    sortby: str or list
-        None:
-        'rate': sort by firing rate
-        'latency': sort by peak latency
-        list: list of integer indices to be used as sorting indicces
-
-
-    sortorder: direction to sort in
-        'descend'
-        'ascend'
-
-    Returns
-    -------
-    sort_idx : numpy array of sorting indices
-
-    """
-
+    Returns:
+        list: The sort indices as a Numpy array, with one index per element in
+        :data:`data` (i.e. :data:`data[sort_idxs]` gives the sorted data).
+    '''
+    # Checks if the sortby indices are a list or array.
     if isinstance(sortby, list):
-
+        sortby = np.array(sortby)
+    if isinstance(sortby, np.ndarray):
         if np.array_equal(np.sort(sortby), list(range(data.shape[0]))):
-            # make sure it's a permutation
-            return sortby
-
+            return sortby  # Returns if it is a proper permutation.
         else:
-            raise ValueError(
-                "Specified sorting indices not a proper permutation")
+            raise ValueError('The sorting indices not a proper permutation: {}'
+                             .format(sortby))
 
+    # Converts the sortby array to
+    if by == 'rate':
+        sort_idx = np.sum(data, axis=1).argsort()
+    elif by == 'latency':
+        sort_idx = np.argmax(data, axis=1).argsort()
+    elif by is None:
+        sort_idx = np.arange(data.shape[0])
     else:
+        raise ValueError('Invalid sort preference: "{}". Must be "rate", '
+                         '"latency" or None.'.format(by))
 
-        if sortby == 'rate':
-            sort_idx = np.sum(data, axis=1).argsort()
-
-        elif sortby == 'latency':
-            sort_idx = np.argmax(data, axis=1).argsort()
-
-        else:
-            sort_idx = np.arange(data.shape[0])
-
-        if sortorder == 'ascend':
-            return sort_idx
-        else:
-            return sort_idx[::-1]
+    # Checks the sorting order.
+    if order == 'ascend':
+        return sort_idx
+    elif order == 'descend':
+        return sort_idx[::-1]
+    else:
+        raise ValueError('Invalid sort order: {}'.format(order))
 
 
-def set_matplotlib_defaults(plt):
+def set_matplotlib_defaults(plt=None):
+    '''Sets publication quality defaults for matplotlib.
 
-    """
-    Set publication quality defaults for matplotlib.
-    Parameters
-    ----------
-    plt : instance of matplotlib.pyplot
-        The plt instance.
-    """
-
-    params = {'font.family': 'sans-serif',
-              'font.sans-serif': 'Bitsream Vera Sans',
-              'font.size': 13,
-              'axes.titlesize': 12,
-              'xtick.labelsize': 10,
-              'ytick.labelsize': 10,
-              'xtick.direction': 'out',
-              'ytick.direction': 'out',
-              'xtick.major.size': 6,
-              'ytick.major.size': 6,
-              'legend.fontsize': 11}
-
-    plt.rcParams.update(params)
+    Args:
+        plt (matplotlib.pyplot instance): The plt instance.
+    '''
+    if plt is None:
+        plt = matplotlib.pyplot
+    plt.rcParams.update({
+        'font.family': 'sans-serif',
+        'font.sans-serif': 'Bitsream Vera Sans',
+        'font.size': 13,
+        'axes.titlesize': 12,
+        'xtick.labelsize': 10,
+        'ytick.labelsize': 10,
+        'xtick.direction': 'out',
+        'ytick.direction': 'out',
+        'xtick.major.size': 6,
+        'ytick.major.size': 6,
+        'legend.fontsize': 11,
+    })

@@ -8,64 +8,41 @@ from .. import utils
 
 
 class NeuroPop(object):
+    '''Implements conveniences for plotting, fitting and decoding.
 
-    """
-    This class implements several conveniences for
-    plotting, fitting and decoding from population tuning curves
+    Implements convenience methods for plotting, fitting and decoding
+    population tuning curves. We allow the fitting of two classes of parametric
+    tuning curves.
 
-    We allow the fitting of two classes of parametric tuning curves.
+    Two types of models are available. `The Generalized von Mises model by
+    Amirikan & Georgopulos (2000) <http://brain.umn.edu/pdfs/BA118.pdf>`_ is
+    defined by
 
-    Parameters
-    ----------
-    tunemodel: str, can be either 'gvm' or 'glm'
-        tunemodel = 'gvm'
-        Generalized von Mises model
-        Amirikan & Georgopulos (2000):
-        http://brain.umn.edu/pdfs/BA118.pdf
+    .. math::
+
         f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
         f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))
 
-        tunemodel = 'glm'
-        Poisson generalized linear model
+    The Poisson generalized linear model is defined by
+
+    .. math::
+
         f(x) = exp(k0_ + k_ * cos(x - mu_))
         f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))
 
-    n_neurons: float, number of neurons in the population
-    random_state: int, seed for numpy.random
-    eta: float, linearizes the exp above eta, default: 4.0
-    learning_rate: float, default: 2e-1
-    convergence_threshold: float, default, 1e-5
-    maxiter: float, default: 1000
-    n_repeats: float, default: 5
-    verbose: bool, whether to print convergence / loss, default: False
-
-    Internal variables
-    ------------------
-    mu_: float,  n_neurons x 1, preferred feature [-pi, pi]
-    k0_: float,  n_neurons x 1, baseline
-    k_: float,  n_neurons x 1, shape (width)
-    k1_: float,  n_neurons x 1, convenience parameter
-    k2_: float,  n_neurons x 1, convenience parameter
-    g_: float,  n_neurons x 1, gain
-    b_: float,  n_neurons x 1, baseline
-
-    Callable methods
-    ----------------
-    set_params
-    simulate
-    fit
-    predict
-    decode
-    display
-    score
-
-    Class methods
-    -------------
-    _tunefun
-    _loss
-    _grad_theta_loss
-    _grad_x_loss
-    """
+    Args:
+        tunemodel (str): Can be either :data:`gvm`, the Generalized von Mises
+            model, or :data:`glm`, the Poisson generalized linear model.
+        n_neurons (float): Number of neurons in the population.
+        random_state (int): Seed for :data:`numpy.random`.
+        eta (float): Linearizes the exponent above :data:`eta`.
+        learning_rate (float): The learning rate for fitting.
+        convergence_threshold (float): The convergence threshold.
+        maxiter (float): Max number of iterations.
+        n_repeats (float): Number of repetitions.
+        verbose (bool): Whether to print convergence and loss at each
+            iteration.
+    '''
 
     def __init__(self, tunemodel='glm', n_neurons=100,
                  random_state=1,
@@ -73,9 +50,6 @@ class NeuroPop(object):
                  learning_rate=2e-1, convergence_threshold=1e-5,
                  maxiter=1000, n_repeats=1,
                  verbose=False):
-        """
-        Initialize the object
-        """
         self.tunemodel = tunemodel
         self.n_neurons = n_neurons
 
@@ -101,28 +75,23 @@ class NeuroPop(object):
 
         self.verbose = verbose
 
-    # -----------------------------------------------------------------------
     def set_params(self, tunemodel=None, neurons=None, mu=None, k0=None,
                    k=None, g=None, b=None):
-        """
-        A function that sets tuning curve parameters as specified
+        '''A function that sets tuning curve parameters as specified.
 
-        Parameters
-        ----------
-        tunemodel: str, either 'gvm' or 'glm'
-        neurons: list,
-            a list of integers which specifies the subset of neurons to set
-            default: all neurons
+        If any of the parameters is None, it is randomly initialized for all
+        neurons.
 
-        mu: float,  len(neurons) x 1, feature of interest
-        k0: float,  len(neurons) x 1, baseline
-        k: float,  len(neurons) x 1, gain
-        g: float,  len(neurons) x 1, gain
-        b: float,  len(neurons) x 1, baseline
-
-        if any of the above are None, it randomly initializes parameters for
-        all neurons
-        """
+        Args:
+            tunemodel (str): Either 'gvm' or 'glm'.
+            neurons (list): A list of integers which specifies the subset of
+                neurons to set.
+            mu (float): :data:`len(neurons) x 1`, feature of interest.
+            k0 (float): :data:`len(neurons) x 1`, baseline.
+            k (float): :data:`len(neurons) x 1`, gain.
+            g (float): :data:`len(neurons) x 1`, gain.
+            b (float): :data:`len(neurons) x 1`, baseline.
+        '''
         if tunemodel is None:
             tunemodel = self.tunemodel
 
@@ -172,79 +141,71 @@ class NeuroPop(object):
         else:
             self.b_[neurons] = b
 
-    # -----------------------------------------------------------------------
     def _tunefun(self, x, k0, k1, k2, g, b):
-        """
-        The tuning function as specified in self.tunemodel
+        '''Defines the tuning function as specified in self.tunemodel.
 
-        Parameters
-        ----------
-        x: float, n_samples x 1, feature of interest
-        k0: float,  n_neurons x 1, baseline
-        k1: float,  n_neurons x 1, convenience parameter
-        k2: float,  n_neurons x 1, convenience parameter
-        g: float,  n_neurons x 1, gain
-        b: float,  n_neurons x 1, baseline
+        Args:
+            x (float): :data:`n_samples x 1`, feature of interest.
+            k0 (float): :data:`n_neurons x 1`, baseline.
+            k1 (float): :data:`n_neurons x 1`, convenience parameter.
+            k2 (float): :data:`n_neurons x 1`, convenience parameter.
+            g (float): :data:`n_neurons x 1`, gain.
+            b (float): :data:`n_neurons x 1`, baseline.
 
-        Outputs
-        -------
-        Y: float, n_samples x 1, firing rates
-        """
+        Returns
+            array: :data:`n_samples x 1` array, the firing rates.
+        '''
         y = b + g * utils.slow_exp(k0 + k1 * np.cos(x) + k2 * np.sin(x),
                                    self.eta)
         return y
 
-    # -----------------------------------------------------------------------
     def _loss(self, x, y, k0, k1, k2, g, b):
-        """
-        The loss function: negative Poisson log likelihood function
-        under the von mises tuning model
+        '''The loss function, negative Poisson log likelihood.
 
-        Parameters
-        ----------
-        x: float, n_samples x 1 (encoding) |
-            scalar (decoding), feature of interest
-        y: float, n_samples x 1 (encoding) |
-            n_neurons x 1 (decoding), firing rates
-        mu: float,  n_neurons x 1, preferred feature [-pi, pi]
-        k0: float,  n_neurons x 1, baseline
-        k1: float,  n_neurons x 1, convenience parameter
-        k2: float,  n_neurons x 1, convenience parameter
-        g: float,  n_neurons x 1, gain
-        b: float,  n_neurons x 1, baseline
+        This is the negative Poisson log likelihood under the von Mises tuning
+        model.
 
-        Outputs
-        -------
-        loss: float, scalar
-        """
+        Args:
+            x (float): :data:`n_samples x 1` (encoding) or
+                a scalar (decoding), feature of interest.
+            y (float): :data:`n_samples x 1` (encoding) or
+                :data:`n_neurons x 1` (decoding), firing rates.
+            mu (float): :data:`n_neurons x 1`, preferred feature
+                :data:`[-pi, pi]`.
+            k0 (float): :data:`n_neurons x 1`, baseline.
+            k1 (float): :data:`n_neurons x 1`, convenience parameter.
+            k2 (float): :data:`n_neurons x 1`, convenience parameter.
+            g (float): :data:`n_neurons x 1`, gain.
+            b (float): :data:`n_neurons x 1`, baseline.
+
+        Returns:
+            scalar float: The loss, a scalar float.
+        '''
         lmb = self._tunefun(x, k0, k1, k2, g, b)
         J = np.sum(lmb) - np.sum(y * lmb)
         return J
 
-    # -----------------------------------------------------------------------
     def _grad_theta_loss(self, tunemodel, x, y, k0, k1, k2, g, b):
-        """
-        The gradient of the loss function:
-        wrt parameters of the tuning model (theta)
+        '''The gradient of the loss function for the parameters of the model.
 
-        Parameters
-        ----------
-        x: float,  n_samples x 1, feature of interest
-        y: float,  n_samples x 1, firing rates
-        k0: float,  n_neurons x 1, baseline
-        k1: float,  n_neurons x 1, convenience parameter
-        k2: float,  n_neurons x 1, convenience parameter
-        g: float,  scalar, gain
-        b: float,  scalar, baseline
+        Args:
+            x (float array): :data:`n_samples x 1`, feature of interest.
+            y (float array): :data:`n_samples x 1`, firing rates.
+            k0 (float array): :data:`n_neurons x 1`, baseline.
+            k1 (float array): :data:`n_neurons x 1`, convenience parameter.
+            k2 (float array): :data:`n_neurons x 1`, convenience parameter.
+            g (float): Scalar, gain.
+            b (float): Scalar, baseline.
 
-        Outputs
-        -------
-        grad_k0: float, scalar
-        grad_k1: float, scalar
-        grad_k2: float, scalar
-        grad_g: float, scalar
-        grad_b: float, scalar
-        """
+        Returns:
+            tuple: The gradients of the loss with respect to each parameter.
+
+            * :data:`grad_k0`: scalar
+            * :data:`grad_k1`: scalar
+            * :data:`grad_k2`: scalar
+            * :data:`grad_g`: scalar
+            * :data:`grad_b`: scalar
+        '''
         lmb = self._tunefun(x, k0, k1, k2, g, b)
 
         n_samples = np.float(x.shape[0])
@@ -271,26 +232,21 @@ class NeuroPop(object):
 
         return grad_k0, grad_k1, grad_k2, grad_g, grad_b
 
-    # -----------------------------------------------------------------------
     def _grad_x_loss(self, x, y, k0, k1, k2, g, b):
-        """
-        The gradient of the loss function:
-        wrt encoded feature x
+        '''The gradient of the loss function with respect to X.
 
-        Parameters
-        ----------
-        x: float, scalar, feature of interest
-        y: float, n_neurons x 1, firing rates
-        k0: float,  n_neurons x 1, baseline
-        k1: float,  n_neurons x 1, convenience parameter
-        k2: float,  n_neurons x 1, convenience parameter
-        g: float,  n_neurons x 1, gain
-        b: float,  n_neurons x 1, baseline
+        Args:
+            x (float): Scalar, feature of interest.
+            y (float array): :data:`n_neurons x 1`, firing rates.
+            k0 (float array): :data:`n_neurons x 1`, baseline.
+            k1 (float array): :data:`n_neurons x 1`, convenience parameter.
+            k2 (float array): :data:`n_neurons x 1`, convenience parameter.
+            g (float array): :data:`n_neurons x 1`, gain.
+            b (float array): :data:`n_neurons x 1`, baseline.
 
-        Outputs
-        -------
-        grad_x: float, scalar
-        """
+        Returns:
+            array: :data:`grad_x`, the gradient with respect to :data:`x`.
+        '''
         n_neurons = np.float(self.n_neurons)
 
         lmb = self._tunefun(x, k0, k1, k2, g, b)
@@ -303,28 +259,31 @@ class NeuroPop(object):
                                          (1 - y / lmb))
         return grad_x
 
-    # -----------------------------------------------------------------------
     def simulate(self, tunemodel, n_samples=500, winsize=200):
-        """
-        Simulates firing rates from a neural population by randomly sampling
-        circular variables (feature of interest)
-        as well as parameters (mu, k0, k, g, b)
+        '''Simulates firing rates from a neural population.
 
-        Parameters
-        ----------
-        n_samples, int, number of samples required
-        winsize, float, time interval in which to simulate spike counts,
-            milliseconds
-        Outputs
-        -------
-        x: float, n_samples x 1, feature of interest
-        Y: float, n_samples x n_neurons, population activity
-        mu: float,  n_neurons x 1, preferred feature [-pi, pi]
-        k0: float,  n_neurons x 1, baseline
-        k: float,  n_neurons x 1, shape (width)
-        g: float,  n_neurons x 1, gain
-        b: float,  n_neurons x 1, baseline
-        """
+        Simulates firing rates from a neural population by randomly sampling
+        circular variables (feature of interest), as well as parameters
+        (:data:`mu`, :data:`k0`, :data:`k`, :data:`g`, :data:`b`).
+
+        Args:
+            tunemodel (str): Can be either :data:`gvm`, the Generalized von Mises
+                model, or :data:`glm`, the Poisson generalized linear model.
+            n_samples (int): Number of samples required.
+            winsize (float): Time interval in which to simulate spike counts,
+                milliseconds.
+
+        Returns:
+            tuple: The simulation parameters.
+
+            * `x`, :data:`n_samples x 1` array, features of interest
+            * `Y`, :data:`n_samples x n_neurons` array, population activity
+            * `mu`, :data:`n_neurons x 1` array, preferred feature,
+              :data:`[-pi, pi]`; `k0`, :data:`n_neurons x 1`, baseline
+            * `k`, :data:`n_neurons x 1` array, shape (width)
+            * `g`, :data:`n_neurons x 1` array, gain
+            * `b`, :data:`n_neurons x 1`, baseline
+        '''
 
         # Sample parameters randomly
         mu = np.pi * (2.0 * np.random.rand(self.n_neurons) - 1.0)
@@ -367,18 +326,17 @@ class NeuroPop(object):
         return x, Y, mu, k0, k, g, b
 
     def predict(self, x):
-        """
-        Compute the firing rates for the population
-        based on the fit or specified tuning models
+        '''Predicts the firing rates for the population.
 
-        Parameters
-        ----------
-        x: float, n_samples x 1, feature of interest
+        Computes the firing rates for the population based on the fit or
+        specified tuning models.
 
-        Outputs
-        -------
-        Y: float, n_samples x n_neurons, population activity
-        """
+        Args:
+            x (float): :data:`n_samples x 1`, feature of interest.
+
+        Returns:
+            float array: :data:`n_samples x n_neurons`, population activity.
+        '''
         n_samples = x.shape[0]
 
         Y = np.zeros([n_samples, self.n_neurons])
@@ -389,18 +347,16 @@ class NeuroPop(object):
                                     self.g_[n], self.b_[n])
         return Y
 
-    # -----------------------------------------------------------------------
     def fit(self, x, Y):
-        """
-        Estimate the parameters of the tuning curve under the
-        model specified by self.tunemodel,
-        given features and population activity
+        '''Fits the parameters of the model.
 
-        Parameters
-        ----------
-        x: float, n_samples x 1, feature of interest
-        Y: float, n_samples x n_neurons, population activity
-        """
+        Estimate the parameters of the tuning curve under the model specified
+        by :meth:`tunemodel`, given features and population activity.
+
+        Args:
+            x (float): :data:`n_samples x 1`, feature of interest.
+            Y (float): :data:`n_samples x n_neurons`, population activity.
+        '''
         if(len(Y.shape) == 1):
             Y = deepcopy(np.expand_dims(Y, axis=1))
 
@@ -501,19 +457,15 @@ class NeuroPop(object):
             self.g_[n] = fit_params[amin]['g']
             self.b_[n] = fit_params[amin]['b']
 
-    # -----------------------------------------------------------------------
     def decode(self, Y):
-        """
-        Given population activity estimate the feature that generated it
+        '''Estimates the features that generated a given population activity.
 
-        Parameters
-        ----------
-        Y: float, n_samples x n_neurons, population activity
+        Args:
+            Y (float): :data:`n_samples x n_neurons`, population activity.
 
-        Outputs
-        -------
-        x: float, n_samples x 1, feature of interest
-        """
+        Returns:
+            float array: :data:`n_samples x 1`, feature of interest.
+        '''
 
         n_samples = Y.shape[0]
 
@@ -562,29 +514,28 @@ class NeuroPop(object):
         x = np.arctan2(np.sin(x), np.cos(x))
 
         return x
-    # -----------------------------------------------------------------------
 
     def display(self, x, Y, neuron, colors=['k', 'c'], alpha=0.5, ylim=[0, 25],
                 xlabel='direction [radians]', ylabel='firing rate [spk/s]',
                 style='../mpl_styles/spykes.mplstyle',
                 xjitter=False, yjitter=False):
-        """
+        '''
         Visualize data and estimated tuning curves
 
-        Parameters
-        ----------
-        x: float, n_samples x 1, feature of interest
-        Y: float, n_samples x 1, firing rates
-        neuron: int, which neuron's fit to plot from the population?
-        colors: list of str, plot strings that specify color for raw data & fit
-        alpha: float, transparency for raw data
-        ylim: list of float, y axis limits
-        xlabel: str, x label (typically name of the feature)
-        ylabel: str, y label (typically firing rate)
-        style: str, name of the mpl style file to use with path
-        xjitter: bool, whether to add jitter to x variable while plotting
-        ylitter: bool, whether to add jitter to y variable while plotting
-        """
+        Args:
+            x (float): :data:`n_samples x 1`, feature of interest.
+            Y (float): :data:`n_samples x 1`, firing rates.
+            neuron (int): Which neuron's fit to plot from the population?
+            colors (list of str): Plot strings that specify color for raw data
+                and fit.
+            alpha (float): Transparency for raw data.
+            ylim (list of float): Y axis limits.
+            xlabel (str): X label (typically name of the feature).
+            ylabel (str): Y label (typically firing rate).
+            style (str): Name of the mpl style file to use with path.
+            xjitter (bool): Whether to add jitter to x variable while plotting.
+            ylitter (bool): Whether to add jitter to y variable while plotting.
+        '''
 
         utils.set_matplotlib_defaults(plt)
 
@@ -620,21 +571,23 @@ class NeuroPop(object):
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
 
-    # -----------------------------------------------------------------------
     def score(self, Y, Yhat, Ynull=None, method='circ_corr'):
-        """Score the model.
-        Parameters
-        ----------
-        Y : array, shape (n_samples, [n_neurons])
-            The true firing rates.
-        Yhat : array, shape (n_samples, [n_neurons])
-            The estimated firing rates.
-        Ynull : None | array, shape (n_samples, [n_classes])
-            The labels for the null model. Must be None if method is not
-            'pseudo_R2'
-        method : str
-            One of 'pseudo_R2' or 'circ_corr' or 'cosine_dist'
-        """
+        '''Scores the model.
+
+        Args:
+            Y (array): The true firing rates, an array with shape
+                :data:`(n_samples, n_neurons)`.
+            Yhat (array): The estimated firing rates, an array with shape
+                :data:`(n_samples, [n_neurons])`.
+            Ynull (array or None): The labels of the null model. Must be None
+                if :data:`method` is not :data:`pseudo_R2`. The array has
+                shape :data:`(n_samples, [n_classes])`.
+            method (str): One of :data:`pseudo_R2`, :data:`circ_corr`, or
+                :data:`cosine_dist`.
+
+        Returns:
+            scalar float: The computed score.
+        '''
 
         if method == 'pseudo_R2':
             if(len(Y.shape) > 1):
@@ -651,11 +604,12 @@ class NeuroPop(object):
                 LS = utils.log_likelihood(Y, Y)
                 L0 = utils.log_likelihood(Y, Ynull)
                 score = 1 - (LS - L1) / (LS - L0)
-
         elif method == 'circ_corr':
             score = utils.circ_corr(np.squeeze(Y), np.squeeze(Yhat))
-
         elif method == 'cosine_dist':
             score = np.mean(np.cos(np.squeeze(Y) - np.squeeze(Yhat)))
+        else:
+            raise ValueError('Invalid method: "{}". Must "pseudo_R2", '
+                             '"circ_corr" or "cosine_dist".'.format(method))
 
         return score

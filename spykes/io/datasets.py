@@ -1,4 +1,6 @@
-'''Functions that allow examples to fetch data from online resources.'''
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
 
 import os
 import urllib
@@ -10,15 +12,14 @@ from .. import config
 
 def _load_file(fpath):
     '''Checks whether a file is a .mat or .npy file and loads it.
+
     This is a convenience method for the other loading functions.
-    Parameters
-    ----------
-    fpath: str
-        The exact path of where data will be downloaded to
-    Returns
-    -------
-    data: mat or numpy array
-        The loaded dataset
+
+    Args:
+        fpath (str): The exact path of where data is located.
+
+    Returns:
+        mat or numpy array: The loaded dataset.
     '''
     if fpath[-4:] == '.mat':
         data = scipy.io.loadmat(fpath)
@@ -31,20 +32,21 @@ def _load_file(fpath):
 
 def load_reward_data(dir_name='reward'):
     '''Downloads and returns the data for the PopVis example.
+
     Downloads and returns data for Neural Coding Reward Example as well as
-    PopVis Example. Dataset comes from Ramkumar et al's "Premotor and Motor
-    Cortices Encode Reward" paper
-    Parameters
-    ----------
-    dir_name: str
-        Specifies the directory to which the data files should be downloaded.
-        This is concatenated with the user-set data directory.
-    Returns
-    -------
-    sess_one_mat: .mat file
-        Monkey M, Session 1
-    sess_four_mat: .mat file
-        Monkey M, Session 4
+    PopVis Example. Dataset comes from `Ramkumar et al's` "Premotor and Motor
+    Cortices Encode Reward" paper.
+
+    Args:
+        dir_name (str): Specifies the directory to which the data files should
+            be downloaded. This is concatenated with the user-set data
+            directory.
+
+    Returns:
+        tuple: The two downloaded files.
+
+        * :data:`sess_one_mat`: :data:`.mat` file for Monkey M, Session 1.
+        * :data:`sess_four_mat`: :data:`.mat` file for Monkey M, Session 4.
     '''
     dpath = os.path.join(config.get_data_directory(), dir_name)
     if not os.path.exists(dpath):
@@ -74,17 +76,17 @@ def load_reward_data(dir_name='reward'):
 
 def load_neuropixels_data(dir_name='neuropixels'):
     '''Downloads and returns data for the Neuropixels example.
-    The dataset comes from UCL's Cortex Lab, which is located
-    [here](http://data.cortexlab.net/dualPhase3/data/)
-    Parameters
-    ----------
-    dir_name: str
-        Specifies the directory to which the data files should be downloaded.
-        This is concatenated with the user-set data directory.
-    Returns
-    -------
-    file_dict: dict
-        Each key corresponds to a needed file
+
+    The dataset comes from `UCL's Cortex Lab
+    <http://data.cortexlab.net/dualPhase3/data/>`_.
+
+    Args:
+        dir_name (str): Specifies the directory to which the data files
+            should be downloaded. This is concatenated with the user-set
+            data directory.
+
+    Returns:
+        dict: A dictionary where each key corresponds to a needed file.
     '''
     dpath = os.path.join(config.get_data_directory(), dir_name)
     if not os.path.exists(dpath):
@@ -140,17 +142,16 @@ def load_neuropixels_data(dir_name='neuropixels'):
 
 def load_reaching_data(dir_name='reaching'):
     '''Downloads and returns data for the Reaching Dataset example.
-    The dataset is publicly available
-    [here](https://northwestern.app.box.com/s/xbe3xpnv6gpx0c1mrfhb1bal4cyei5n8)
-    Parameters
-    ----------
-    dir_name: str
-        Specifies the directory to which the data files should be downloaded.
-        This is concatenated with the user-set data directory.
-    Returns
-    -------
-    data: deep dish dataset
-        The dataset, loaded using `deepdish.io.load`
+
+    The dataset is publicly available `here <http://goo.gl/eXeUz8>`_.
+
+    Args:
+        dir_name (str): Specifies the directory to which the data files
+            should be downloaded. This is concatenated with the user-set
+            data directory.
+
+    Returns:
+        deep dish dataset: The dataset, loaded using :meth:`deepdish.io.load`.
     '''
     # Import is performed here so that deepdish is not required for all of
     # the "datasets" functions.
