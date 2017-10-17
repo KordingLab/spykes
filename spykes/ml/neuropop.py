@@ -44,11 +44,15 @@ class NeuroPop(object):
             iteration.
     '''
 
-    def __init__(self, tunemodel='glm', n_neurons=100,
+    def __init__(self,
+                 tunemodel='glm',
+                 n_neurons=100,
                  random_state=1,
                  eta=0.4,
-                 learning_rate=2e-1, convergence_threshold=1e-5,
-                 maxiter=1000, n_repeats=1,
+                 learning_rate=2e-1,
+                 convergence_threshold=1e-5,
+                 maxiter=1000,
+                 n_repeats=1,
                  verbose=False):
         self.tunemodel = tunemodel
         self.n_neurons = n_neurons
@@ -75,6 +79,21 @@ class NeuroPop(object):
 
         self.verbose = verbose
 
+    def default_mu(self, n):
+        return np.pi * (2.0 * np.random.rand(n) - 1.0)
+
+    def default_k0(self, n, tunemodel):
+        return np.random.rand(n) if tunemodel == 'glm' else np.zeros(n)
+
+    def default_k(self, n):
+        return 20.0 * np.random.rand(n)
+
+    def default_g(self, n, tunemodel):
+        return 5.0 * np.random.rand(n) if tunemodel == 'gvm' else np.ones(n)
+
+    def default_b(self, n, tunemodel):
+        return 10.0 * np.random.rand(n) if tunemodel == 'gvm' else np.zeros(n)
+
     def set_params(self, tunemodel=None, neurons=None, mu=None, k0=None,
                    k=None, g=None, b=None):
         '''A function that sets tuning curve parameters as specified.
@@ -92,54 +111,24 @@ class NeuroPop(object):
             g (float): :data:`len(neurons) x 1`, gain.
             b (float): :data:`len(neurons) x 1`, baseline.
         '''
-        if tunemodel is None:
-            tunemodel = self.tunemodel
+        # Does an argument check on "tunemodel".
+        if tunemodel is not None and tunemodel not in ('gvm', 'glm'):
+            raise ValueError('Invalid value for `tunemodel`: Expected either '
+                             '"gvm" or "glm", but got "{}".'.format(tunemodel))
 
-        if neurons is None:
-            neurons = list(range(self.n_neurons))
+        # Disambiguates some paremeters to use.
+        model = self.tunemodel if tunemodel is None else tunemodel
+        idx = list(range(self.n_neurons)) if neurons is None else neurons
+        n_neurons = len(idx) if hasattr(idx, '__len__') else 1
 
-        if isinstance(neurons, list):
-            n_neurons = len(neurons)
-        else:
-            n_neurons = 1
-
-        # Assign parameters; if None, assign random
-        if mu is None:
-            self.mu_[neurons] = np.pi * (2.0 * np.random.rand(n_neurons) - 1.0)
-        else:
-            self.mu_[neurons] = mu
-
-        if k0 is None:
-            if tunemodel == 'glm':
-                self.k0_[neurons] = np.random.rand(n_neurons)
-            else:
-                self.k0_[neurons] = np.zeros(n_neurons)
-        else:
-            self.k0_[neurons] = k0
-
-        if k is None:
-            self.k_[neurons] = 20.0 * np.random.rand(n_neurons)
-        else:
-            self.k_[neurons] = k
-
-        self.k1_[neurons] = self.k_[neurons] * np.cos(self.mu_[neurons])
-        self.k2_[neurons] = self.k_[neurons] * np.sin(self.mu_[neurons])
-
-        if g is None:
-            if tunemodel == 'gvm':
-                self.g_[neurons] = 5.0 * np.random.rand(n_neurons)
-            else:
-                self.g_[neurons] = np.ones(n_neurons)
-        else:
-            self.g_[neurons] = g
-
-        if b is None:
-            if tunemodel == 'gvm':
-                self.b_[neurons] = 10.0 * np.random.rand(n_neurons)
-            else:
-                self.b_[neurons] = np.zeros(n_neurons)
-        else:
-            self.b_[neurons] = b
+        # Updates the model's parameters to be the specified values.
+        self.mu_[idx] = self.default_mu(n_neurons) if mu is None else mu
+        self.k0_[idx] = self.default_k0(n_neurons, model) if k0 is None else k0
+        self.g_[idx] = self.default_g(n_neurons, model) if g is None else g
+        self.b_[idx] = self.default_b(n_neurons, model) if b is None else b
+        self.k_[idx] = self.default_k(n_neurons) if k is None else k
+        self.k1_[idx] = self.k_[idx] * np.cos(self.mu_[idx])
+        self.k2_[idx] = self.k_[idx] * np.sin(self.mu_[idx])
 
     def _tunefun(self, x, k0, k1, k2, g, b):
         '''Defines the tuning function as specified in self.tunemodel.
