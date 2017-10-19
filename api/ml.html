@@ -1,0 +1,867 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Machine Learning &mdash; spykes  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="spykes  documentation" href="../index.html"/>
+        <link rel="next" title="Input / Output" href="io.html"/>
+        <link rel="prev" title="Plotting" href="plot.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> spykes
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#what-is-spykes">What is Spykes?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#installing">Installing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#vanilla">Vanilla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#bleeding-edge">Bleeding-Edge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting-started.html#local-version">Local Version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting-started.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#fitting-tuning-curves-with-gradient-descent">Fitting Tuning Curves with Gradient Descent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial.html#special-case-1-poisson-generalized-linear-model-glm">Special Case 1: Poisson Generalized Linear Model (GLM)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial.html#special-case-2-generalized-von-mises-model-gvm">Special Case 2: Generalized von Mises Model (GVM)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#minimizing-negative-log-likelihood-with-gradient-descent">Minimizing Negative Log Likelihood with Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial.html#decoding-feature-from-population-activity">Decoding Feature from Population Activity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../auto_examples/index.html">Examples Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html">Neuropop Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#create-a-neuropop-object">Create a NeuroPop object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#simulate-a-population-of-neurons">Simulate a population of neurons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#split-into-training-and-testing-sets">Split into training and testing sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#fit-the-tuning-curves-with-gradient-descent">Fit the tuning curves with gradient descent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#predict-the-population-activity-with-the-fit-tuning-curves">Predict the population activity with the fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#plot-the-simulated-and-fit-tuning-curves">Plot the simulated and fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#decode-feature-from-the-population-activity">Decode feature from the population activity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#visualize-ground-truth-vs-decoded-estimates">Visualize ground truth vs. decoded estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropop_simul_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_popvis_example.html">PopVis Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#initialization">0 Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#download-data">0.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#read-in-data">0.2 Read In Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#initialize-variables">0.3 Initialize Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#popvis">1 PopVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_popvis_example.html#create-popvis-object">1.3 Create PopVis Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html">CRCNS DataSet Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#dataset">0.2 Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#data">1 Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#download-data">1.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#load-data">1.2 Load Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#get-spike-times">2 Get Spike Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#get-event-times">3 Get Event Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#get-features">4 Get Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#define-features">5 Define Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#plots">6 Plots</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#rasters">6.1 Rasters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#psth">6.2 PSTH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#reproduce-figure">6.3 Reproduce Figure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_crcns_dataset_example.html#ggplot">6.4 ggplot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html">Neuropixels Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#neuropixels">Neuropixels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#download-data">0 Download Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#read-in-data">1 Read In Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#create-data-frame">2 Create Data Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#start-plotting">3 Start Plotting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#striatum">3.1 Striatum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#frontal">3.2 Frontal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#all-neurons">3.3 All Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neuropixels_example.html#striatum-vs-motor-cortex">3.4 Striatum vs. Motor Cortex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html">Neural Coding Reward Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#dataset">0.2 Dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#initialization">0.3 Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-a">1 First Graph of Panel A</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#match-peak-velocities">1.3 Match Peak Velocities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#plot-psths">1.4 Plot PSTHs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-c">2 First Graph of Panel C</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#normalize-psths">2.1 Normalize PSTHs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#find-population-average">2.2 Find Population Average</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_neural_coding_reward_example.html#plot-psth">2.3 Plot PSTH</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html">Reaching Dataset Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#download-reaching-dataset">Download Reaching Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#part-i-neurovis">Part I: NeuroVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#instantiate-example-pmd-neuron">Instantiate Example PMd Neuron</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#raster-plot-and-psth-aligned-to-target-onset">Raster plot and PSTH aligned to target onset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#events">Events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#example-1-reward-vs-no-reward">Example 1: Reward vs No Reward</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#example-2-according-to-quadrant-of-reaching-direction">Example 2: according to quadrant of reaching direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#example-3-same-as-example-2-but-for-an-m1-neuron-and-aligned-at-gocuetime">Example 3: Same as Example 2 but for an M1 neuron and aligned at goCueTime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#example-4-sorted-by-direction-only-for-the-trials-with-reward">Example 4: sorted by direction only for the trials with reward</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#part-ii-neuropop">Part II: NeuroPop</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#extract-reach-direction-x">Extract reach direction x</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#extract-m1-spike-counts-y">Extract M1 spike counts Y</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#split-into-train-and-test-sets">Split into train and test sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#create-an-instance-of-neuropop">Create an instance of NeuroPop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#predict-firing-rates">Predict firing rates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#visualize-tuning-curves">Visualize tuning curves</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#decode-reach-direction-from-population-vector">Decode reach direction from population vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#visualize-decoded-reach-direction">Visualize decoded reach direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../auto_examples/plot_reaching_dataset_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../contributing.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="plot.html">Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#module-spykes.plot.neurovis">NeuroVis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plot.html#module-spykes.plot.popvis">PopVis</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Machine Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-spykes.ml.neuropop">NeuroPop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-spykes.ml.strf">STRF</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="io.html">Input / Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="io.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">spykes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Machine Learning</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/ml.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="machine-learning">
+<span id="ml-documentation"></span><h1>Machine Learning<a class="headerlink" href="#machine-learning" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-spykes.ml.neuropop">
+<span id="neuropop"></span><h2>NeuroPop<a class="headerlink" href="#module-spykes.ml.neuropop" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spykes.ml.neuropop.NeuroPop">
+<em class="property">class </em><code class="descclassname">spykes.ml.neuropop.</code><code class="descname">NeuroPop</code><span class="sig-paren">(</span><em>tunemodel='glm'</em>, <em>n_neurons=100</em>, <em>random_state=1</em>, <em>eta=0.4</em>, <em>learning_rate=0.2</em>, <em>convergence_threshold=1e-05</em>, <em>maxiter=1000</em>, <em>n_repeats=1</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements conveniences for plotting, fitting and decoding.</p>
+<p>Implements convenience methods for plotting, fitting and decoding
+population tuning curves. We allow the fitting of two classes of parametric
+tuning curves.</p>
+<p>Two types of models are available. <a class="reference external" href="http://brain.umn.edu/pdfs/BA118.pdf">The Generalized von Mises model by
+Amirikan &amp; Georgopulos (2000)</a> is
+defined by</p>
+<div class="math">
+\[f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
+f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))\]</div>
+<p>The Poisson generalized linear model is defined by</p>
+<div class="math">
+\[f(x) = exp(k0_ + k_ * cos(x - mu_))
+f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))\]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tunemodel</strong> (<em>str</em>) – Can be either <code class="xref py py-data docutils literal"><span class="pre">gvm</span></code>, the Generalized von Mises
+model, or <code class="xref py py-data docutils literal"><span class="pre">glm</span></code>, the Poisson generalized linear model.</li>
+<li><strong>n_neurons</strong> (<em>float</em>) – Number of neurons in the population.</li>
+<li><strong>random_state</strong> (<em>int</em>) – Seed for <code class="xref py py-data docutils literal"><span class="pre">numpy.random</span></code>.</li>
+<li><strong>eta</strong> (<em>float</em>) – Linearizes the exponent above <code class="xref py py-data docutils literal"><span class="pre">eta</span></code>.</li>
+<li><strong>learning_rate</strong> (<em>float</em>) – The learning rate for fitting.</li>
+<li><strong>convergence_threshold</strong> (<em>float</em>) – The convergence threshold.</li>
+<li><strong>maxiter</strong> (<em>float</em>) – Max number of iterations.</li>
+<li><strong>n_repeats</strong> (<em>float</em>) – Number of repetitions.</li>
+<li><strong>verbose</strong> (<em>bool</em>) – Whether to print convergence and loss at each
+iteration.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spykes.ml.neuropop.NeuroPop.decode">
+<code class="descname">decode</code><span class="sig-paren">(</span><em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop.decode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop.decode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the features that generated a given population activity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Y</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">n_neurons</span></code>, population activity.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">1</span></code>, feature of interest.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.neuropop.NeuroPop.display">
+<code class="descname">display</code><span class="sig-paren">(</span><em>x, Y, neuron, colors=['k', 'c'], alpha=0.5, ylim=[0, 25], xlabel='direction [radians]', ylabel='firing rate [spk/s]', style='../mpl_styles/spykes.mplstyle', xjitter=False, yjitter=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop.display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop.display" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize data and estimated tuning curves</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">1</span></code>, feature of interest.</li>
+<li><strong>Y</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">1</span></code>, firing rates.</li>
+<li><strong>neuron</strong> (<em>int</em>) – Which neuron’s fit to plot from the population?</li>
+<li><strong>colors</strong> (<em>list of str</em>) – Plot strings that specify color for raw data
+and fit.</li>
+<li><strong>alpha</strong> (<em>float</em>) – Transparency for raw data.</li>
+<li><strong>ylim</strong> (<em>list of float</em>) – Y axis limits.</li>
+<li><strong>xlabel</strong> (<em>str</em>) – X label (typically name of the feature).</li>
+<li><strong>ylabel</strong> (<em>str</em>) – Y label (typically firing rate).</li>
+<li><strong>style</strong> (<em>str</em>) – Name of the mpl style file to use with path.</li>
+<li><strong>xjitter</strong> (<em>bool</em>) – Whether to add jitter to x variable while plotting.</li>
+<li><strong>ylitter</strong> (<em>bool</em>) – Whether to add jitter to y variable while plotting.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.neuropop.NeuroPop.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>x</em>, <em>Y</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the parameters of the model.</p>
+<p>Estimate the parameters of the tuning curve under the model specified
+by <code class="xref py py-meth docutils literal"><span class="pre">tunemodel()</span></code>, given features and population activity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">1</span></code>, feature of interest.</li>
+<li><strong>Y</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">n_neurons</span></code>, population activity.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.neuropop.NeuroPop.predict">
+<code class="descname">predict</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop.predict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop.predict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Predicts the firing rates for the population.</p>
+<p>Computes the firing rates for the population based on the fit or
+specified tuning models.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">1</span></code>, feature of interest.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">n_neurons</span></code>, population activity.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.neuropop.NeuroPop.score">
+<code class="descname">score</code><span class="sig-paren">(</span><em>Y</em>, <em>Yhat</em>, <em>Ynull=None</em>, <em>method='circ_corr'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop.score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop.score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scores the model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>Y</strong> (<em>array</em>) – The true firing rates, an array with shape
+<code class="xref py py-data docutils literal"><span class="pre">(n_samples,</span> <span class="pre">n_neurons)</span></code>.</li>
+<li><strong>Yhat</strong> (<em>array</em>) – The estimated firing rates, an array with shape
+<code class="xref py py-data docutils literal"><span class="pre">(n_samples,</span> <span class="pre">[n_neurons])</span></code>.</li>
+<li><strong>Ynull</strong> (<em>array</em><em> or </em><em>None</em>) – The labels of the null model. Must be None
+if <code class="xref py py-data docutils literal"><span class="pre">method</span></code> is not <code class="xref py py-data docutils literal"><span class="pre">pseudo_R2</span></code>. The array has
+shape <code class="xref py py-data docutils literal"><span class="pre">(n_samples,</span> <span class="pre">[n_classes])</span></code>.</li>
+<li><strong>method</strong> (<em>str</em>) – One of <code class="xref py py-data docutils literal"><span class="pre">pseudo_R2</span></code>, <code class="xref py py-data docutils literal"><span class="pre">circ_corr</span></code>, or
+<code class="xref py py-data docutils literal"><span class="pre">cosine_dist</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The computed score.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">scalar float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.neuropop.NeuroPop.set_params">
+<code class="descname">set_params</code><span class="sig-paren">(</span><em>tunemodel=None</em>, <em>neurons=None</em>, <em>mu=None</em>, <em>k0=None</em>, <em>k=None</em>, <em>g=None</em>, <em>b=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop.set_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop.set_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function that sets tuning curve parameters as specified.</p>
+<p>If any of the parameters is None, it is randomly initialized for all
+neurons.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>tunemodel</strong> (<em>str</em>) – Either ‘gvm’ or ‘glm’.</li>
+<li><strong>neurons</strong> (<em>list</em>) – A list of integers which specifies the subset of
+neurons to set.</li>
+<li><strong>mu</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">len(neurons)</span> <span class="pre">x</span> <span class="pre">1</span></code>, feature of interest.</li>
+<li><strong>k0</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">len(neurons)</span> <span class="pre">x</span> <span class="pre">1</span></code>, baseline.</li>
+<li><strong>k</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">len(neurons)</span> <span class="pre">x</span> <span class="pre">1</span></code>, gain.</li>
+<li><strong>g</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">len(neurons)</span> <span class="pre">x</span> <span class="pre">1</span></code>, gain.</li>
+<li><strong>b</strong> (<em>float</em>) – <code class="xref py py-data docutils literal"><span class="pre">len(neurons)</span> <span class="pre">x</span> <span class="pre">1</span></code>, baseline.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.neuropop.NeuroPop.simulate">
+<code class="descname">simulate</code><span class="sig-paren">(</span><em>tunemodel</em>, <em>n_samples=500</em>, <em>winsize=200</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/neuropop.html#NeuroPop.simulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.neuropop.NeuroPop.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulates firing rates from a neural population.</p>
+<p>Simulates firing rates from a neural population by randomly sampling
+circular variables (feature of interest), as well as parameters
+(<code class="xref py py-data docutils literal"><span class="pre">mu</span></code>, <code class="xref py py-data docutils literal"><span class="pre">k0</span></code>, <code class="xref py py-data docutils literal"><span class="pre">k</span></code>, <code class="xref py py-data docutils literal"><span class="pre">g</span></code>, <code class="xref py py-data docutils literal"><span class="pre">b</span></code>).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tunemodel</strong> (<em>str</em>) – Can be either <code class="xref py py-data docutils literal"><span class="pre">gvm</span></code>, the Generalized von
+Mises model, or <code class="xref py py-data docutils literal"><span class="pre">glm</span></code>, the Poisson generalized linear
+model.</li>
+<li><strong>n_samples</strong> (<em>int</em>) – Number of samples required.</li>
+<li><strong>winsize</strong> (<em>float</em>) – Time interval in which to simulate spike counts,
+milliseconds.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>The simulation parameters.</p>
+<ul class="simple">
+<li><cite>x</cite>, <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">1</span></code> array, features of interest</li>
+<li><cite>Y</cite>, <code class="xref py py-data docutils literal"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">n_neurons</span></code> array, population activity</li>
+<li><cite>mu</cite>, <code class="xref py py-data docutils literal"><span class="pre">n_neurons</span> <span class="pre">x</span> <span class="pre">1</span></code> array, preferred feature,
+<code class="xref py py-data docutils literal"><span class="pre">[-pi,</span> <span class="pre">pi]</span></code>; <cite>k0</cite>, <code class="xref py py-data docutils literal"><span class="pre">n_neurons</span> <span class="pre">x</span> <span class="pre">1</span></code>, baseline</li>
+<li><cite>k</cite>, <code class="xref py py-data docutils literal"><span class="pre">n_neurons</span> <span class="pre">x</span> <span class="pre">1</span></code> array, shape (width)</li>
+<li><cite>g</cite>, <code class="xref py py-data docutils literal"><span class="pre">n_neurons</span> <span class="pre">x</span> <span class="pre">1</span></code> array, gain</li>
+<li><cite>b</cite>, <code class="xref py py-data docutils literal"><span class="pre">n_neurons</span> <span class="pre">x</span> <span class="pre">1</span></code>, baseline</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-spykes.ml.strf">
+<span id="strf"></span><h2>STRF<a class="headerlink" href="#module-spykes.ml.strf" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="spykes.ml.strf.STRF">
+<em class="property">class </em><code class="descclassname">spykes.ml.strf.</code><code class="descname">STRF</code><span class="sig-paren">(</span><em>patch_size=100</em>, <em>sigma=0.5</em>, <em>n_spatial_basis=25</em>, <em>n_temporal_basis=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows the estimation of spatiotemporal receptive fields</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>patch_size</strong> (<em>int</em>) – Dimension of the square patch spanned by the
+spatial basis.</li>
+<li><strong>sigma</strong> (<em>float</em>) – Standard deviation of the Gaussian distribution.</li>
+<li><strong>n_spatial_basis</strong> (<em>int</em>) – Number of spatial basis functions for the
+Gaussian basis (has to be a perfect square).</li>
+<li><strong>n_temporal_basis</strong> (<em>int</em>) – Number of temporal basis functions.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.convolve_with_temporal_basis">
+<code class="descname">convolve_with_temporal_basis</code><span class="sig-paren">(</span><em>design_matrix</em>, <em>temporal_basis</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.convolve_with_temporal_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.convolve_with_temporal_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convolves a design matrix with a temporal basis function.</p>
+<p>Convolves each column of the design matrix with a series of temporal
+basis functions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>design_matrix</strong> (<em>numpy array</em>) – 2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(n_samples,</span> <span class="pre">n_features)</span></code>.</li>
+<li><strong>temporal_basis</strong> (<em>numpy array</em>) – 2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(n_basis,</span> <span class="pre">n_timepoints)</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(n_samples,</span> <span class="pre">n_features</span> <span class="pre">*</span> <span class="pre">n_basis)</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.design_prior_covariance">
+<code class="descname">design_prior_covariance</code><span class="sig-paren">(</span><em>sigma_temporal=2.0</em>, <em>sigma_spatial=5.0</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.design_prior_covariance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.design_prior_covariance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Design a prior covariance matrix for STRF estimation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sigma_temporal</strong> (<em>float</em>) – Standard deviation of temporal prior
+covariance.</li>
+<li><strong>sigma_spatial</strong> (<em>float</em>) – Standard deviation of spatial prior
+covariance.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">2-d array of size <code class="xref py py-data docutils literal"><span class="pre">(n_spatial_basis</span> <span class="pre">*</span>
+<span class="pre">n_temporal_basis,</span> <span class="pre">n_spatial_basis</span> <span class="pre">*</span> <span class="pre">n_temporal_basis)</span></code>, the
+ordering of rows and columns is so that all temporal basis are
+consecutive for each spatial basis.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.make_2d_gaussian">
+<code class="descname">make_2d_gaussian</code><span class="sig-paren">(</span><em>center=(0</em>, <em>0)</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.make_2d_gaussian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.make_2d_gaussian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a 2D Gaussian filter with arbitary mean and variance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>center</strong> (<em>tuple</em>) – The coordinates of the center of the Gaussian,
+specified as <code class="xref py py-data docutils literal"><span class="pre">(row,</span> <span class="pre">col)</span></code>. The center of the image is
+<code class="xref py py-data docutils literal"><span class="pre">(0,</span> <span class="pre">0)</span></code>.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The Gaussian mask.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.make_cosine_basis">
+<code class="descname">make_cosine_basis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.make_cosine_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.make_cosine_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a spatial cosine and sine basis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list where each entry is a 2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(patch_size,</span> <span class="pre">patch_size)</span></code> specifing the spatial basis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.make_gaussian_basis">
+<code class="descname">make_gaussian_basis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.make_gaussian_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.make_gaussian_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a list of Gaussian filters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list where each entry is a 2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(patch_size,</span> <span class="pre">patch_size)</span></code> specifing the spatial basis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.make_image_from_spatial_basis">
+<code class="descname">make_image_from_spatial_basis</code><span class="sig-paren">(</span><em>basis</em>, <em>weights</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.make_image_from_spatial_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.make_image_from_spatial_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recovers an image from a basis given a set of weights.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>spatial_basis</strong> (<em>list</em>) – A list where each entry is a 2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(patch_size,</span> <span class="pre">patch_size)</span></code> specifing the spatial basis.</li>
+<li><strong>weights</strong> (<em>numpy array</em>) – A 1D array of coefficients.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">2D array of size <code class="xref py py-data docutils literal"><span class="pre">(patch_size,</span> <span class="pre">patch_size)</span></code>, the
+resulting image.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.make_raised_cosine_temporal_basis">
+<code class="descname">make_raised_cosine_temporal_basis</code><span class="sig-paren">(</span><em>time_points</em>, <em>centers</em>, <em>widths</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.make_raised_cosine_temporal_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.make_raised_cosine_temporal_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a series of raised cosine temporal basis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>time_points</strong> (<em>numpy array</em>) – List of time points at which the basis
+function is computed.</li>
+<li><strong>centers</strong> (<em>numpy array</em><em> or </em><em>list</em>) – List of coordinates at which each
+basis function is centered 1D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(n_temporal_basis)</span></code>.</li>
+<li><strong>widths</strong> (<em>numpy array</em><em> or </em><em>list</em>) – List of widths, one per basis
+function; each is a 1D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(n_temporal_basis)</span></code>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">2D array of size <code class="xref py py-data docutils literal"><span class="pre">(n_basis,</span> <span class="pre">n_timepoints)</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.project_to_spatial_basis">
+<code class="descname">project_to_spatial_basis</code><span class="sig-paren">(</span><em>image</em>, <em>spatial_basis</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.project_to_spatial_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.project_to_spatial_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Projects a given image into a spatial basis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>image</strong> (<em>numpy array</em>) – Image that must be projected into the
+spatial basis 2D array of size <code class="xref py py-data docutils literal"><span class="pre">(patch_size,</span>
+<span class="pre">patch_size)</span></code>.</li>
+<li><strong>spatial_basis</strong> (<em>list</em>) – A list where each entry is a 2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(patch_size,</span> <span class="pre">patch_size)</span></code> specifing the spatial basis.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A 1D array of coefficients for the projection.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.strf.STRF.visualize_gaussian_basis">
+<code class="descname">visualize_gaussian_basis</code><span class="sig-paren">(</span><em>spatial_basis</em>, <em>color='Greys'</em>, <em>show=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/strf.html#STRF.visualize_gaussian_basis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.strf.STRF.visualize_gaussian_basis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots spatial basis functions in a tile of images.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>spatial_basis</strong> (<em>list</em>) – A list where each entry is a 2D array of size
+<code class="xref py py-data docutils literal"><span class="pre">(patch_size,</span> <span class="pre">patch_size)</span></code> specifing the spatial basis.</li>
+<li><strong>color</strong> (<em>str</em>) – The color for the figure.</li>
+<li><strong>show</strong> (<em>bool</em>) – Whether or not to show the image when it is plotted.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="io.html" class="btn btn-neutral float-right" title="Input / Output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="plot.html" class="btn btn-neutral" title="Plotting" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, KordingLab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

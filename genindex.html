@@ -14,6 +14,8 @@
 
   
   
+  
+  
 
   
 
@@ -33,6 +35,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="#"/>
+        <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="spykes  documentation" href="index.html"/> 
 
   
@@ -42,6 +47,7 @@
 
 <body class="wy-body-for-nav" role="document">
 
+   
   <div class="wy-grid-for-nav">
 
     
@@ -78,14 +84,178 @@
           
             
             
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Examples Gallery</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html">API Documentation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="whats_new.html">Current</a></li>
-<li class="toctree-l1"><a class="reference internal" href="whats_new.html#version-0-1">Version 0.1</a></li>
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#what-is-spykes">What is Spykes?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#installing">Installing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#vanilla">Vanilla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#bleeding-edge">Bleeding-Edge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#local-version">Local Version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#fitting-tuning-curves-with-gradient-descent">Fitting Tuning Curves with Gradient Descent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html#special-case-1-poisson-generalized-linear-model-glm">Special Case 1: Poisson Generalized Linear Model (GLM)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html#special-case-2-generalized-von-mises-model-gvm">Special Case 2: Generalized von Mises Model (GVM)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#minimizing-negative-log-likelihood-with-gradient-descent">Minimizing Negative Log Likelihood with Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#decoding-feature-from-population-activity">Decoding Feature from Population Activity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="auto_examples/index.html">Examples Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html">Neuropop Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#create-a-neuropop-object">Create a NeuroPop object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#simulate-a-population-of-neurons">Simulate a population of neurons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#split-into-training-and-testing-sets">Split into training and testing sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#fit-the-tuning-curves-with-gradient-descent">Fit the tuning curves with gradient descent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#predict-the-population-activity-with-the-fit-tuning-curves">Predict the population activity with the fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#plot-the-simulated-and-fit-tuning-curves">Plot the simulated and fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#decode-feature-from-the-population-activity">Decode feature from the population activity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#visualize-ground-truth-vs-decoded-estimates">Visualize ground truth vs. decoded estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropop_simul_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/plot_popvis_example.html">PopVis Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_popvis_example.html#initialization">0 Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_popvis_example.html#download-data">0.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_popvis_example.html#read-in-data">0.2 Read In Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_popvis_example.html#initialize-variables">0.3 Initialize Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_popvis_example.html#popvis">1 PopVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_popvis_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_popvis_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_popvis_example.html#create-popvis-object">1.3 Create PopVis Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html">CRCNS DataSet Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#dataset">0.2 Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#data">1 Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#download-data">1.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#load-data">1.2 Load Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#get-spike-times">2 Get Spike Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#get-event-times">3 Get Event Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#get-features">4 Get Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#define-features">5 Define Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#plots">6 Plots</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#rasters">6.1 Rasters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#psth">6.2 PSTH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#reproduce-figure">6.3 Reproduce Figure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_crcns_dataset_example.html#ggplot">6.4 ggplot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html">Neuropixels Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#neuropixels">Neuropixels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#download-data">0 Download Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#read-in-data">1 Read In Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#create-data-frame">2 Create Data Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#start-plotting">3 Start Plotting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#striatum">3.1 Striatum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#frontal">3.2 Frontal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#all-neurons">3.3 All Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neuropixels_example.html#striatum-vs-motor-cortex">3.4 Striatum vs. Motor Cortex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html">Neural Coding Reward Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#dataset">0.2 Dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#initialization">0.3 Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-a">1 First Graph of Panel A</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#match-peak-velocities">1.3 Match Peak Velocities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#plot-psths">1.4 Plot PSTHs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-c">2 First Graph of Panel C</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#normalize-psths">2.1 Normalize PSTHs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#find-population-average">2.2 Find Population Average</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_neural_coding_reward_example.html#plot-psth">2.3 Plot PSTH</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html">Reaching Dataset Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#download-reaching-dataset">Download Reaching Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#part-i-neurovis">Part I: NeuroVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#instantiate-example-pmd-neuron">Instantiate Example PMd Neuron</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#raster-plot-and-psth-aligned-to-target-onset">Raster plot and PSTH aligned to target onset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#events">Events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#example-1-reward-vs-no-reward">Example 1: Reward vs No Reward</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#example-2-according-to-quadrant-of-reaching-direction">Example 2: according to quadrant of reaching direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#example-3-same-as-example-2-but-for-an-m1-neuron-and-aligned-at-gocuetime">Example 3: Same as Example 2 but for an M1 neuron and aligned at goCueTime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#example-4-sorted-by-direction-only-for-the-trials-with-reward">Example 4: sorted by direction only for the trials with reward</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#part-ii-neuropop">Part II: NeuroPop</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#extract-reach-direction-x">Extract reach direction x</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#extract-m1-spike-counts-y">Extract M1 spike counts Y</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#split-into-train-and-test-sets">Split into train and test sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#create-an-instance-of-neuropop">Create an instance of NeuroPop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#predict-firing-rates">Predict firing rates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#visualize-tuning-curves">Visualize tuning curves</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#decode-reach-direction-from-population-vector">Decode reach direction from population vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#visualize-decoded-reach-direction">Visualize decoded reach direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="auto_examples/plot_reaching_dataset_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/plot.html">Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/plot.html#module-spykes.plot.neurovis">NeuroVis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/plot.html#module-spykes.plot.popvis">PopVis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/ml.html">Machine Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ml.html#module-spykes.ml.strf">STRF</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/io.html">Input / Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/io.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/config.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/utils.html">Utils</a></li>
 </ul>
 
             
@@ -98,8 +268,10 @@
 
       
       <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">spykes</a>
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">spykes</a>
+        
       </nav>
 
 
@@ -112,17 +284,34 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li></li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Index</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
+            
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -136,209 +325,200 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#N"><strong>N</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#V"><strong>V</strong></a>
  
 </div>
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.strf.STRF.convolve_with_temporal_basis">convolve_with_temporal_basis() (spykes.strf.STRF method)</a>
-  </dt>
-
-  </dl></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/utils.html#spykes.utils.circ_corr">circ_corr() (in module spykes.utils)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.convolve_with_temporal_basis">convolve_with_temporal_basis() (spykes.ml.strf.STRF method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop.decode">decode() (spykes.neuropop.NeuroPop method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.strf.STRF.design_prior_covariance">design_prior_covariance() (spykes.strf.STRF method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop.display">display() (spykes.neuropop.NeuroPop method)</a>
-  </dt>
-
-  </dl></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.decode">decode() (spykes.ml.neuropop.NeuroPop method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.design_prior_covariance">design_prior_covariance() (spykes.ml.strf.STRF method)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.display">display() (spykes.ml.neuropop.NeuroPop method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop.fit">fit() (spykes.neuropop.NeuroPop method)</a>
-  </dt>
-
-  </dl></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.fit">fit() (spykes.ml.neuropop.NeuroPop method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.popvis.PopVis.get_all_psth">get_all_psth() (spykes.popvis.PopVis method)</a>
-  </dt>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/plot.html#spykes.plot.popvis.PopVis.get_all_psth">get_all_psth() (spykes.plot.popvis.PopVis method)</a>
+</li>
+      <li><a href="api/config.html#spykes.config.get_data_directory">get_data_directory() (in module spykes.config)</a>
+</li>
+      <li><a href="api/config.html#spykes.config.get_home_directory">get_home_directory() (in module spykes.config)</a>
+</li>
+      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.get_psth">get_psth() (spykes.plot.neurovis.NeuroVis method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.get_raster">get_raster() (spykes.plot.neurovis.NeuroVis method)</a>
+</li>
+      <li><a href="api/utils.html#spykes.utils.get_sort_indices">get_sort_indices() (in module spykes.utils)</a>
+</li>
+      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.get_spikecounts">get_spikecounts() (spykes.plot.neurovis.NeuroVis method)</a>
+</li>
+      <li><a href="api/utils.html#spykes.utils.grad_slow_exp">grad_slow_exp() (in module spykes.utils)</a>
+</li>
+  </ul></td>
+</tr></table>
 
-      
-  <dt><a href="api.html#spykes.neurovis.NeuroVis.get_psth">get_psth() (spykes.neurovis.NeuroVis method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.neurovis.NeuroVis.get_raster">get_raster() (spykes.neurovis.NeuroVis method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.neurovis.NeuroVis.get_spikecounts">get_spikecounts() (spykes.neurovis.NeuroVis method)</a>
-  </dt>
-
-  </dl></td>
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/io.html#spykes.io.datasets.load_neuropixels_data">load_neuropixels_data() (in module spykes.io.datasets)</a>
+</li>
+      <li><a href="api/io.html#spykes.io.datasets.load_reaching_data">load_reaching_data() (in module spykes.io.datasets)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/io.html#spykes.io.datasets.load_reward_data">load_reward_data() (in module spykes.io.datasets)</a>
+</li>
+      <li><a href="api/utils.html#spykes.utils.log_likelihood">log_likelihood() (in module spykes.utils)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.strf.STRF.make_2d_gaussian">make_2d_gaussian() (spykes.strf.STRF method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.strf.STRF.make_cosine_basis">make_cosine_basis() (spykes.strf.STRF method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.strf.STRF.make_gaussian_basis">make_gaussian_basis() (spykes.strf.STRF method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.strf.STRF.make_image_from_spatial_basis">make_image_from_spatial_basis() (spykes.strf.STRF method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.strf.STRF.make_raised_cosine_temporal_basis">make_raised_cosine_temporal_basis() (spykes.strf.STRF method)</a>
-  </dt>
-
-  </dl></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.make_2d_gaussian">make_2d_gaussian() (spykes.ml.strf.STRF method)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.make_cosine_basis">make_cosine_basis() (spykes.ml.strf.STRF method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.make_gaussian_basis">make_gaussian_basis() (spykes.ml.strf.STRF method)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.make_image_from_spatial_basis">make_image_from_spatial_basis() (spykes.ml.strf.STRF method)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.make_raised_cosine_temporal_basis">make_raised_cosine_temporal_basis() (spykes.ml.strf.STRF method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop">NeuroPop (class in spykes.neuropop)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.neurovis.NeuroVis">NeuroVis (class in spykes.neurovis)</a>
-  </dt>
-
-  </dl></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/plot.html#spykes.plot.popvis.PopVis.n_neurons">n_neurons (spykes.plot.popvis.PopVis attribute)</a>
+</li>
+      <li><a href="api/plot.html#spykes.plot.popvis.PopVis.name">name (spykes.plot.popvis.PopVis attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop">NeuroPop (class in spykes.ml.neuropop)</a>
+</li>
+      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis">NeuroVis (class in spykes.plot.neurovis)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.popvis.PopVis.plot_heat_map">plot_heat_map() (spykes.popvis.PopVis method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.popvis.PopVis.plot_population_psth">plot_population_psth() (spykes.popvis.PopVis method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.neurovis.NeuroVis.plot_psth">plot_psth() (spykes.neurovis.NeuroVis method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.neurovis.NeuroVis.plot_raster">plot_raster() (spykes.neurovis.NeuroVis method)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.popvis.PopVis">PopVis (class in spykes.popvis)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop.predict">predict() (spykes.neuropop.NeuroPop method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.strf.STRF.project_to_spatial_basis">project_to_spatial_basis() (spykes.strf.STRF method)</a>
-  </dt>
-
-  </dl></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/plot.html#spykes.plot.popvis.PopVis.plot_heat_map">plot_heat_map() (spykes.plot.popvis.PopVis method)</a>
+</li>
+      <li><a href="api/plot.html#spykes.plot.popvis.PopVis.plot_population_psth">plot_population_psth() (spykes.plot.popvis.PopVis method)</a>
+</li>
+      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.plot_psth">plot_psth() (spykes.plot.neurovis.NeuroVis method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.plot_raster">plot_raster() (spykes.plot.neurovis.NeuroVis method)</a>
+</li>
+      <li><a href="api/plot.html#spykes.plot.popvis.PopVis">PopVis (class in spykes.plot.popvis)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.predict">predict() (spykes.ml.neuropop.NeuroPop method)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.project_to_spatial_basis">project_to_spatial_basis() (spykes.ml.strf.STRF method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop.score">score() (spykes.neuropop.NeuroPop method)</a>
-  </dt>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.score">score() (spykes.ml.neuropop.NeuroPop method)</a>
+</li>
+      <li><a href="api/utils.html#spykes.utils.set_matplotlib_defaults">set_matplotlib_defaults() (in module spykes.utils)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.set_params">set_params() (spykes.ml.neuropop.NeuroPop method)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.simulate">simulate() (spykes.ml.neuropop.NeuroPop method)</a>
+</li>
+      <li><a href="api/utils.html#spykes.utils.slow_exp">slow_exp() (in module spykes.utils)</a>
+</li>
+      <li><a href="api/config.html#module-spykes.config">spykes.config (module)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/io.html#module-spykes.io.datasets">spykes.io.datasets (module)</a>
+</li>
+      <li><a href="api/ml.html#module-spykes.ml.neuropop">spykes.ml.neuropop (module)</a>
+</li>
+      <li><a href="api/ml.html#module-spykes.ml.strf">spykes.ml.strf (module)</a>
+</li>
+      <li><a href="api/plot.html#module-spykes.plot.neurovis">spykes.plot.neurovis (module)</a>
+</li>
+      <li><a href="api/plot.html#module-spykes.plot.popvis">spykes.plot.popvis (module)</a>
+</li>
+      <li><a href="api/utils.html#module-spykes.utils">spykes.utils (module)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF">STRF (class in spykes.ml.strf)</a>
+</li>
+  </ul></td>
+</tr></table>
 
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop.set_params">set_params() (spykes.neuropop.NeuroPop method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.neuropop.NeuroPop.simulate">simulate() (spykes.neuropop.NeuroPop method)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#module-spykes.neuropop">spykes.neuropop (module)</a>
-  </dt>
-
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#module-spykes.neurovis">spykes.neurovis (module)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#module-spykes.popvis">spykes.popvis (module)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#module-spykes.strf">spykes.strf (module)</a>
-  </dt>
-
-      
-  <dt><a href="api.html#spykes.strf.STRF">STRF (class in spykes.strf)</a>
-  </dt>
-
-  </dl></td>
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/utils.html#spykes.utils.train_test_split">train_test_split() (in module spykes.utils)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="V">V</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%" valign="top"><dl>
-      
-  <dt><a href="api.html#spykes.strf.STRF.visualize_gaussian_basis">visualize_gaussian_basis() (spykes.strf.STRF method)</a>
-  </dt>
-
-  </dl></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.strf.STRF.visualize_gaussian_basis">visualize_gaussian_basis() (spykes.ml.strf.STRF method)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 
 
+           </div>
+           <div class="articleComments">
+            
            </div>
           </div>
           <footer>
@@ -373,13 +553,14 @@
             VERSION:'',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
         };
     </script>
       <script type="text/javascript" src="_static/jquery.js"></script>
       <script type="text/javascript" src="_static/underscore.js"></script>
       <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

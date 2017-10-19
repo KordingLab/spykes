@@ -1,0 +1,708 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spykes.plot.popvis &mdash; spykes  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="spykes  documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> spykes
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting-started.html#what-is-spykes">What is Spykes?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting-started.html#installing">Installing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../getting-started.html#vanilla">Vanilla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../getting-started.html#bleeding-edge">Bleeding-Edge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../getting-started.html#local-version">Local Version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../getting-started.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorial.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#fitting-tuning-curves-with-gradient-descent">Fitting Tuning Curves with Gradient Descent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#special-case-1-poisson-generalized-linear-model-glm">Special Case 1: Poisson Generalized Linear Model (GLM)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../tutorial.html#special-case-2-generalized-von-mises-model-gvm">Special Case 2: Generalized von Mises Model (GVM)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#minimizing-negative-log-likelihood-with-gradient-descent">Minimizing Negative Log Likelihood with Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../tutorial.html#decoding-feature-from-population-activity">Decoding Feature from Population Activity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../auto_examples/index.html">Examples Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html">Neuropop Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#create-a-neuropop-object">Create a NeuroPop object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#simulate-a-population-of-neurons">Simulate a population of neurons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#split-into-training-and-testing-sets">Split into training and testing sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#fit-the-tuning-curves-with-gradient-descent">Fit the tuning curves with gradient descent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#predict-the-population-activity-with-the-fit-tuning-curves">Predict the population activity with the fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#plot-the-simulated-and-fit-tuning-curves">Plot the simulated and fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#decode-feature-from-the-population-activity">Decode feature from the population activity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#visualize-ground-truth-vs-decoded-estimates">Visualize ground truth vs. decoded estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropop_simul_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html">PopVis Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#initialization">0 Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#download-data">0.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#read-in-data">0.2 Read In Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#initialize-variables">0.3 Initialize Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#popvis">1 PopVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_popvis_example.html#create-popvis-object">1.3 Create PopVis Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html">CRCNS DataSet Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#dataset">0.2 Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#data">1 Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#download-data">1.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#load-data">1.2 Load Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#get-spike-times">2 Get Spike Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#get-event-times">3 Get Event Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#get-features">4 Get Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#define-features">5 Define Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#plots">6 Plots</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#rasters">6.1 Rasters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#psth">6.2 PSTH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#reproduce-figure">6.3 Reproduce Figure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_crcns_dataset_example.html#ggplot">6.4 ggplot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html">Neuropixels Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#neuropixels">Neuropixels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#download-data">0 Download Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#read-in-data">1 Read In Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#create-data-frame">2 Create Data Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#start-plotting">3 Start Plotting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#striatum">3.1 Striatum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#frontal">3.2 Frontal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#all-neurons">3.3 All Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neuropixels_example.html#striatum-vs-motor-cortex">3.4 Striatum vs. Motor Cortex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html">Neural Coding Reward Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#dataset">0.2 Dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#initialization">0.3 Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-a">1 First Graph of Panel A</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#match-peak-velocities">1.3 Match Peak Velocities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#plot-psths">1.4 Plot PSTHs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-c">2 First Graph of Panel C</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#normalize-psths">2.1 Normalize PSTHs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#find-population-average">2.2 Find Population Average</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_neural_coding_reward_example.html#plot-psth">2.3 Plot PSTH</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html">Reaching Dataset Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#download-reaching-dataset">Download Reaching Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#part-i-neurovis">Part I: NeuroVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#instantiate-example-pmd-neuron">Instantiate Example PMd Neuron</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#raster-plot-and-psth-aligned-to-target-onset">Raster plot and PSTH aligned to target onset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#events">Events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#example-1-reward-vs-no-reward">Example 1: Reward vs No Reward</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#example-2-according-to-quadrant-of-reaching-direction">Example 2: according to quadrant of reaching direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#example-3-same-as-example-2-but-for-an-m1-neuron-and-aligned-at-gocuetime">Example 3: Same as Example 2 but for an M1 neuron and aligned at goCueTime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#example-4-sorted-by-direction-only-for-the-trials-with-reward">Example 4: sorted by direction only for the trials with reward</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#part-ii-neuropop">Part II: NeuroPop</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#extract-reach-direction-x">Extract reach direction x</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#extract-m1-spike-counts-y">Extract M1 spike counts Y</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#split-into-train-and-test-sets">Split into train and test sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#create-an-instance-of-neuropop">Create an instance of NeuroPop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#predict-firing-rates">Predict firing rates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#visualize-tuning-curves">Visualize tuning curves</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#decode-reach-direction-from-population-vector">Decode reach direction from population vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#visualize-decoded-reach-direction">Visualize decoded reach direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../../auto_examples/plot_reaching_dataset_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../contributing.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/plot.html">Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/plot.html#module-spykes.plot.neurovis">NeuroVis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/plot.html#module-spykes.plot.popvis">PopVis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/ml.html">Machine Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#module-spykes.ml.strf">STRF</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/io.html">Input / Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/io.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/config.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">spykes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>spykes.plot.popvis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spykes.plot.popvis</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">from</span> <span class="nn">fractions</span> <span class="k">import</span> <span class="n">gcd</span>
+
+<span class="kn">from</span> <span class="nn">.neurovis</span> <span class="k">import</span> <span class="n">NeuroVis</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">..config</span> <span class="k">import</span> <span class="n">DEFAULT_POPULATION_COLORS</span>
+
+<span class="c1"># Defines the default colors for a PSTH plot.</span>
+<span class="n">DEFAULT_PSTH_COLORS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span> <span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="s1">&#39;Greens&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="PopVis"><a class="viewcode-back" href="../../../api/plot.html#spykes.plot.popvis.PopVis">[docs]</a><span class="k">class</span> <span class="nc">PopVis</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Facilitates visualization of neuron population firing activity.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        neuron_list (list of NeuroVis objects): The list of neurons to</span>
+<span class="sd">            visualize (see the NeuroVis class in</span>
+<span class="sd">            :class:`spykes.plot.neurovis`).</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        n_neurons (int): The number of neurons in the visualization.</span>
+<span class="sd">        name (str): The name of this visualization.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">neuron_list</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PopVis&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neuron_list</span> <span class="o">=</span> <span class="n">neuron_list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_neurons</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron_list</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PopVis.get_all_psth"><a class="viewcode-back" href="../../../api/plot.html#spykes.plot.popvis.PopVis.get_all_psth">[docs]</a>    <span class="k">def</span> <span class="nf">get_all_psth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span> <span class="n">binsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">conditions_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">DEFAULT_PSTH_COLORS</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Iterates through all neurons and computes their PSTH&#39;s.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event (str): Column/key name of DataFrame/dictionary &quot;data&quot; which</span>
+<span class="sd">                contains event times in milliseconds (e.g.</span>
+<span class="sd">                stimulus/trial/ fixation onset, etc.).</span>
+<span class="sd">            df (DataFrame or dictionary): The data to use.</span>
+<span class="sd">            conditions (str): Column/key name of DataFrame/dictionary</span>
+<span class="sd">                :data:`df` which contains the conditions by which the trials</span>
+<span class="sd">                must be grouped</span>
+<span class="sd">            window (list of 2 elements): Time interval to consider, in</span>
+<span class="sd">                milliseconds.</span>
+<span class="sd">            binsize (int): Bin size, in milliseconds.</span>
+<span class="sd">            conditions_names (list of str): Legend names for conditions.</span>
+<span class="sd">                Default are the unique values in :data:`df[&#39;conditions&#39;]`.</span>
+<span class="sd">            plot (bool): If set, automatically plot; otherwise, don&#39;t.</span>
+<span class="sd">            colors (list): List of colors for heatmap (only if plot is True).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: With keys :data:`event`, :data:`conditions`, :data:`binsize`,</span>
+<span class="sd">            :data:`window`, and :data:`data`. Each entry in</span>
+<span class="sd">            :data:`psth[&#39;data&#39;]` is itself a dictionary with keys of</span>
+<span class="sd">            each :data:`cond_id` that correspond to the means for that</span>
+<span class="sd">            condition.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">all_psth</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;window&#39;</span><span class="p">:</span> <span class="n">window</span><span class="p">,</span>
+            <span class="s1">&#39;binsize&#39;</span><span class="p">:</span> <span class="n">binsize</span><span class="p">,</span>
+            <span class="s1">&#39;event&#39;</span><span class="p">:</span> <span class="n">event</span><span class="p">,</span>
+            <span class="s1">&#39;conditions&#39;</span><span class="p">:</span> <span class="n">conditions</span><span class="p">,</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span>
+        <span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron_list</span><span class="p">):</span>
+            <span class="n">psth</span> <span class="o">=</span> <span class="n">neuron</span><span class="o">.</span><span class="n">get_psth</span><span class="p">(</span>
+                <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span>
+                <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                <span class="n">conditions</span><span class="o">=</span><span class="n">conditions</span><span class="p">,</span>
+                <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span>
+                <span class="n">binsize</span><span class="o">=</span><span class="n">binsize</span><span class="p">,</span>
+                <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+                <span class="n">all_psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">all_psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())):</span>
+            <span class="n">all_psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">all_psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">plot</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">plot_heat_map</span><span class="p">(</span>
+                <span class="n">all_psth</span><span class="p">,</span>
+                <span class="n">conditions_names</span><span class="o">=</span><span class="n">conditions_names</span><span class="p">,</span>
+                <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">all_psth</span></div>
+
+<div class="viewcode-block" id="PopVis.plot_heat_map"><a class="viewcode-back" href="../../../api/plot.html#spykes.plot.popvis.PopVis.plot_heat_map">[docs]</a>    <span class="k">def</span> <span class="nf">plot_heat_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">psth_dict</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">conditions_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">sortby</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sortorder</span><span class="o">=</span><span class="s1">&#39;descend&#39;</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">neuron_names</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Plots heat map for neuron population</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            psth_dict (dict): With keys :data:`event`, :data:`conditions`,</span>
+<span class="sd">                :data:`binsize`, :data:`window`, and :data:`data`. Each entry</span>
+<span class="sd">                in :data:`psth[&#39;data&#39;]` is itself a dictionary with keys of</span>
+<span class="sd">                each :data:`cond_id` that correspond to the means for that</span>
+<span class="sd">                condition.</span>
+<span class="sd">            cond_id (str): Which psth to plot indicated by the key in</span>
+<span class="sd">                :data:`all_psth[&#39;data&#39;]`. If None then all are plotted.</span>
+<span class="sd">            conditions_names (str or list of str): Name(s) to appear in the</span>
+<span class="sd">                title.</span>
+<span class="sd">            sortby (str or list): If :data:`rate`, sort by firing rate. If</span>
+<span class="sd">                :data:`latency`, sort by peak latency. If a list or array is</span>
+<span class="sd">                provided, it must correspond to integer indices to be used as</span>
+<span class="sd">                sorting indices. If no sort order is provided, the data</span>
+<span class="sd">                is returned as-is.</span>
+<span class="sd">            sortorder (str): The direction to sort in, either :data:`descend`</span>
+<span class="sd">                or :data:`ascend`.</span>
+<span class="sd">            normalize (str): If :data:`all`, divide all PSTHs by highest peak</span>
+<span class="sd">                firing rate in all neurons. If :data:`each`, divide each PSTH</span>
+<span class="sd">                by its own peak firing rate. If None, do not normalize.</span>
+<span class="sd">            neuron_names (bool): Whether or not to list the names of neurons on</span>
+<span class="sd">                the side.</span>
+<span class="sd">            colors (list of str): List of colors for the heatmap (as strings).</span>
+<span class="sd">            show (bool): If set, show the plot once finished.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Blues&#39;</span><span class="p">,</span> <span class="s1">&#39;Reds&#39;</span><span class="p">,</span> <span class="s1">&#39;Greens&#39;</span><span class="p">]</span>
+
+        <span class="n">window</span> <span class="o">=</span> <span class="n">psth_dict</span><span class="p">[</span><span class="s1">&#39;window&#39;</span><span class="p">]</span>
+        <span class="n">binsize</span> <span class="o">=</span> <span class="n">psth_dict</span><span class="p">[</span><span class="s1">&#39;binsize&#39;</span><span class="p">]</span>
+        <span class="n">conditions</span> <span class="o">=</span> <span class="n">psth_dict</span><span class="p">[</span><span class="s1">&#39;conditions&#39;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">cond_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">psth_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">cond_id</span>
+
+        <span class="k">if</span> <span class="n">conditions_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">conditions_names</span> <span class="o">=</span> <span class="n">keys</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cond_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+            <span class="c1"># Sorts and norms the data.</span>
+            <span class="n">orig_data</span> <span class="o">=</span> <span class="n">psth_dict</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">cond_id</span><span class="p">]</span>
+            <span class="n">normed_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_normed_data</span><span class="p">(</span><span class="n">orig_data</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="n">normalize</span><span class="p">)</span>
+            <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get_sort_indices</span><span class="p">(</span>
+                <span class="n">normed_data</span><span class="p">,</span>
+                <span class="n">by</span><span class="o">=</span><span class="n">sortby</span><span class="p">,</span>
+                <span class="n">order</span><span class="o">=</span><span class="n">sortorder</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="n">data</span> <span class="o">=</span> <span class="n">normed_data</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">,</span> <span class="p">:]</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)])</span>
+
+            <span class="c1"># Makes it visually appealing.</span>
+            <span class="n">xtic_len</span> <span class="o">=</span> <span class="n">gcd</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">xtic_labels</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">window</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">xtic_len</span><span class="p">,</span> <span class="n">xtic_len</span><span class="p">)</span>
+            <span class="n">xtic_locs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">j</span> <span class="o">-</span> <span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">binsize</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">xtic_labels</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="mi">0</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">xtic_labels</span><span class="p">:</span>
+                <span class="n">xtic_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">xtic_locs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">binsize</span><span class="p">)</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">xtic_locs</span><span class="p">,</span> <span class="n">xtic_labels</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">axvline</span><span class="p">((</span><span class="o">-</span><span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">binsize</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                        <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">neuron_names</span><span class="p">:</span>
+                <span class="n">unsorted_ylabels</span> <span class="o">=</span> <span class="p">[</span><span class="n">neuron</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron_list</span><span class="p">]</span>
+                <span class="n">ylabels</span> <span class="o">=</span> <span class="p">[</span><span class="n">unsorted_ylabels</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">sort_idx</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ylabels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">neuron</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">neuron_list</span><span class="p">]</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">ylabels</span><span class="p">)</span>
+
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_frame_on</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">top</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">which</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+
+            <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time [ms]&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Neuron&#39;</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span>
+                      <span class="p">(</span><span class="n">conditions</span><span class="p">,</span> <span class="n">conditions_names</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="PopVis.plot_population_psth"><a class="viewcode-back" href="../../../api/plot.html#spykes.plot.popvis.PopVis.plot_population_psth">[docs]</a>    <span class="k">def</span> <span class="nf">plot_population_psth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">all_psth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">df</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">conditions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cond_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">],</span>
+                             <span class="n">binsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">conditions_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">event_name</span><span class="o">=</span><span class="s1">&#39;event_onset&#39;</span><span class="p">,</span> <span class="n">ylim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                             <span class="n">colors</span><span class="o">=</span><span class="n">DEFAULT_POPULATION_COLORS</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Plots population PSTH&#39;s.</span>
+
+<span class="sd">        This involves two steps. First, it normalizes each neuron&#39;s PSTH across</span>
+<span class="sd">        the conditions. Second, it averages out and plots population PSTH.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            all_psth (dict): With keys :data:`event`, :data:`conditions`,</span>
+<span class="sd">                :data:`binsize`, :data:`window`, and :data:`data`. Each entry</span>
+<span class="sd">                in :data:`psth[&#39;data&#39;]` is itself a dictionary with keys of</span>
+<span class="sd">                each :data:`cond_id` that correspond to the means for that</span>
+<span class="sd">                condition.</span>
+<span class="sd">            event (str): Column/key name of the :data:`df` DataFrame/dictionary</span>
+<span class="sd">                which contains event times in milliseconds</span>
+<span class="sd">                (stimulus/trial/fixation onset, etc.).</span>
+<span class="sd">            df (DataFrame or dictionary): DataFrame containing the data to</span>
+<span class="sd">                plot, or a dictionary corresponding to such a DataFrame.</span>
+<span class="sd">            conditions (str): Column/key name of DataFrame/dictionary</span>
+<span class="sd">                :data:`df` which contains the conditions by which the trials</span>
+<span class="sd">                must be grouped.</span>
+<span class="sd">            cond_id (list): Which psth to plot indicated by the key in</span>
+<span class="sd">                :data:`all_psth[&#39;data&#39;]``. If :data:`None` then all are</span>
+<span class="sd">                plotted.</span>
+<span class="sd">            window (list of 2 elements): Time interval to consider, in</span>
+<span class="sd">                milliseconds.</span>
+<span class="sd">            binsize (int): Bin size, in milliseconds.</span>
+<span class="sd">            conditions_names (list): Legend names for conditions. Default are</span>
+<span class="sd">                the unique values in :data:`df[&#39;conditions&#39;]`.</span>
+<span class="sd">            event_name (string): Legend name for event. Default is the actual</span>
+<span class="sd">                event name</span>
+<span class="sd">            ylim (list): The minimum and maximum values for Y.</span>
+<span class="sd">            colors (list): The colors to use for the plot (as strings).</span>
+<span class="sd">            show (bool): If set, show the plot once it has been created.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="c1"># placeholder in order to use NeuroVis functionality</span>
+        <span class="n">base_neuron</span> <span class="o">=</span> <span class="n">NeuroVis</span><span class="p">(</span><span class="n">spiketimes</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">all_psth</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">psth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all_psth</span><span class="p">(</span>
+                <span class="n">event</span><span class="o">=</span><span class="n">event</span><span class="p">,</span>
+                <span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+                <span class="n">conditions</span><span class="o">=</span><span class="n">conditions</span><span class="p">,</span>
+                <span class="n">window</span><span class="o">=</span><span class="n">window</span><span class="p">,</span>
+                <span class="n">binsize</span><span class="o">=</span><span class="n">binsize</span><span class="p">,</span>
+                <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">psth</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">all_psth</span><span class="p">)</span>
+
+        <span class="n">keys</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+        <span class="c1"># Normalizes each neuron across all conditions.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neurons</span><span class="p">):</span>
+            <span class="n">max_rates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">max_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]))</span>
+            <span class="n">norm_factor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_rates</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">norm_factor</span>
+
+        <span class="c1"># Averages out all the neurons and plots.</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+            <span class="n">normed_data</span> <span class="o">=</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmean</span><span class="p">(</span><span class="n">normed_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">][</span><span class="s1">&#39;sem&#39;</span><span class="p">]</span> <span class="o">=</span> \
+                <span class="n">np</span><span class="o">.</span><span class="n">nanvar</span><span class="p">(</span><span class="n">normed_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">neuron_list</span><span class="p">)</span><span class="o">**.</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="c1"># Plots the PSTH.</span>
+        <span class="n">base_neuron</span><span class="o">.</span><span class="n">plot_psth</span><span class="p">(</span>
+            <span class="n">psth</span><span class="o">=</span><span class="n">psth</span><span class="p">,</span>
+            <span class="n">event_name</span><span class="o">=</span><span class="n">event_name</span><span class="p">,</span>
+            <span class="n">cond_id</span><span class="o">=</span><span class="n">cond_id</span><span class="p">,</span>
+            <span class="n">conditions_names</span><span class="o">=</span><span class="n">conditions_names</span><span class="p">,</span>
+            <span class="n">ylim</span><span class="o">=</span><span class="n">ylim</span><span class="p">,</span>
+            <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Adds the appropriate title.</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> Population PSTH: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">psth</span><span class="p">[</span><span class="s1">&#39;conditions&#39;</span><span class="p">]))</span>
+
+        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_normed_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">normalize</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Normalizes all PSTH data</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data (2-D numpy array): Array with shape</span>
+<span class="sd">                :data:`(n_neurons, n_bins)`</span>
+<span class="sd">            normalize (str): If :data:`all`, divide all PSTHs by highest peak</span>
+<span class="sd">                firing rate in all neurons. If :data:`each`, divide each PSTH</span>
+<span class="sd">                by its own peak firing rate. If None, do not normalize.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            array: The original data array, divided such</span>
+<span class="sd">            that all values fall between 0 and 1.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">max_rates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Computes the normalization factors.</span>
+        <span class="k">if</span> <span class="n">normalize</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">norm_factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">max_rates</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">normalize</span> <span class="o">==</span> <span class="s1">&#39;each&#39;</span><span class="p">:</span>
+            <span class="n">norm_factors</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">max_rates</span><span class="p">,</span> <span class="p">(</span><span class="n">max_rates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">))</span> <span class="o">*</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">normalize</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">norm_factors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">([</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid norm factors: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">norm_factors</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">data</span> <span class="o">/</span> <span class="n">norm_factors</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, KordingLab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

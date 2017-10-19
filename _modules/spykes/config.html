@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>spykes.config &mdash; spykes  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="../../_static/gallery.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="spykes  documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> spykes
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started.html#what-is-spykes">What is Spykes?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started.html#installing">Installing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../getting-started.html#vanilla">Vanilla</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting-started.html#bleeding-edge">Bleeding-Edge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../getting-started.html#local-version">Local Version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../getting-started.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#fitting-tuning-curves-with-gradient-descent">Fitting Tuning Curves with Gradient Descent</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorial.html#special-case-1-poisson-generalized-linear-model-glm">Special Case 1: Poisson Generalized Linear Model (GLM)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../tutorial.html#special-case-2-generalized-von-mises-model-gvm">Special Case 2: Generalized von Mises Model (GVM)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#minimizing-negative-log-likelihood-with-gradient-descent">Minimizing Negative Log Likelihood with Gradient Descent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../tutorial.html#decoding-feature-from-population-activity">Decoding Feature from Population Activity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../auto_examples/index.html">Examples Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html">Neuropop Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#create-a-neuropop-object">Create a NeuroPop object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#simulate-a-population-of-neurons">Simulate a population of neurons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#split-into-training-and-testing-sets">Split into training and testing sets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#fit-the-tuning-curves-with-gradient-descent">Fit the tuning curves with gradient descent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#predict-the-population-activity-with-the-fit-tuning-curves">Predict the population activity with the fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#plot-the-simulated-and-fit-tuning-curves">Plot the simulated and fit tuning curves</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#decode-feature-from-the-population-activity">Decode feature from the population activity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#visualize-ground-truth-vs-decoded-estimates">Visualize ground truth vs. decoded estimates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropop_simul_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html">PopVis Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#initialization">0 Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#download-data">0.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#read-in-data">0.2 Read In Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#initialize-variables">0.3 Initialize Variables</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#popvis">1 PopVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_popvis_example.html#create-popvis-object">1.3 Create PopVis Object</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html">CRCNS DataSet Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#dataset">0.2 Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#data">1 Data</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#download-data">1.1 Download Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#load-data">1.2 Load Data</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#get-spike-times">2 Get Spike Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#get-event-times">3 Get Event Times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#get-features">4 Get Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#define-features">5 Define Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#plots">6 Plots</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#rasters">6.1 Rasters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#psth">6.2 PSTH</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#reproduce-figure">6.3 Reproduce Figure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_crcns_dataset_example.html#ggplot">6.4 ggplot</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html">Neuropixels Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#neuropixels">Neuropixels</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#download-data">0 Download Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#read-in-data">1 Read In Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#create-data-frame">2 Create Data Frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#start-plotting">3 Start Plotting</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#striatum">3.1 Striatum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#frontal">3.2 Frontal</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#all-neurons">3.3 All Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neuropixels_example.html#striatum-vs-motor-cortex">3.4 Striatum vs. Motor Cortex</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html">Neural Coding Reward Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#overview-reproduce-figure">0 Overview: Reproduce Figure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#article">0.1 Article</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#dataset">0.2 Dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#initialization">0.3 Initialization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-a">1 First Graph of Panel A</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#initiate-all-neurons">1.1 Initiate all Neurons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#get-event-times">1.2 Get Event Times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#match-peak-velocities">1.3 Match Peak Velocities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#plot-psths">1.4 Plot PSTHs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#first-graph-of-panel-c">2 First Graph of Panel C</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#normalize-psths">2.1 Normalize PSTHs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#find-population-average">2.2 Find Population Average</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_neural_coding_reward_example.html#plot-psth">2.3 Plot PSTH</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html">Reaching Dataset Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#initialization">Initialization</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#download-reaching-dataset">Download Reaching Dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#part-i-neurovis">Part I: NeuroVis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#instantiate-example-pmd-neuron">Instantiate Example PMd Neuron</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#raster-plot-and-psth-aligned-to-target-onset">Raster plot and PSTH aligned to target onset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#events">Events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#features">Features</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#example-1-reward-vs-no-reward">Example 1: Reward vs No Reward</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#example-2-according-to-quadrant-of-reaching-direction">Example 2: according to quadrant of reaching direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#example-3-same-as-example-2-but-for-an-m1-neuron-and-aligned-at-gocuetime">Example 3: Same as Example 2 but for an M1 neuron and aligned at goCueTime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#example-4-sorted-by-direction-only-for-the-trials-with-reward">Example 4: sorted by direction only for the trials with reward</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#part-ii-neuropop">Part II: NeuroPop</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#extract-reach-direction-x">Extract reach direction x</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#extract-m1-spike-counts-y">Extract M1 spike counts Y</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#split-into-train-and-test-sets">Split into train and test sets</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#create-an-instance-of-neuropop">Create an instance of NeuroPop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#predict-firing-rates">Predict firing rates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#score-the-prediction">Score the prediction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#visualize-tuning-curves">Visualize tuning curves</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#decode-reach-direction-from-population-vector">Decode reach direction from population vector</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#visualize-decoded-reach-direction">Visualize decoded reach direction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../../auto_examples/plot_reaching_dataset_example.html#score-decoding-performance">Score decoding performance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#guidelines">Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../contributing.html#building-documentation">Building Documentation</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/plot.html">Plotting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot.html#module-spykes.plot.neurovis">NeuroVis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/plot.html#module-spykes.plot.popvis">PopVis</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/ml.html">Machine Learning</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ml.html#module-spykes.ml.strf">STRF</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/io.html">Input / Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/io.html#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/config.html">Config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/utils.html">Utils</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">spykes</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>spykes.config</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for spykes.config</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Environment variables are formulated using SPYKES_KEY_%s.</span>
+<span class="n">SPYKES_KEY</span> <span class="o">=</span> <span class="s1">&#39;SPYKES&#39;</span>
+
+<span class="c1"># The default data path.</span>
+<span class="n">DEFAULT_DATA_DIR</span> <span class="o">=</span> <span class="s1">&#39;.spykes&#39;</span>
+
+<span class="c1"># Defines the default colors for the population plot.</span>
+<span class="n">DEFAULT_POPULATION_COLORS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;#F5A21E&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;#134B64&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;#EF3E34&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;#02A68E&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;#FF07CD&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
+<div class="viewcode-block" id="get_home_directory"><a class="viewcode-back" href="../../api/config.html#spykes.config.get_home_directory">[docs]</a><span class="k">def</span> <span class="nf">get_home_directory</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Returns the home directory, as a string.</span>
+
+<span class="sd">    The home directory is either the :data:`HOME` environment variable, or the</span>
+<span class="sd">    directory pointed to by :data:`~`, or the :data:`/tmp` directory if neither</span>
+<span class="sd">    of those have write access.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The path to the home directory.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="s1">&#39;HOME&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HOME&#39;</span><span class="p">],</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;HOME&#39;</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">W_OK</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="s1">&#39;~&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;/tmp&#39;</span>  <span class="c1"># Default is to return a temp directory.</span></div>
+
+
+<div class="viewcode-block" id="get_data_directory"><a class="viewcode-back" href="../../api/config.html#spykes.config.get_data_directory">[docs]</a><span class="k">def</span> <span class="nf">get_data_directory</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39;Returns the home directory for Spykes data.</span>
+
+<span class="sd">    By default, this points to :data:`~/.spykes`. This can be overridden by</span>
+<span class="sd">    setting the :data:`SPYKES_DATA` environment variable to point to the</span>
+<span class="sd">    directory of your choice.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: The path to the data directory.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{prefix}</span><span class="s1">_DATA&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">SPYKES_KEY</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">data_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+        <span class="n">home</span> <span class="o">=</span> <span class="n">get_home_directory</span><span class="p">()</span>
+        <span class="n">dir_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">home</span><span class="p">,</span> <span class="n">DEFAULT_DATA_DIR</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dir_path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dir_path</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="n">data_key</span><span class="p">]</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, KordingLab.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

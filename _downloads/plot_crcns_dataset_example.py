@@ -13,11 +13,15 @@ A demonstration of Spykes's functionality to reproduce a figure from Li et al's
 
 ########################################################
 
+import os
+
 import numpy as np
 import pandas as pd
-from spykes.neurovis import NeuroVis
 import matplotlib.pyplot as plt
 import scipy.io
+
+from spykes.plot.neurovis import NeuroVis
+from spykes.config import get_data_directory
 
 plt.style.use('seaborn-ticks')
 
@@ -62,10 +66,13 @@ plt.style.use('seaborn-ticks')
 #
 # Unzip it and you will find file ``data_structure_ANM218457_20131006.mat``
 #
+# Move this file to the right data directory.
+#
 # 1.2 Load Data
 # ~~~~~~~~~~~~~
 
-mat = scipy.io.loadmat('data_structure_ANM218457_20131006.mat')
+fpath = os.path.join('data_structure_ANM218457_20131006.mat')
+mat = scipy.io.loadmat(fpath)
 
 ########################################################
 #
