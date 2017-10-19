@@ -24,3 +24,6 @@ spykes.egg-info/
 venv/
 venvs/
 
+# data
+*.mat
+
