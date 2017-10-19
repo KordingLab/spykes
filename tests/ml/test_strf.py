@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as p
 from nose.tools import assert_equal
 
-from spykes.strf import STRF
+from spykes.ml.strf import STRF
 
 p.switch_backend('Agg')
 

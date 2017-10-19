@@ -5,6 +5,10 @@ temp/*
 dist/*
 build/*
 
+# documentation
+doc/_build/
+doc/auto_examples/
+
 # development
 spykes.egg-info/
 

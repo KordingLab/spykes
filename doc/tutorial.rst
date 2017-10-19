@@ -1,7 +1,6 @@
-
-===========================================
-Tutorial
-===========================================
+=========
+Tutorials
+=========
 
 Fitting Tuning Curves with Gradient Descent
 -------------------------------------------
@@ -160,4 +159,3 @@ the gradient of :math:`J` with respect to :math:`x`
 
 
    \frac{\partial J}{\partial x} = \sum_{j} g_j \exp\Big(\kappa_{0,j} + \kappa_{1,j} \cos(x) + \kappa_{2,j} \sin(x) \Big) \Big(\kappa_{2,j} \cos(x) - \kappa_{1,j} \sin(x)\Big) \bigg(1 - \frac{y_j}{\lambda_j}\bigg)
-

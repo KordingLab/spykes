@@ -31,7 +31,7 @@ dependencies:
     - conda install -n circleenv --yes numpy scipy scikit-learn matplotlib sphinx pillow six IPython pandas;
   override:
     - pip install sphinx coverage
-    - pip install sphinx-gallery sphinx_bootstrap_theme sphinx_rtd_theme
+    - pip install sphinx-gallery m2r sphinx_bootstrap_theme sphinx_rtd_theme
     - pip install deepdish
     - pip install -e .
     # we need to do this here so the datasets will be cached
