@@ -34,7 +34,16 @@ if __name__ == "__main__":
         install_requires=['numpy', 'scipy', 'matplotlib', 'pandas'],
         extras_require={
             'deepdish': ['deepdish'],
-            'develop': ['nose', 'coverage', 'flake8'],
+            'develop': [
+                'nose',
+                'coverage',
+                'flake8',
+                'sphinx',
+                'sphinx-gallery',
+                'sphinx_rtd_theme',
+                'm2r',
+                'deepdish',
+            ],
         },
         platforms='any',
         packages=['spykes'],
