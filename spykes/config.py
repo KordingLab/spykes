@@ -5,7 +5,7 @@ from __future__ import print_function
 import os
 
 # Environment variables are formulated using SPYKES_KEY_%s.
-SPYKES_KEY = 'SPYKES_'
+SPYKES_KEY = 'SPYKES'
 
 # The default data path.
 DEFAULT_DATA_DIR = '.spykes'

@@ -71,11 +71,7 @@ plt.style.use('seaborn-ticks')
 # 1.2 Load Data
 # ~~~~~~~~~~~~~
 
-fpath = os.path.join(
-    get_data_directory(),
-    'crcns',
-    'data_structure_ANM218457_20131006.mat',
-)
+fpath = os.path.join('data_structure_ANM218457_20131006.mat')
 mat = scipy.io.loadmat(fpath)
 
 ########################################################

@@ -25,5 +25,5 @@ def test_get_data_directory():
     )
 
     # Tests the data directory after adding
-    os.environ[config.SPYKES_KEY + '_DATA'] = 'data'
-    assert_equal(config.get_data_directory(), 'data')
+    os.environ['SPYKES_DATA'] = '~/data'
+    assert_equal(config.get_data_directory(), '~/data')
