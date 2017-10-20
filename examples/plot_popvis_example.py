@@ -14,9 +14,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import pandas as pd
-from spykes.neurovis import NeuroVis
-from spykes.popvis import PopVis
-from spykes.datasets import load_reward_data
+from spykes.plot.neurovis import NeuroVis
+from spykes.plot.popvis import PopVis
+from spykes.io.datasets import load_reward_data
 import random
 
 ########################################################

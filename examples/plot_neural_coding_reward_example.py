@@ -16,8 +16,8 @@ A demonstration to use Spykes' functionality to reproduce Ramkumar et al's
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from spykes.neurovis import NeuroVis
-from spykes.datasets import load_reward_data
+from spykes.plot.neurovis import NeuroVis
+from spykes.io.datasets import load_reward_data
 
 ########################################################
 # 0 Overview: Reproduce Figure

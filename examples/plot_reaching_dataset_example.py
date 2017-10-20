@@ -12,9 +12,10 @@ A demonstration of Spykes' functionality using the reaching dataset.
 
 import numpy as np
 import pandas as pd
-from spykes.neurovis import NeuroVis
-from spykes.neuropop import NeuroPop
-from spykes.datasets import load_reaching_data
+from spykes.plot.neurovis import NeuroVis
+from spykes.ml.neuropop import NeuroPop
+from spykes.io.datasets import load_reaching_data
+from spykes.utils import train_test_split
 import matplotlib.pyplot as plt
 
 ########################################################
@@ -305,9 +306,8 @@ print('%d M1 neurons had firing rates over %4.1f spks/s' %
 # Split into train and test sets
 # ~~~~~~~~~~~~~
 
-from sklearn.cross_validation import train_test_split # noqa
-Y_train, Y_test, x_train, x_test = train_test_split(
-    Y, x, test_size=0.33, random_state=42)
+np.random.seed(42)
+(Y_train, Y_test), (x_train, x_test) = train_test_split(Y, x, percent=0.33)
 
 ########################################################
 # Create an instance of NeuroPop

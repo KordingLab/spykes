@@ -9,7 +9,7 @@ from nose.tools import (
     assert_raises,
 )
 
-from spykes.neurovis import NeuroVis
+from spykes.plot.neurovis import NeuroVis
 
 p.switch_backend('Agg')
 
