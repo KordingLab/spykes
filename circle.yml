@@ -32,7 +32,7 @@ dependencies:
   override:
     - pip install sphinx coverage
     - pip install sphinx-gallery m2r sphinx_bootstrap_theme sphinx_rtd_theme
-    - pip install deepdish
+    - pip install deepdish requests
     - pip install -e .
     # we need to do this here so the datasets will be cached
     # pipefail is necessary to propagate exit codes

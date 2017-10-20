@@ -3,11 +3,25 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import urllib
 import scipy.io
 import numpy as np
+import requests
 
 from .. import config
+
+
+def _urlretrieve(url, filename):
+    '''Defines a convenience method for downloading files with requests.
+
+    Args:
+        url (str): The URL of the file to download.
+        filename (str): The path to save the file.
+    '''
+    r = requests.get(url, stream=True)
+    with open(filename, 'wb') as f:
+        for chunk in r.iter_content(chunk_size=1024):
+            if chunk:
+                f.write(chunk)
 
 
 def _load_file(fpath):
@@ -56,7 +70,7 @@ def load_reward_data(dir_name='reward'):
         '''Helper function for downloading the existing MAT files.'''
         fpath = os.path.join(dpath, fname)
         if not os.path.exists(fname):
-            urllib.urlretrieve(url, fpath)
+            _urlretrieve(url, fpath)
         return _load_file(fpath)
 
     # Downloads sess_one_mat.
@@ -120,7 +134,7 @@ def load_neuropixels_data(dir_name='neuropixels'):
         fname = os.path.join(dpath, name)
         url = os.path.join(base_url, name)
         if not os.path.exists(fname):
-            urllib.urlretrieve(url, fname)
+            _urlretrieve(url, fname)
         file_dict[name] = _load_file(fname)
 
     for directory in parent_dir:
@@ -130,7 +144,7 @@ def load_neuropixels_data(dir_name='neuropixels'):
             fname = os.path.join(dpath, directory, subdir)
             url = os.path.join(base_url, directory, subdir)
             if not os.path.exists(fname):
-                urllib.urlretrieve(url, fname)
+                _urlretrieve(url, fname)
             key = os.path.join(directory, subdir)
             if subdir == 'cluster_groups.csv':
                 file_dict[key] = np.recfromcsv(fname, delimiter='\t')
@@ -167,11 +181,8 @@ def load_reaching_data(dir_name='reaching'):
     # Downloads the file if it doesn't exist already.
     fpath = os.path.join(dpath, 'reaching_dataset.h5')
     if not os.path.exists(fpath):
-        # Hosted on Dropbox, so it can't be downloaded propertly with urllib.
         url = 'http://goo.gl/eXeUz8'
-        raise RuntimeError('Reaching dataset not found: You need to download '
-                           'it to {fpath} from {url}'
-                           .format(fpath=fpath, url=url))
+        _urlretrieve(url, fpath)
 
     data = deepdish.io.load(fpath)
     return data

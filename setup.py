@@ -31,7 +31,13 @@ if __name__ == "__main__":
             'Operating System :: Unix',
             'Operating System :: MacOS',
         ],
-        install_requires=['numpy', 'scipy', 'matplotlib', 'pandas'],
+        install_requires=[
+            'numpy',
+            'scipy',
+            'matplotlib',
+            'pandas',
+            'requests',
+        ],
         extras_require={
             'deepdish': ['deepdish'],
             'develop': [
