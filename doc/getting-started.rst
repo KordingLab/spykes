@@ -51,7 +51,7 @@ This creates a local copy of the repo, where you can make changes to Spykes that
 .. code-block:: bash
 
     git clone http://github.com/KordingLab/spykes  # Clone this somewhere useful
-    python spykes/setup.py develop
+    pip install -e .[develop]
 
 Datasets
 --------

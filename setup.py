@@ -49,6 +49,7 @@ if __name__ == "__main__":
                 'sphinx_rtd_theme',
                 'm2r',
                 'deepdish',
+                'image',
             ],
         },
         platforms='any',
