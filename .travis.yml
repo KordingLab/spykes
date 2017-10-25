@@ -16,7 +16,7 @@ install:
     - pip install coverage coveralls
     - pip install -e ./
 script:
-    - nosetests tests/ --with-coverage
-    - flake8 --count spykes
+    - python setup.py test
+    - python setup.py flake
 after_success:
     - coveralls

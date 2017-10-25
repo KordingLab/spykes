@@ -1,0 +1,29 @@
+*.DS_Store
+*.pyc
+*.swp
+temp/*
+dist/*
+build/*
+
+# documentation
+doc/_build/
+doc/auto_examples/
+
+# development
+spykes.egg-info/
+
+# test-related
+.coverage
+.cache
+
+# developer environments
+.idea
+.vscode
+
+# virtual environments
+venv/
+venvs/
+
+# data
+*.mat
+

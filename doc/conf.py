@@ -36,20 +36,21 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.autosummary',
+    'sphinx.ext.napoleon',
+    'm2r',
     'sphinx_gallery.gen_gallery'
 ]
 
 # generate autosummary even if no references
 autosummary_generate = True
-numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
-# source_suffix = ['.rst', '.md']
-source_suffix = '.rst'
+source_suffix = ['.rst', '.md']
+# source_suffix = '.rst'
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
@@ -122,10 +123,14 @@ html_theme = 'sphinx_rtd_theme'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    'collapse_navigation': False,
+    'navigation_depth': 4,
+    'display_version': True,
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+# html_theme_path = []
 
 # The name for this set of Sphinx documents.
 # "<project> v<release> documentation" by default.
@@ -277,9 +282,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'spykes', u'spykes Documentation',
-     author, 'spykes', 'One line description of project.',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'spykes',
+        u'spykes Documentation',
+        author,
+        'spykes',
+        'One line description of project.',
+        'Miscellaneous',
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -296,5 +307,6 @@ texinfo_documents = [
 
 sphinx_gallery_conf = {
     'examples_dirs': '../examples',
-    'gallery_dirs': 'auto_examples'
-    }
+    'gallery_dirs': 'auto_examples',
+    'backreferences_dir': False,
+}

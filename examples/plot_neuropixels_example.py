@@ -14,10 +14,10 @@ Use spykes to analyze data from UCL's Neuropixels
 
 import numpy as np
 import pandas as pd
-from spykes.neurovis import NeuroVis
-from spykes.popvis import PopVis
+from spykes.plot.neurovis import NeuroVis
+from spykes.plot.popvis import PopVis
 import matplotlib.pyplot as plt
-from spykes.datasets import load_neuropixels_data
+from spykes.io.datasets import load_neuropixels_data
 
 
 plt.style.use('seaborn-ticks')

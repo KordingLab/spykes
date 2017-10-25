@@ -1,9 +1,18 @@
-from nose.tools import assert_equal
+from __future__ import absolute_import
+
 import numpy as np
-from sklearn.cross_validation import train_test_split
-import matplotlib.pyplot as plt
-plt.switch_backend('Agg')
-from spykes.neuropop import NeuroPop  # noqa
+import matplotlib.pyplot as p
+from nose.tools import (
+    assert_true,
+    assert_equal,
+    assert_raises,
+)
+
+from spykes.ml.neuropop import NeuroPop
+from spykes.utils import train_test_split
+
+np.random.seed(42)
+p.switch_backend('Agg')
 
 
 def test_neuropop():
@@ -35,9 +44,9 @@ def test_neuropop():
 
 def _helper_test_neuropop(pop, num_neurons, x, Y):
 
-    Y_train, Y_test, x_train, x_test = train_test_split(Y, x,
-                                                        test_size=0.5,
-                                                        random_state=42)
+    # Splits into training and testing parts.
+    x_split, Y_split = train_test_split(x, Y, percent=0.5)
+    (x_train, x_test), (Y_train, Y_test) = x_split, Y_split
 
     pop.fit(x_train, Y_train)
 

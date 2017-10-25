@@ -1,9 +1,16 @@
-from nose.tools import assert_true, assert_equal
+from __future__ import absolute_import
+
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-plt.switch_backend('Agg')
-from spykes.neurovis import NeuroVis  # noqa
+import matplotlib.pyplot as p
+from nose.tools import (
+    assert_true,
+    assert_equal,
+)
+
+from spykes.plot.neurovis import NeuroVis
+
+p.switch_backend('Agg')
 
 
 def test_neurovis():
@@ -47,10 +54,10 @@ def test_neurovis():
 
         neuron.plot_raster(raster, cond_name=raster['conditions'])
 
-    assert_equal(raster['event'], event)
-    assert_equal(raster['conditions'], condition_bool)
-    assert_equal(raster['binsize'], binsize)
-    assert_equal(raster['window'], window)
+        assert_equal(raster['event'], event)
+        assert_equal(raster['conditions'], cond)
+        assert_equal(raster['binsize'], binsize)
+        assert_equal(raster['window'], window)
 
     total_trials = 0
 

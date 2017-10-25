@@ -1,10 +1,18 @@
-from nose.tools import assert_true, assert_equal, assert_raises
+from __future__ import absolute_import
+
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-plt.switch_backend('Agg')
-from spykes.popvis import PopVis  # noqa
-from spykes.neurovis import NeuroVis  # noqa
+import matplotlib.pyplot as p
+from nose.tools import (
+    assert_true,
+    assert_equal,
+    assert_raises,
+)
+
+from spykes.plot.popvis import PopVis
+from spykes.plot.neurovis import NeuroVis
+
+p.switch_backend('Agg')
 
 
 def test_popvis():
@@ -62,8 +70,8 @@ def test_popvis():
         assert_equal(all_psth['data'][cond_id].shape[1],
                      (window[1] - window[0]) / binsize)
 
-    assert_raises(ValueError, pop.plot_heat_map, all_psth, 
-        sortby=list(range(num_trials-1)))
+    assert_raises(ValueError, pop.plot_heat_map, all_psth,
+                  sortby=list(range(num_trials-1)))
 
     pop.plot_heat_map(all_psth, sortby=range(num_trials))
     pop.plot_heat_map(all_psth, sortby='rate')
