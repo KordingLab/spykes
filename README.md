@@ -17,7 +17,7 @@ For more, see the [documentation](http://kordinglab.com/spykes/).
 
 ### Installation
 
-Sphynx can be installed using
+Spykes can be installed using
 
 ```
 pip install spykes
