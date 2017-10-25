@@ -73,7 +73,7 @@ def test_popvis():
     assert_raises(ValueError, pop.plot_heat_map, all_psth,
                   sortby=list(range(num_trials-1)))
 
-    pop.plot_heat_map(all_psth, sortby=range(num_trials))
+    pop.plot_heat_map(all_psth, sortby=list(range(num_trials)))
     pop.plot_heat_map(all_psth, sortby='rate')
     pop.plot_heat_map(all_psth, sortby='latency')
     pop.plot_heat_map(all_psth, sortorder='ascend')
