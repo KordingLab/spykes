@@ -9,7 +9,6 @@ from nose.tools import (
 )
 
 from spykes.plot.neurovis import NeuroVis
-
 p.switch_backend('Agg')
 
 

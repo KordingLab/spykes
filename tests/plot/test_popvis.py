@@ -11,7 +11,6 @@ from nose.tools import (
 
 from spykes.plot.popvis import PopVis
 from spykes.plot.neurovis import NeuroVis
-
 p.switch_backend('Agg')
 
 
