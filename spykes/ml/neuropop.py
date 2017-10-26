@@ -530,13 +530,13 @@ class NeuroPop(object):
         utils.set_matplotlib_defaults(plt)
 
         if xjitter is True:
-            x_jitter = np.pi / 32 * np.random.randn(x.shape)
+            x_jitter = np.pi / 32 * np.random.standard_normal(x.shape)
         else:
             x_jitter = np.zeros(x.shape)
 
         if yjitter is True:
             y_range = np.max(Y) - np.min(Y)
-            Y_jitter = y_range / 20.0 * np.random.randn(Y.shape)
+            Y_jitter = y_range / 20.0 * np.random.standard_normal(Y.shape)
         else:
             Y_jitter = np.zeros(Y.shape)
 

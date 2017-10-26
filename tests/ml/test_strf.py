@@ -5,7 +5,6 @@ import matplotlib.pyplot as p
 from nose.tools import assert_equal
 
 from spykes.ml.strf import STRF
-
 p.switch_backend('Agg')
 
 
@@ -38,12 +37,11 @@ def test_strf():
     centers = [-75., -50., -25., 0, 25., 50., 75.]
     width = 10.
     temporal_basis = strf_.make_raised_cosine_temporal_basis(
-                        time_points=time_points,
-                        centers=centers,
-                        widths=width * np.ones(7))
+        time_points=time_points,
+        centers=centers,
+        widths=width * np.ones(7))
     assert_equal(temporal_basis.shape[0], len(time_points))
     assert_equal(temporal_basis.shape[1], n_temporal_basis)
-
 
     # Project to spatial basis
     I = np.zeros(shape=(patch_size, patch_size))
@@ -63,11 +61,13 @@ def test_strf():
     n_samples = 100
     n_features = n_spatial_basis
     design_matrix = np.random.normal(size=(n_samples, n_features))
-    features = strf_.convolve_with_temporal_basis(design_matrix, temporal_basis)
+    features = strf_.convolve_with_temporal_basis(
+        design_matrix, temporal_basis)
     assert_equal(features.shape[0], n_samples)
     assert_equal(features.shape[1], n_features * n_temporal_basis)
 
     # Design prior covariance
-    PriorCov = strf_.design_prior_covariance(sigma_temporal=3., sigma_spatial=5.)
+    PriorCov = strf_.design_prior_covariance(
+        sigma_temporal=3., sigma_spatial=5.)
     assert_equal(PriorCov.shape[0], PriorCov.shape[1])
     assert_equal(PriorCov.shape[0], n_spatial_basis * n_temporal_basis)
