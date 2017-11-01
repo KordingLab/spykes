@@ -6,6 +6,7 @@ import os
 import scipy.io
 import numpy as np
 import requests
+import zipfile
 
 from .. import config
 
@@ -42,6 +43,72 @@ def _load_file(fpath):
     else:
         raise ValueError('Invalid file type: {}'.format(fpath))
     return data
+
+
+def load_spikefinder_data(dir_name='spikefinder'):
+    '''Downloads and returns a dataset of paired calcium recordings.
+
+    This dataset was used for the Spikefinder competition
+    (DOI: 10.1101/177956), and consists of datasets of paired calcium traces
+    and spike trains collected from multiple sources.
+
+    Args:
+        dir_name (str): Specifies the directory to which the data files should
+            be downloaded. This is concatenated with the user-set data
+            directory.
+
+    Returns:
+        tuple: Paths to the downloaded training and testing datasets. Each
+        dataset is a CSV which can be loaded using Pandas,
+        :data:`pd.read_csv(path)`.
+
+        * :data:`train_data`: List of pairs of strings, where each pair
+          consists of the path to the calcium data (inputs) and the path to
+          the spike data (ground truth) for that dataset pair.
+        * :data:`test_data`: List of strings, where each string is the path
+          to a testing dataset.
+    '''
+    dpath = os.path.join(config.get_data_directory(), dir_name)
+    if not os.path.exists(dpath):
+        os.makedirs(dpath)
+
+    url_template = (
+        'https://s3.amazonaws.com/neuro.datasets/'
+        'challenges/spikefinder/spikefinder.{version}.zip'
+    )
+
+    # Downloads the two datasets.
+    def _download(version):
+        zipname = os.path.join(dpath, '{}.zip'.format(version))
+        if not os.path.exists(zipname):
+            url = url_template.format(version=version)
+            _urlretrieve(url, zipname)
+
+        # Unzips the associated files.
+        unzip_path = os.path.join(dpath, 'spikefinder.{}'.format(version))
+        if not os.path.exists(unzip_path):
+            zipref = zipfile.ZipFile(zipname, 'r')
+            zipref.extractall(dpath)
+            zipref.close()
+        return unzip_path
+
+    # Downloads the two datasets.
+    train_path, test_path = _download('train'), _download('test')
+    train_template = os.path.join(train_path, '{index}.train.{mode}.csv')
+    test_template = os.path.join(test_path, '{index}.test.calcium.csv')
+
+    # Converts each dataset to a file path.
+    train_paths = [(
+        train_template.format(index=i, mode='calcium'),
+        train_template.format(index=i, mode='spikes'),
+    ) for i in range(1, 11)]
+    test_paths = [test_template.format(index=i) for i in range(1, 6)]
+
+    # Checks that all of the files exist.
+    assert all(os.path.exists(i) and os.path.exists(j) for i, j in train_paths)
+    assert all(os.path.exists(i) for i in test_paths)
+
+    return train_paths, test_paths
 
 
 def load_reward_data(dir_name='reward'):
