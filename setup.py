@@ -50,6 +50,10 @@ if __name__ == "__main__":
                 'm2r',
                 'deepdish',
                 'image',
+                'tensorflow>=1.3.0',
+            ],
+            'ml': [
+                'tensorflow>=1.3.0',
             ],
         },
         platforms='any',
