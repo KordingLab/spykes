@@ -4,11 +4,7 @@ import six
 import collections
 
 import tensorflow as tf
-from tensorflow.contrib.keras import (
-    models,
-    optimizers,
-)
-import numpy as np
+from tensorflow.contrib.keras import models
 
 
 def sparse_filtering_loss(_, y_pred):
@@ -23,8 +19,8 @@ def sparse_filtering_loss(_, y_pred):
     Returns:
         scalar tensor: The sparse filtering loss.
     '''
-    y_pred = tf.reshape(y_pred, tf.stack([-1, tf.reduce_prod(y_pred.shape[1:])]))
-    l2_normed = tf.nn.l2_normalize(y_pred, dim=1)
+    y = tf.reshape(y_pred, tf.stack([-1, tf.reduce_prod(y_pred.shape[1:])]))
+    l2_normed = tf.nn.l2_normalize(y, dim=1)
     l1_normed = tf.norm(l2_normed, ord=1, axis=1)
     return tf.reduce_sum(l1_normed)
 
@@ -72,6 +68,10 @@ class SparseFiltering(object):
                                'access the `submodels` parameter.')
         return self._submodels
 
+    @property
+    def num_layers(self):
+        return len(self.layer_names)
+
     def _clean_maybe_iterable_param(self, it, param):
         '''Converts a potential iterable or single value to a list of values.
 
@@ -86,17 +86,17 @@ class SparseFiltering(object):
             list: a list of values of the same length as the layer names.
         '''
         if isinstance(it, six.string_types):
-            return [it] * len(self.layer_names)
+            return [it] * self.num_layers
         elif isinstance(it, collections.Iterable):
             it = list(it)
-            if len(it) != len(self.layer_names):
+            if len(it) != self.num_layers:
                 raise ValueError('Provided {} values for `{}`, '
                                  'but one parameter is needed for each '
-                                 'requested layer ({} layers).'.format(
-                                 len(it), param, len(self.layer_names)))
+                                 'requested layer ({} layers).'
+                                 .format(len(it), param, self.num_layers))
             return it
         else:
-            return [it] * len(self.layer_names)
+            return [it] * self.num_layers
 
     def compile(self, optimizer, **kwargs):
         '''Compiles the model to create all the submodels.
