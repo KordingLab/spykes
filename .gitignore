@@ -11,6 +11,7 @@ doc/auto_examples/
 
 # development
 spykes.egg-info/
+notebooks/
 
 # test-related
 .coverage
@@ -26,4 +27,3 @@ venvs/
 
 # data
 *.mat
-
