@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+from setuptools import find_packages
 from setuptools import setup
 
 DISTNAME = 'spykes'
@@ -57,6 +58,5 @@ if __name__ == "__main__":
             ],
         },
         platforms='any',
-        packages=['spykes'],
-        package_dir={'spykes': 'spykes'}
+        packages=find_packages(exclude=['tests', 'tests.*']),
     )
