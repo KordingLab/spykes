@@ -119,7 +119,10 @@ class SparseFiltering(object):
         input_layer = self.model.input
         for layer_name, o in zip(self.layer_names, optimizer):
             output_layer = self.model.get_layer(layer_name).output
-            submodel = ks.models.Model(inputs=input_layer, outputs=output_layer)
+            submodel = ks.models.Model(
+                inputs=input_layer,
+                outputs=output_layer,
+            )
             submodel.compile(loss=sparse_filtering_loss, optimizer=o, **kwargs)
             self._submodels.append(submodel)
 
