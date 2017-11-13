@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from .sparse_filtering import SparseFiltering
 
 # Checks that the correct version of TensorFlow is installed.
-MIN_TF_VERSION = '1.3.0'
+MIN_TF_VERSION = '1.4.0'
 try:
     from distutils.version import LooseVersion
     import tensorflow as tf
