@@ -4,7 +4,7 @@ import six
 import collections
 
 import tensorflow as tf
-from tensorflow.contrib.keras import models
+from tensorflow import keras as ks
 
 
 def sparse_filtering_loss(_, y_pred):
@@ -21,8 +21,8 @@ def sparse_filtering_loss(_, y_pred):
     '''
     y = tf.reshape(y_pred, tf.stack([-1, tf.reduce_prod(y_pred.shape[1:])]))
     l2_normed = tf.nn.l2_normalize(y, dim=1)
-    l1_normed = tf.norm(l2_normed, ord=1, axis=1)
-    return tf.reduce_sum(l1_normed)
+    l1_norm = tf.norm(l2_normed, ord=1, axis=1)
+    return tf.reduce_sum(l1_norm)
 
 
 class SparseFiltering(object):
@@ -44,7 +44,7 @@ class SparseFiltering(object):
     '''
 
     def __init__(self, model, layers=None):
-        assert isinstance(model, models.Model)
+        assert isinstance(model, ks.models.Model)
         assert len(model.inputs) == 1 and len(model.outputs) == 1
         self.model = model
 
@@ -98,13 +98,15 @@ class SparseFiltering(object):
         else:
             return [it] * self.num_layers
 
-    def compile(self, optimizer, **kwargs):
+    def compile(self, optimizer, freeze=False, **kwargs):
         '''Compiles the model to create all the submodels.
 
         Args:
             optimizer (str or list of str): The optimizer to use. If a list is
                 provided, it must specify one optimizer for each layer
                 passed to the constructor.
+            freeze (bool): If set, for each submodel, all the previous layers
+                are frozen, so that only the last layer is "learned".
             kwargs (dict): Extra arguments to be passed to the :data:`compile`
                 function of each submodel.
         '''
@@ -117,7 +119,7 @@ class SparseFiltering(object):
         input_layer = self.model.input
         for layer_name, o in zip(self.layer_names, optimizer):
             output_layer = self.model.get_layer(layer_name).output
-            submodel = models.Model(inputs=input_layer, outputs=output_layer)
+            submodel = ks.models.Model(inputs=input_layer, outputs=output_layer)
             submodel.compile(loss=sparse_filtering_loss, optimizer=o, **kwargs)
             self._submodels.append(submodel)
 

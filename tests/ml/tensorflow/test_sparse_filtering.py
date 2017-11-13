@@ -10,7 +10,7 @@ from nose.tools import (
 )
 
 import tensorflow as tf
-from tensorflow.contrib.keras import models, layers
+from tensorflow import keras as ks
 from tensorflow.examples.tutorials.mnist import input_data
 
 from spykes.ml.tensorflow.sparse_filtering import SparseFiltering
@@ -26,9 +26,9 @@ def test_sparse_filtering():
     train_images = mnist.train.images[:NUM_TRAIN]
 
     # Creates a simple model.
-    model = models.Sequential([
-        layers.Dense(20, input_shape=(28 * 28,), name='a'),
-        layers.Dense(20, name='b'),
+    model = ks.models.Sequential([
+        ks.layers.Dense(20, input_shape=(28 * 28,), name='a'),
+        ks.layers.Dense(20, name='b'),
     ])
 
     # Checks the four ways to pass layers.
