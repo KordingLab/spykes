@@ -20,15 +20,17 @@ class NeuroPop(object):
 
     .. math::
 
-        f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
-        f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))
+        f(x) = b + g * exp(k * cos(x - mu))
+
+        f(x) = b + g * exp(k1 * cos(x) + k2 * sin(x))
 
     The Poisson generalized linear model is defined by
 
     .. math::
 
-        f(x) = exp(k0_ + k_ * cos(x - mu_))
-        f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))
+        f(x) = exp(k0 + k * cos(x - mu))
+
+        f(x) = exp(k0 + k1 * cos(x) + k2 * sin(x))
 
     Args:
         tunemodel (str): Can be either :data:`gvm`, the Generalized von Mises
