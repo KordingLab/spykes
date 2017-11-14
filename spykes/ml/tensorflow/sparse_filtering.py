@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import six
 import collections
 
@@ -60,6 +58,7 @@ class SparseFiltering(object):
                              'a list of strings. Got: "{}"'.format(layers))
 
         self._submodels = None
+        self._submodel_map = None
 
     @property
     def submodels(self):
@@ -71,6 +70,17 @@ class SparseFiltering(object):
     @property
     def num_layers(self):
         return len(self.layer_names)
+
+    def get_submodel(self, model):
+        if self._submodel_map is None:
+            raise RuntimeError('This model must be compiled before you can '
+                               'get a particular submodel')
+
+        if model not in self._submodel_map:
+            raise ValueError('Submodel not found: "{}". Must be one of {}'
+                             .format(model, list(self._submodel_map.keys())))
+
+        return self._submodel_map[model]
 
     def _clean_maybe_iterable_param(self, it, param):
         '''Converts a potential iterable or single value to a list of values.
@@ -119,12 +129,23 @@ class SparseFiltering(object):
         input_layer = self.model.input
         for layer_name, o in zip(self.layer_names, optimizer):
             output_layer = self.model.get_layer(layer_name).output
+
             submodel = ks.models.Model(
                 inputs=input_layer,
                 outputs=output_layer,
             )
+
+            # Freezes all but the selected layer.
+            if freeze:
+                for layer in submodel.layers:
+                    layer.trainable = layer.name == layer_name
+
             submodel.compile(loss=sparse_filtering_loss, optimizer=o, **kwargs)
+            submodel._make_train_function()  # Forces submodel compilation.
             self._submodels.append(submodel)
+
+        # Maps the layer names ot the submodels.
+        self._submodel_map = dict(zip(self.layer_names, self._submodels))
 
     def fit(self, x, epochs=1, **kwargs):
         '''Fits the model to the provided data.

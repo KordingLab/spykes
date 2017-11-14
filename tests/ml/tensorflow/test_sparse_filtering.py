@@ -6,6 +6,7 @@ import numpy as np
 from nose.tools import (
     assert_raises,
     assert_true,
+    assert_false,
     assert_equal,
 )
 
@@ -38,6 +39,11 @@ def test_sparse_filtering():
         sf_model = SparseFiltering(model=model, layers=1)
     sf_model = SparseFiltering(model=model, layers='a')
     assert_equal(sf_model.layer_names, ['a'])
+
+    # Checks model compilation.
+    sf_model.compile('sgd')
+    assert_raises(RuntimeError, sf_model.compile, 'sgd')
+
     sf_model = SparseFiltering(model=model, layers=['a', 'b'])
     assert_equal(sf_model.layer_names, ['a', 'b'])
 
@@ -45,9 +51,17 @@ def test_sparse_filtering():
     with assert_raises(RuntimeError):
         print(sf_model.submodels)
 
-    # Checks model compilation.
-    sf_model.compile('sgd')
-    assert_raises(RuntimeError, sf_model.compile, 'sgd')
+    # Checks getting a submodel.
+    with assert_raises(RuntimeError):
+        sf_model.get_submodel('a')
+
+    # Checks model freezing.
+    sf_model.compile('sgd', freeze=True)
+    assert_equal(len(sf_model.submodels), 2)
+
+    # Checks getting an invalid submodel.
+    with assert_raises(ValueError):
+        sf_model.get_submodel('c')
 
     # Checks model fitting.
     h = sf_model.fit(x=train_images, epochs=1)
