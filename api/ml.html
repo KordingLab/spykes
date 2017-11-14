@@ -249,6 +249,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Machine Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-spykes.ml.neuropop">NeuroPop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-spykes.ml.strf">STRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sparse-filtering">Sparse Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#poisson-layers">Poisson Layers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="io.html">Input / Output</a><ul>
@@ -335,12 +337,10 @@ tuning curves.</p>
 Amirikan &amp; Georgopulos (2000)</a> is
 defined by</p>
 <div class="math">
-\[f(x) = b_ + g_ * exp(k_ * cos(x - mu_))
-f(x) = b_ + g_ * exp(k1_ * cos(x) + k2_ * sin(x))\]</div>
+\[ \begin{align}\begin{aligned}f(x) = b + g * exp(k * cos(x - mu))\\f(x) = b + g * exp(k1 * cos(x) + k2 * sin(x))\end{aligned}\end{align} \]</div>
 <p>The Poisson generalized linear model is defined by</p>
 <div class="math">
-\[f(x) = exp(k0_ + k_ * cos(x - mu_))
-f(x) = exp(k0_ + k1_ * cos(x) + k2_ * sin(x))\]</div>
+\[ \begin{align}\begin{aligned}f(x) = exp(k0 + k * cos(x - mu))\\f(x) = exp(k0 + k1 * cos(x) + k2 * sin(x))\end{aligned}\end{align} \]</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -786,6 +786,154 @@ spatial basis 2D array of size <code class="xref py py-data docutils literal"><s
 </table>
 </dd></dl>
 
+</dd></dl>
+
+</div>
+<div class="section" id="sparse-filtering">
+<h2>Sparse Filtering<a class="headerlink" href="#sparse-filtering" title="Permalink to this headline">¶</a></h2>
+<p>This module makes use of Tensorflow. Make sure your system is configured correctly before using it.</p>
+<span class="target" id="module-spykes.ml.tensorflow.sparse_filtering"></span><dl class="class">
+<dt id="spykes.ml.tensorflow.sparse_filtering.SparseFiltering">
+<em class="property">class </em><code class="descclassname">spykes.ml.tensorflow.sparse_filtering.</code><code class="descname">SparseFiltering</code><span class="sig-paren">(</span><em>model</em>, <em>layers=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/tensorflow/sparse_filtering.html#SparseFiltering"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.tensorflow.sparse_filtering.SparseFiltering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a class for performing sparse filtering on a dataset.</p>
+<p>The MATLAB code on which this is based is available <a class="reference external" href="https://github.com/jngiam/sparseFiltering">here</a>, from the paper
+<a class="reference external" href="https://papers.nips.cc/paper/4334-sparse-filtering.pdf">Sparse Filtering by Ngiam et. al.</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<em>Keras model</em>) – The trainable model, which takes as inputs the
+data you are training on and outputs a feature vector, which is
+minimized according to the loss function described above.</li>
+<li><strong>layers</strong> (<em>str</em><em> or </em><em>list of str</em>) – An optional name or list of names of
+layers in the provided model whose outputs to apply the sparse
+filtering loss to. If none are provided, the sparse filtering loss
+is applied to each layer in the model.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="spykes.ml.tensorflow.sparse_filtering.SparseFiltering.compile">
+<code class="descname">compile</code><span class="sig-paren">(</span><em>optimizer</em>, <em>freeze=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/tensorflow/sparse_filtering.html#SparseFiltering.compile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.tensorflow.sparse_filtering.SparseFiltering.compile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compiles the model to create all the submodels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>optimizer</strong> (<em>str</em><em> or </em><em>list of str</em>) – The optimizer to use. If a list is
+provided, it must specify one optimizer for each layer
+passed to the constructor.</li>
+<li><strong>freeze</strong> (<em>bool</em>) – If set, for each submodel, all the previous layers
+are frozen, so that only the last layer is “learned”.</li>
+<li><strong>kwargs</strong> (<em>dict</em>) – Extra arguments to be passed to the <a class="reference internal" href="#spykes.ml.tensorflow.sparse_filtering.SparseFiltering.compile" title="spykes.ml.tensorflow.sparse_filtering.SparseFiltering.compile"><code class="xref py py-data docutils literal"><span class="pre">compile</span></code></a>
+function of each submodel.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="spykes.ml.tensorflow.sparse_filtering.SparseFiltering.fit">
+<code class="descname">fit</code><span class="sig-paren">(</span><em>x</em>, <em>epochs=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/tensorflow/sparse_filtering.html#SparseFiltering.fit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.tensorflow.sparse_filtering.SparseFiltering.fit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fits the model to the provided data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>Numpy array</em>) – An array where the first dimension is the batch
+size, and the remaining dimensions match the input dimensions
+of the provided model.</li>
+<li><strong>epochs</strong> (<em>int</em><em> or </em><em>list of ints</em>) – The number of epochs to train.
+If a list is provided, there must be one value for each named
+layer, specifying the number of epochs to train that layer for.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list of histories, the training history for each submodel.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="spykes.ml.tensorflow.sparse_filtering.sparse_filtering_loss">
+<code class="descclassname">spykes.ml.tensorflow.sparse_filtering.</code><code class="descname">sparse_filtering_loss</code><span class="sig-paren">(</span><em>_</em>, <em>y_pred</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/tensorflow/sparse_filtering.html#sparse_filtering_loss"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.tensorflow.sparse_filtering.sparse_filtering_loss" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the sparse filtering loss function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>y_true</strong> (<em>tensor</em>) – The ground truth tensor (not used, since this is an
+unsupervised learning algorithm).</li>
+<li><strong>y_pred</strong> (<em>tensor</em>) – Tensor representing the feature vector at a
+particular layer.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The sparse filtering loss.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">scalar tensor</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="poisson-layers">
+<h2>Poisson Layers<a class="headerlink" href="#poisson-layers" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a TensorFlow implementation of the Poisson estimators used in the NeuroPop modules.</p>
+<span class="target" id="module-spykes.ml.tensorflow.poisson_models"></span><dl class="class">
+<dt id="spykes.ml.tensorflow.poisson_models.PoissonLayer">
+<em class="property">class </em><code class="descclassname">spykes.ml.tensorflow.poisson_models.</code><code class="descname">PoissonLayer</code><span class="sig-paren">(</span><em>model_type</em>, <em>num_neurons</em>, <em>num_features=None</em>, <em>mu_initializer=&lt;tensorflow.python.ops.init_ops.RandomUniform object&gt;</em>, <em>k_initializer=&lt;tensorflow.python.ops.init_ops.RandomNormal object&gt;</em>, <em>g_initializer=&lt;tensorflow.python.ops.init_ops.RandomNormal object&gt;</em>, <em>b_initializer=&lt;tensorflow.python.ops.init_ops.RandomNormal object&gt;</em>, <em>k0_initializer=&lt;tensorflow.python.ops.init_ops.RandomNormal object&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/ml/tensorflow/poisson_models.html#PoissonLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.ml.tensorflow.poisson_models.PoissonLayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines a TensorFlow implementation of the NeuroPop layers.</p>
+<p>Two types of models are available. <a class="reference external" href="http://brain.umn.edu/pdfs/BA118.pdf">The Generalized von Mises model by
+Amirikan &amp; Georgopulos (2000)</a> is
+defined by</p>
+<div class="math">
+\[ \begin{align}\begin{aligned}f(x) = b + g * exp(k * cos(x - mu))\\f(x) = b + g * exp(k1 * cos(x) + k2 * sin(x))\end{aligned}\end{align} \]</div>
+<p>The Poisson generalized linear model is defined by</p>
+<div class="math">
+\[ \begin{align}\begin{aligned}f(x) = exp(k0 + k * cos(x - mu))\\f(x) = exp(k0 + k1 * cos(x) + k2 * sin(x))\end{aligned}\end{align} \]</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model_type</strong> (<em>str</em>) – Can be either <code class="xref py py-data docutils literal"><span class="pre">gvm</span></code>, the Generalized von Mises
+model, or <code class="xref py py-data docutils literal"><span class="pre">glm</span></code>, the Poisson generalized linear model.</li>
+<li><strong>num_neurons</strong> (<em>int</em>) – Number of neurons in the population (being inferred
+from the input features).</li>
+<li><strong>num_features</strong> (<em>int</em>) – Number of input features. Convenience parameter for
+for setting the input shape.</li>
+<li><strong>mu_initializer</strong> (<em>Keras initializer</em>) – The initializer for the <code class="xref py py-data docutils literal"><span class="pre">mu</span></code>.</li>
+<li><strong>k_initializer</strong> (<em>Keras initializer</em>) – The initializer for the <code class="xref py py-data docutils literal"><span class="pre">k</span></code>.</li>
+<li><strong>g_initializer</strong> (<em>Keras initializer</em>) – The initializer for the <code class="xref py py-data docutils literal"><span class="pre">g</span></code>.
+If <code class="xref py py-data docutils literal"><span class="pre">model_type</span></code> is <code class="xref py py-data docutils literal"><span class="pre">glm</span></code>, this is ignored.</li>
+<li><strong>b_initializer</strong> (<em>Keras initializer</em>) – The initializer for the <code class="xref py py-data docutils literal"><span class="pre">b</span></code>.
+If <code class="xref py py-data docutils literal"><span class="pre">model_type</span></code> is <code class="xref py py-data docutils literal"><span class="pre">glm</span></code>, this is ignored.</li>
+<li><strong>k0_initializer</strong> (<em>Keras initializer</em>) – The initializer for the <code class="xref py py-data docutils literal"><span class="pre">k0</span></code>.
+If <code class="xref py py-data docutils literal"><span class="pre">model_type</span></code> is <code class="xref py py-data docutils literal"><span class="pre">gvm</span></code>, this is ignored.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>

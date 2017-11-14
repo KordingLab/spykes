@@ -248,6 +248,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ml.html">Machine Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#module-spykes.ml.strf">STRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#sparse-filtering">Sparse Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#poisson-layers">Poisson Layers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/io.html">Input / Output</a><ul>
@@ -693,8 +695,6 @@
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">events</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">event</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
         <span class="n">spiketimes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spiketimes</span>
-        <span class="n">spikecounts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-
         <span class="n">spikecounts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
             <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">((</span>
                 <span class="n">spiketimes</span> <span class="o">&gt;=</span> <span class="n">e</span> <span class="o">+</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">window</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>

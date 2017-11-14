@@ -248,6 +248,8 @@
 <li class="toctree-l1"><a class="reference internal" href="api/ml.html">Machine Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/ml.html#module-spykes.ml.strf">STRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ml.html#sparse-filtering">Sparse Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ml.html#poisson-layers">Poisson Layers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/io.html">Input / Output</a><ul>
@@ -341,6 +343,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/ml.html#spykes.ml.tensorflow.sparse_filtering.SparseFiltering.compile">compile() (spykes.ml.tensorflow.sparse_filtering.SparseFiltering method)</a>
+</li>
       <li><a href="api/ml.html#spykes.ml.strf.STRF.convolve_with_temporal_basis">convolve_with_temporal_basis() (spykes.ml.strf.STRF method)</a>
 </li>
   </ul></td>
@@ -364,7 +368,11 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/ml.html#spykes.ml.neuropop.NeuroPop.fit">fit() (spykes.ml.neuropop.NeuroPop method)</a>
+
+      <ul>
+        <li><a href="api/ml.html#spykes.ml.tensorflow.sparse_filtering.SparseFiltering.fit">(spykes.ml.tensorflow.sparse_filtering.SparseFiltering method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -399,9 +407,13 @@
 </li>
       <li><a href="api/io.html#spykes.io.datasets.load_reaching_data">load_reaching_data() (in module spykes.io.datasets)</a>
 </li>
+      <li><a href="api/io.html#spykes.io.datasets.load_reaching_xy">load_reaching_xy() (in module spykes.io.datasets)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/io.html#spykes.io.datasets.load_reward_data">load_reward_data() (in module spykes.io.datasets)</a>
+</li>
+      <li><a href="api/io.html#spykes.io.datasets.load_spikefinder_data">load_spikefinder_data() (in module spykes.io.datasets)</a>
 </li>
       <li><a href="api/utils.html#spykes.utils.log_likelihood">log_likelihood() (in module spykes.utils)</a>
 </li>
@@ -451,9 +463,11 @@
 </li>
       <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.plot_psth">plot_psth() (spykes.plot.neurovis.NeuroVis method)</a>
 </li>
+      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.plot_raster">plot_raster() (spykes.plot.neurovis.NeuroVis method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/plot.html#spykes.plot.neurovis.NeuroVis.plot_raster">plot_raster() (spykes.plot.neurovis.NeuroVis method)</a>
+      <li><a href="api/ml.html#spykes.ml.tensorflow.poisson_models.PoissonLayer">PoissonLayer (class in spykes.ml.tensorflow.poisson_models)</a>
 </li>
       <li><a href="api/plot.html#spykes.plot.popvis.PopVis">PopVis (class in spykes.plot.popvis)</a>
 </li>
@@ -477,6 +491,10 @@
 </li>
       <li><a href="api/utils.html#spykes.utils.slow_exp">slow_exp() (in module spykes.utils)</a>
 </li>
+      <li><a href="api/ml.html#spykes.ml.tensorflow.sparse_filtering.sparse_filtering_loss">sparse_filtering_loss() (in module spykes.ml.tensorflow.sparse_filtering)</a>
+</li>
+      <li><a href="api/ml.html#spykes.ml.tensorflow.sparse_filtering.SparseFiltering">SparseFiltering (class in spykes.ml.tensorflow.sparse_filtering)</a>
+</li>
       <li><a href="api/config.html#module-spykes.config">spykes.config (module)</a>
 </li>
   </ul></td>
@@ -486,6 +504,10 @@
       <li><a href="api/ml.html#module-spykes.ml.neuropop">spykes.ml.neuropop (module)</a>
 </li>
       <li><a href="api/ml.html#module-spykes.ml.strf">spykes.ml.strf (module)</a>
+</li>
+      <li><a href="api/ml.html#module-spykes.ml.tensorflow.poisson_models">spykes.ml.tensorflow.poisson_models (module)</a>
+</li>
+      <li><a href="api/ml.html#module-spykes.ml.tensorflow.sparse_filtering">spykes.ml.tensorflow.sparse_filtering (module)</a>
 </li>
       <li><a href="api/plot.html#module-spykes.plot.neurovis">spykes.plot.neurovis (module)</a>
 </li>

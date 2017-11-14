@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Examples Gallery &mdash; spykes  documentation</title>
+  <title>Spikefinder DataSet Example &mdash; spykes  documentation</title>
   
 
   
@@ -37,9 +37,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="spykes  documentation" href="../index.html"/>
-        <link rel="next" title="Neuropop Example" href="plot_neuropop_simul_example.html"/>
-        <link rel="prev" title="Tutorials" href="../tutorial.html"/> 
+    <link rel="top" title="spykes  documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -88,7 +86,7 @@
               
             
             
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#what-is-spykes">What is Spykes?</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting-started.html#installing">Installing</a><ul>
@@ -110,7 +108,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../tutorial.html#decoding-feature-from-population-activity">Decoding Feature from Population Activity</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples Gallery</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Examples Gallery</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="plot_neuropop_simul_example.html">Neuropop Example</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="plot_neuropop_simul_example.html#create-a-neuropop-object">Create a NeuroPop object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="plot_neuropop_simul_example.html#simulate-a-population-of-neurons">Simulate a population of neurons</a></li>
@@ -303,13 +301,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Examples Gallery</li>
+      <li>Spikefinder DataSet Example</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/auto_examples/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/auto_examples/plot_spikefinder_dataset_example.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -322,49 +320,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="examples-gallery">
-<span id="general-examples-benchmark"></span><h1>Examples Gallery<a class="headerlink" href="#examples-gallery" title="Permalink to this headline">¶</a></h1>
-<div class="sphx-glr-thumbcontainer" tooltip="A demonstration of Neuropop using simulated data"><div class="figure" id="id1">
-<img alt="../_images/sphx_glr_plot_neuropop_simul_example_thumb.png" src="../_images/sphx_glr_plot_neuropop_simul_example_thumb.png" />
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_neuropop_simul_example.html#sphx-glr-auto-examples-plot-neuropop-simul-example-py"><span class="std std-ref">Neuropop Example</span></a></span></p>
+  <div class="section" id="spikefinder-dataset-example">
+<span id="sphx-glr-auto-examples-plot-spikefinder-dataset-example-py"></span><h1>Spikefinder DataSet Example<a class="headerlink" href="#spikefinder-dataset-example" title="Permalink to this headline">¶</a></h1>
+<p>A demonstration of Spyke’s functionality on the Spikefinder dataset.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="c1"># Authors: Ben Bolte &lt;ben@bolte.cc&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># License: BSD (3-clause)</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span>
+
+<span class="kn">from</span> <span class="nn">spykes.io.datasets</span> <span class="kn">import</span> <span class="n">load_spikefinder_data</span>
+</pre></div>
 </div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="sphx-glr-thumbcontainer" tooltip=""><div class="figure" id="id2">
-<img alt="../_images/sphx_glr_plot_popvis_example_thumb.png" src="../_images/sphx_glr_plot_popvis_example_thumb.png" />
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_popvis_example.html#sphx-glr-auto-examples-plot-popvis-example-py"><span class="std std-ref">PopVis Example</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="sphx-glr-thumbcontainer" tooltip="A demonstration of Spykes's functionality to reproduce a figure from Li et al's &quot;A motor cortex..."><div class="figure" id="id3">
-<img alt="../_images/sphx_glr_plot_crcns_dataset_example_thumb.png" src="../_images/sphx_glr_plot_crcns_dataset_example_thumb.png" />
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_crcns_dataset_example.html#sphx-glr-auto-examples-plot-crcns-dataset-example-py"><span class="std std-ref">CRCNS DataSet Example</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="sphx-glr-thumbcontainer" tooltip="Use spykes to analyze data from UCL's Neuropixels"><div class="figure" id="id4">
-<img alt="../_images/sphx_glr_plot_neuropixels_example_thumb.png" src="../_images/sphx_glr_plot_neuropixels_example_thumb.png" />
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_neuropixels_example.html#sphx-glr-auto-examples-plot-neuropixels-example-py"><span class="std std-ref">Neuropixels Example</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="sphx-glr-thumbcontainer" tooltip="A demonstration to use Spykes' functionality to reproduce Ramkumar et al's &quot;Premotor and Motor ..."><div class="figure" id="id5">
-<img alt="../_images/sphx_glr_plot_neural_coding_reward_example_thumb.png" src="../_images/sphx_glr_plot_neural_coding_reward_example_thumb.png" />
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_neural_coding_reward_example.html#sphx-glr-auto-examples-plot-neural-coding-reward-example-py"><span class="std std-ref">Neural Coding Reward Example</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div class="sphx-glr-thumbcontainer" tooltip="A demonstration of Spykes' functionality using the reaching dataset."><div class="figure" id="id6">
-<img alt="../_images/sphx_glr_plot_reaching_dataset_example_thumb.png" src="../_images/sphx_glr_plot_reaching_dataset_example_thumb.png" />
-<p class="caption"><span class="caption-text"><a class="reference internal" href="plot_reaching_dataset_example.html#sphx-glr-auto-examples-plot-reaching-dataset-example-py"><span class="std std-ref">Reaching Dataset Example</span></a></span></p>
-</div>
-</div><div class="toctree-wrapper compound">
-</div>
-<div style='clear:both'></div><div class="sphx-glr-footer docutils container">
+<p><strong>Total running time of the script:</strong> ( 0 minutes  0.293 seconds)</p>
+<div class="sphx-glr-footer docutils container">
 <div class="sphx-glr-download docutils container">
-<a class="reference download internal" href="../_downloads/auto_examples_python.zip" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">all</span> <span class="pre">examples</span> <span class="pre">in</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">auto_examples_python.zip</span></code></a></div>
+<a class="reference download internal" href="../_downloads/plot_spikefinder_dataset_example.py" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Python</span> <span class="pre">source</span> <span class="pre">code:</span> <span class="pre">plot_spikefinder_dataset_example.py</span></code></a></div>
 <div class="sphx-glr-download docutils container">
-<a class="reference download internal" href="../_downloads/auto_examples_jupyter.zip" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">all</span> <span class="pre">examples</span> <span class="pre">in</span> <span class="pre">Jupyter</span> <span class="pre">notebooks:</span> <span class="pre">auto_examples_jupyter.zip</span></code></a></div>
+<a class="reference download internal" href="../_downloads/plot_spikefinder_dataset_example.ipynb" download=""><code class="xref download docutils literal"><span class="pre">Download</span> <span class="pre">Jupyter</span> <span class="pre">notebook:</span> <span class="pre">plot_spikefinder_dataset_example.ipynb</span></code></a></div>
 </div>
 <p class="sphx-glr-signature"><a class="reference external" href="https://sphinx-gallery.readthedocs.io">Gallery generated by Sphinx-Gallery</a></p>
 </div>
@@ -376,15 +354,6 @@
            </div>
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="plot_neuropop_simul_example.html" class="btn btn-neutral float-right" title="Neuropop Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../tutorial.html" class="btn btn-neutral" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>

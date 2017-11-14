@@ -248,6 +248,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../api/ml.html">Machine Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#module-spykes.ml.strf">STRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#sparse-filtering">Sparse Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../api/ml.html#poisson-layers">Poisson Layers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../../api/io.html">Input / Output</a><ul>
@@ -325,11 +327,26 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">scipy.io</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">config</span>
+
+
+<span class="k">def</span> <span class="nf">_urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Defines a convenience method for downloading files with requests.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        url (str): The URL of the file to download.</span>
+<span class="sd">        filename (str): The path to save the file.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">iter_content</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">chunk</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_load_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
@@ -350,6 +367,72 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid file type: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fpath</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">data</span>
+
+
+<div class="viewcode-block" id="load_spikefinder_data"><a class="viewcode-back" href="../../../api/io.html#spykes.io.datasets.load_spikefinder_data">[docs]</a><span class="k">def</span> <span class="nf">load_spikefinder_data</span><span class="p">(</span><span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;spikefinder&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Downloads and returns a dataset of paired calcium recordings.</span>
+
+<span class="sd">    This dataset was used for the Spikefinder competition</span>
+<span class="sd">    (DOI: 10.1101/177956), and consists of datasets of paired calcium traces</span>
+<span class="sd">    and spike trains collected from multiple sources.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        dir_name (str): Specifies the directory to which the data files should</span>
+<span class="sd">            be downloaded. This is concatenated with the user-set data</span>
+<span class="sd">            directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: Paths to the downloaded training and testing datasets. Each</span>
+<span class="sd">        dataset is a CSV which can be loaded using Pandas,</span>
+<span class="sd">        :data:`pd.read_csv(path)`.</span>
+
+<span class="sd">        * :data:`train_data`: List of pairs of strings, where each pair</span>
+<span class="sd">          consists of the path to the calcium data (inputs) and the path to</span>
+<span class="sd">          the spike data (ground truth) for that dataset pair.</span>
+<span class="sd">        * :data:`test_data`: List of strings, where each string is the path</span>
+<span class="sd">          to a testing dataset.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get_data_directory</span><span class="p">(),</span> <span class="n">dir_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dpath</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dpath</span><span class="p">)</span>
+
+    <span class="n">url_template</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s1">&#39;https://s3.amazonaws.com/neuro.datasets/&#39;</span>
+        <span class="s1">&#39;challenges/spikefinder/spikefinder.</span><span class="si">{version}</span><span class="s1">.zip&#39;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Downloads the two datasets.</span>
+    <span class="k">def</span> <span class="nf">_download</span><span class="p">(</span><span class="n">version</span><span class="p">):</span>
+        <span class="n">zipname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.zip&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">zipname</span><span class="p">):</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">url_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">)</span>
+            <span class="n">_urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">zipname</span><span class="p">)</span>
+
+        <span class="c1"># Unzips the associated files.</span>
+        <span class="n">unzip_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="s1">&#39;spikefinder.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">version</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">unzip_path</span><span class="p">):</span>
+            <span class="n">zipref</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zipname</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+            <span class="n">zipref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">dpath</span><span class="p">)</span>
+            <span class="n">zipref</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">unzip_path</span>
+
+    <span class="c1"># Downloads the two datasets.</span>
+    <span class="n">train_path</span><span class="p">,</span> <span class="n">test_path</span> <span class="o">=</span> <span class="n">_download</span><span class="p">(</span><span class="s1">&#39;train&#39;</span><span class="p">),</span> <span class="n">_download</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+    <span class="n">train_template</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">train_path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{index}</span><span class="s1">.train.</span><span class="si">{mode}</span><span class="s1">.csv&#39;</span><span class="p">)</span>
+    <span class="n">test_template</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">test_path</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{index}</span><span class="s1">.test.calcium.csv&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Converts each dataset to a file path.</span>
+    <span class="n">train_paths</span> <span class="o">=</span> <span class="p">[(</span>
+        <span class="n">train_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;calcium&#39;</span><span class="p">),</span>
+        <span class="n">train_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;spikes&#39;</span><span class="p">),</span>
+    <span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)]</span>
+    <span class="n">test_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">test_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>
+
+    <span class="c1"># Checks that all of the files exist.</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">train_paths</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">test_paths</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">train_paths</span><span class="p">,</span> <span class="n">test_paths</span></div>
 
 
 <div class="viewcode-block" id="load_reward_data"><a class="viewcode-back" href="../../../api/io.html#spykes.io.datasets.load_reward_data">[docs]</a><span class="k">def</span> <span class="nf">load_reward_data</span><span class="p">(</span><span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;reward&#39;</span><span class="p">):</span>
@@ -378,7 +461,7 @@
         <span class="sd">&#39;&#39;&#39;Helper function for downloading the existing MAT files.&#39;&#39;&#39;</span>
         <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-            <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+            <span class="n">_urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">_load_file</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
 
     <span class="c1"># Downloads sess_one_mat.</span>
@@ -442,7 +525,7 @@
         <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-            <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+            <span class="n">_urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
         <span class="n">file_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_load_file</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">parent_dir</span><span class="p">:</span>
@@ -452,7 +535,7 @@
             <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">subdir</span><span class="p">)</span>
             <span class="n">url</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">base_url</span><span class="p">,</span> <span class="n">directory</span><span class="p">,</span> <span class="n">subdir</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
-                <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+                <span class="n">_urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
             <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">subdir</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">subdir</span> <span class="o">==</span> <span class="s1">&#39;cluster_groups.csv&#39;</span><span class="p">:</span>
                 <span class="n">file_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">recfromcsv</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">delimiter</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
@@ -489,14 +572,102 @@
     <span class="c1"># Downloads the file if it doesn&#39;t exist already.</span>
     <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="s1">&#39;reaching_dataset.h5&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
-        <span class="c1"># Hosted on Dropbox, so it can&#39;t be downloaded propertly with urllib.</span>
         <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://goo.gl/eXeUz8&#39;</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;Reaching dataset not found: You need to download &#39;</span>
-                           <span class="s1">&#39;it to </span><span class="si">{fpath}</span><span class="s1"> from </span><span class="si">{url}</span><span class="s1">&#39;</span>
-                           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fpath</span><span class="o">=</span><span class="n">fpath</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">))</span>
+        <span class="n">_urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
 
     <span class="n">data</span> <span class="o">=</span> <span class="n">deepdish</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="load_reaching_xy"><a class="viewcode-back" href="../../../api/io.html#spykes.io.datasets.load_reaching_xy">[docs]</a><span class="k">def</span> <span class="nf">load_reaching_xy</span><span class="p">(</span><span class="n">event</span><span class="o">=</span><span class="s1">&#39;goCueTime&#39;</span><span class="p">,</span> <span class="n">feature</span><span class="o">=</span><span class="s1">&#39;endpointOfReach&#39;</span><span class="p">,</span> <span class="n">neuron</span><span class="o">=</span><span class="s1">&#39;M1&#39;</span><span class="p">,</span>
+                     <span class="n">window_min</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">window_max</span><span class="o">=</span><span class="mf">500.</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span>
+                     <span class="n">dir_name</span><span class="o">=</span><span class="s1">&#39;reaching&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Extracts the reach direction and M1 spikes from the reaching dataset.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        event (str): Event to which to align each trial; :data:`goCueTime`,</span>
+<span class="sd">            :data:`targetOnTime` or :data:`rewardTime`.</span>
+<span class="sd">        feature (str): The feature to get; :data:`endpointOfReach` or</span>
+<span class="sd">            :data:`reward`.</span>
+<span class="sd">        neuron (str): The neuron response to use, either :data:`M1` or</span>
+<span class="sd">            :data:`PMd`.</span>
+<span class="sd">        window_min (double): The lower window value around the align queue to</span>
+<span class="sd">            get spike counts, in milliseconds.</span>
+<span class="sd">        window_max (double): The upper window value around the align queue to</span>
+<span class="sd">            get spike counts, in milliseconds.</span>
+<span class="sd">        threshold (double): The threshold for selecting high-firing neurons,</span>
+<span class="sd">            representing the minimum firing rate in Hz.</span>
+<span class="sd">        dir_name (str): Specifies the directory to which the data files</span>
+<span class="sd">            should be downloaded. This is concatenated with the user-set</span>
+<span class="sd">            data directory.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: The :data:`x` and :data:`y` features of the dataset.</span>
+
+<span class="sd">        * :data:`x`: Array with shape :data:`(num_samples, num_features)`</span>
+<span class="sd">        * :data:`y`: Array with shape :data:`(num_samples, num_neurons)`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="c1"># Loads the formatted data, if it has already been processed.</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.npz&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="n">event</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">neuron</span><span class="p">,</span> <span class="n">window_min</span><span class="p">,</span> <span class="n">window_max</span><span class="p">,</span> <span class="n">threshold</span>
+    <span class="p">]))</span>
+    <span class="n">fpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">get_data_directory</span><span class="p">(),</span> <span class="n">dir_name</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Loads the reaching data normally.</span>
+    <span class="n">reaching_data</span> <span class="o">=</span> <span class="n">load_reaching_data</span><span class="p">(</span><span class="n">dir_name</span><span class="p">)</span>
+
+    <span class="n">events</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reaching_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">reaching_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="c1"># Checks the input arguments, throwing helpful error messages if needed.</span>
+    <span class="k">if</span> <span class="n">event</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid align event: &quot;</span><span class="si">{}</span><span class="s1">&quot;. Must be one of </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">events</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">feature</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid feature: &quot;</span><span class="si">{}</span><span class="s1">&quot;. Must be one of </span><span class="si">{}</span><span class="s1">.&#39;</span>
+                         <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">features</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">neuron</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;M1&#39;</span><span class="p">,</span> <span class="s1">&#39;PMd&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid neuron type: &quot;</span><span class="si">{}</span><span class="s1">&quot;. Must be either &quot;M1&quot; or &#39;</span>
+                         <span class="s1">&#39;&quot;PMd&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">neuron</span><span class="p">))</span>
+
+    <span class="n">neuron_key</span> <span class="o">=</span> <span class="s1">&#39;neurons_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">neuron</span><span class="p">)</span>
+    <span class="n">spike_times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">reaching_data</span><span class="p">[</span><span class="n">neuron_key</span><span class="p">]</span>
+    <span class="p">])</span>
+    <span class="n">spike_freqs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">spike_times</span><span class="p">])</span>
+
+    <span class="c1"># Applies the cutoff threshold.</span>
+    <span class="n">thresh_idxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">spike_freqs</span> <span class="o">&gt;</span> <span class="n">threshold</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">spike_times</span> <span class="o">=</span> <span class="n">spike_times</span><span class="p">[</span><span class="n">thresh_idxs</span><span class="p">]</span>
+    <span class="n">spike_freqs</span> <span class="o">=</span> <span class="n">spike_freqs</span><span class="p">[</span><span class="n">thresh_idxs</span><span class="p">]</span>
+
+    <span class="c1"># Gets the reach angle, in radians.</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">reaching_data</span><span class="p">[</span><span class="s1">&#39;features&#39;</span><span class="p">][</span><span class="n">feature</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mf">180.0</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+    <span class="c1"># Gets the spike responses.</span>
+    <span class="n">event_data</span> <span class="o">=</span> <span class="n">reaching_data</span><span class="p">[</span><span class="s1">&#39;events&#39;</span><span class="p">][</span><span class="n">event</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_get_spikecounts</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">([</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">((</span>
+                <span class="n">n</span> <span class="o">&gt;=</span> <span class="n">e</span> <span class="o">+</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">window_min</span><span class="p">,</span>
+                <span class="n">n</span> <span class="o">&lt;=</span> <span class="n">e</span> <span class="o">+</span> <span class="mf">1e-3</span> <span class="o">*</span> <span class="n">window_max</span><span class="p">,</span>
+            <span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">event_data</span>
+        <span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">_get_spikecounts</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">spike_times</span><span class="p">])</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Saves the dataset after processing it.</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span></div>
 </pre></div>
 
            </div>

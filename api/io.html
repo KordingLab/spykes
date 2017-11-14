@@ -249,6 +249,8 @@
 <li class="toctree-l1"><a class="reference internal" href="ml.html">Machine Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ml.html#module-spykes.ml.strf">STRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ml.html#sparse-filtering">Sparse Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ml.html#poisson-layers">Poisson Layers</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Input / Output</a><ul>
@@ -371,6 +373,48 @@ data directory.</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="spykes.io.datasets.load_reaching_xy">
+<code class="descclassname">spykes.io.datasets.</code><code class="descname">load_reaching_xy</code><span class="sig-paren">(</span><em>event='goCueTime'</em>, <em>feature='endpointOfReach'</em>, <em>neuron='M1'</em>, <em>window_min=0.0</em>, <em>window_max=500.0</em>, <em>threshold=10.0</em>, <em>dir_name='reaching'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/io/datasets.html#load_reaching_xy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.io.datasets.load_reaching_xy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts the reach direction and M1 spikes from the reaching dataset.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>event</strong> (<em>str</em>) – Event to which to align each trial; <code class="xref py py-data docutils literal"><span class="pre">goCueTime</span></code>,
+<code class="xref py py-data docutils literal"><span class="pre">targetOnTime</span></code> or <code class="xref py py-data docutils literal"><span class="pre">rewardTime</span></code>.</li>
+<li><strong>feature</strong> (<em>str</em>) – The feature to get; <code class="xref py py-data docutils literal"><span class="pre">endpointOfReach</span></code> or
+<code class="xref py py-data docutils literal"><span class="pre">reward</span></code>.</li>
+<li><strong>neuron</strong> (<em>str</em>) – The neuron response to use, either <code class="xref py py-data docutils literal"><span class="pre">M1</span></code> or
+<code class="xref py py-data docutils literal"><span class="pre">PMd</span></code>.</li>
+<li><strong>window_min</strong> (<em>double</em>) – The lower window value around the align queue to
+get spike counts, in milliseconds.</li>
+<li><strong>window_max</strong> (<em>double</em>) – The upper window value around the align queue to
+get spike counts, in milliseconds.</li>
+<li><strong>threshold</strong> (<em>double</em>) – The threshold for selecting high-firing neurons,
+representing the minimum firing rate in Hz.</li>
+<li><strong>dir_name</strong> (<em>str</em>) – Specifies the directory to which the data files
+should be downloaded. This is concatenated with the user-set
+data directory.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>The <code class="xref py py-data docutils literal"><span class="pre">x</span></code> and <code class="xref py py-data docutils literal"><span class="pre">y</span></code> features of the dataset.</p>
+<ul class="simple">
+<li><code class="xref py py-data docutils literal"><span class="pre">x</span></code>: Array with shape <code class="xref py py-data docutils literal"><span class="pre">(num_samples,</span> <span class="pre">num_features)</span></code></li>
+<li><code class="xref py py-data docutils literal"><span class="pre">y</span></code>: Array with shape <code class="xref py py-data docutils literal"><span class="pre">(num_samples,</span> <span class="pre">num_neurons)</span></code></li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="spykes.io.datasets.load_reward_data">
 <code class="descclassname">spykes.io.datasets.</code><code class="descname">load_reward_data</code><span class="sig-paren">(</span><em>dir_name='reward'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/io/datasets.html#load_reward_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.io.datasets.load_reward_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads and returns the data for the PopVis example.</p>
@@ -388,6 +432,38 @@ directory.</td>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The two downloaded files.<ul class="simple">
 <li><code class="xref py py-data docutils literal"><span class="pre">sess_one_mat</span></code>: <code class="xref py py-data docutils literal"><span class="pre">mat</span></code> file for Monkey M, Session 1.</li>
 <li><code class="xref py py-data docutils literal"><span class="pre">sess_four_mat</span></code>: <code class="xref py py-data docutils literal"><span class="pre">mat</span></code> file for Monkey M, Session 4.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="spykes.io.datasets.load_spikefinder_data">
+<code class="descclassname">spykes.io.datasets.</code><code class="descname">load_spikefinder_data</code><span class="sig-paren">(</span><em>dir_name='spikefinder'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/spykes/io/datasets.html#load_spikefinder_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#spykes.io.datasets.load_spikefinder_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads and returns a dataset of paired calcium recordings.</p>
+<p>This dataset was used for the Spikefinder competition
+(DOI: 10.1101/177956), and consists of datasets of paired calcium traces
+and spike trains collected from multiple sources.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dir_name</strong> (<em>str</em>) – Specifies the directory to which the data files should
+be downloaded. This is concatenated with the user-set data
+directory.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Paths to the downloaded training and testing datasets. Each
+dataset is a CSV which can be loaded using Pandas,
+<code class="xref py py-data docutils literal"><span class="pre">pd.read_csv(path)</span></code>.<ul class="simple">
+<li><code class="xref py py-data docutils literal"><span class="pre">train_data</span></code>: List of pairs of strings, where each pair
+consists of the path to the calcium data (inputs) and the path to
+the spike data (ground truth) for that dataset pair.</li>
+<li><code class="xref py py-data docutils literal"><span class="pre">test_data</span></code>: List of strings, where each string is the path
+to a testing dataset.</li>
 </ul>
 </td>
 </tr>

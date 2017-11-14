@@ -249,6 +249,8 @@
 <li class="toctree-l1"><a class="reference internal" href="api/ml.html">Machine Learning</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/ml.html#module-spykes.ml.neuropop">NeuroPop</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/ml.html#module-spykes.ml.strf">STRF</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ml.html#sparse-filtering">Sparse Filtering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ml.html#poisson-layers">Poisson Layers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/io.html">Input / Output</a><ul>
@@ -357,7 +359,7 @@
 <h3>Local Version<a class="headerlink" href="#local-version" title="Permalink to this headline">¶</a></h3>
 <p>This creates a local copy of the repo, where you can make changes to Spykes that get propagated to your project.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>git clone http://github.com/KordingLab/spykes  <span class="c1"># Clone this somewhere useful</span>
-python spykes/setup.py develop
+pip install -e .<span class="o">[</span>develop<span class="o">]</span>
 </pre></div>
 </div>
 </div>

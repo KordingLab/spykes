@@ -410,7 +410,7 @@ Download all data `here <http://data.cortexlab.net/dualPhase3/data/>`__.
 
 
 
-**Total running time of the script:** ( 1 minutes  11.122 seconds)
+**Total running time of the script:** ( 1 minutes  4.994 seconds)
 
 
 
