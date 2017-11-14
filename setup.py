@@ -52,6 +52,7 @@ if __name__ == "__main__":
                 'deepdish',
                 'image',
                 'tensorflow>=1.4.0',
+                'h5py',
             ],
             'ml': [
                 'tensorflow>=1.4.0',

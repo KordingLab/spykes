@@ -24,3 +24,11 @@ This module makes use of Tensorflow. Make sure your system is configured correct
 .. automodule:: spykes.ml.tensorflow.sparse_filtering
   :members:
 
+Poisson Layers
+~~~~~~~~~~~~~~
+
+This module provides a TensorFlow implementation of the Poisson estimators used in the NeuroPop modules.
+
+.. automodule:: spykes.ml.tensorflow.poisson_models
+  :members:
+

@@ -371,8 +371,6 @@ class NeuroVis(object):
         '''
         events = df[event].values
         spiketimes = self.spiketimes
-        spikecounts = np.zeros(events.shape)
-
         spikecounts = np.asarray([
             np.sum(np.all((
                 spiketimes >= e + 1e-3 * window[0],
