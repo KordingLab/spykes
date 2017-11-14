@@ -13,7 +13,7 @@ Yet, virtually every lab relies on a set of in-house analysis scripts to go from
 
 Spykes is a collection of Python tools to make the visualization and analysis of neural data easy and reproducible.
 
-For more, see the [documentation](http://kordinglab.com/spykes/).
+For more, see the [documentation](http://kordinglab.com/spykes/getting-started.html).
 
 ### Installation
 
@@ -23,7 +23,7 @@ Spykes can be installed using
 pip install spykes
 ```
 
-For more detailed installation options, see the [documentation](http://kordinglab.com/spykes/).
+For more detailed installation options, see the [documentation](http://kordinglab.com/spykes/getting-started.html#installing).
 
 ### Authors
 
