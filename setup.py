@@ -8,7 +8,7 @@ MAINTAINER = 'Pavan Ramkumar and Hugo Fernandes'
 MAINTAINER_EMAIL = 'pavan.ramkumar@gmail.com'
 LICENSE = 'MIT'
 URL = 'https://github.com/KordingLab/spykes.git'
-VERSION = '0.2.dev'
+VERSION = '0.3.dev'
 
 if __name__ == "__main__":
     setup(
