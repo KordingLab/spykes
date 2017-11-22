@@ -255,44 +255,20 @@ def load_reaching_data(dir_name='reaching'):
     return data
 
 
-def load_reaching_xy(event='goCueTime', feature='endpointOfReach', neuron='M1',
-                     window_min=0., window_max=500., threshold=10.,
-                     dir_name='reaching'):
-    '''Extracts the reach direction and M1 spikes from the reaching dataset.
-
-    Args:
-        event (str): Event to which to align each trial; :data:`goCueTime`,
-            :data:`targetOnTime` or :data:`rewardTime`.
-        feature (str): The feature to get; :data:`endpointOfReach` or
-            :data:`reward`.
-        neuron (str): The neuron response to use, either :data:`M1` or
-            :data:`PMd`.
-        window_min (double): The lower window value around the align queue to
-            get spike counts, in milliseconds.
-        window_max (double): The upper window value around the align queue to
-            get spike counts, in milliseconds.
-        threshold (double): The threshold for selecting high-firing neurons,
-            representing the minimum firing rate in Hz.
-        dir_name (str): Specifies the directory to which the data files
-            should be downloaded. This is concatenated with the user-set
-            data directory.
-
-    Returns:
-        tuple: The :data:`x` and :data:`y` features of the dataset.
-
-        * :data:`x`: Array with shape :data:`(num_samples, num_features)`
-        * :data:`y`: Array with shape :data:`(num_samples, num_neurons)`
-    '''
-
+def _load_reaching_helper(transformer, identifier, event, feature, neuron,
+                          window_min, window_max, threshold, dir_name):
     # Loads the formatted data, if it has already been processed.
     fname = '{}.npz'.format('_'.join('{}'.format(i) for i in [
-        event, feature, neuron, window_min, window_max, threshold
+        event, feature, neuron, window_min, window_max, threshold, identifier
     ]))
     fpath = os.path.join(config.get_data_directory(), dir_name, fname)
     if os.path.exists(fpath):
         with open(fpath, 'rb') as f:
             data = np.load(f)
             return data['x'], data['y']
+
+    # Converts to seconds.
+    window_max, window_min = window_max * 1e-3, window_min * 1e-3
 
     # Loads the reaching data normally.
     reaching_data = load_reaching_data(dir_name)
@@ -315,32 +291,145 @@ def load_reaching_xy(event='goCueTime', feature='endpointOfReach', neuron='M1',
     spike_times = np.asarray([
         np.squeeze(np.sort(s)) for s in reaching_data[neuron_key]
     ])
-    spike_freqs = np.asarray([len(t) / (t[-1] - t[0]) for t in spike_times])
 
     # Applies the cutoff threshold.
+    spike_freqs = np.asarray([len(t) / (t[-1] - t[0]) for t in spike_times])
     thresh_idxs = np.where(spike_freqs > threshold)[0]
     spike_times = spike_times[thresh_idxs]
-    spike_freqs = spike_freqs[thresh_idxs]
 
     # Gets the reach angle, in radians.
-    x = reaching_data['features'][feature] * np.pi / 180.0
-    x = np.arctan2(np.sin(x), np.cos(x))
+    if feature == 'endpointOfReach':
+        x = reaching_data['features'][feature] * np.pi / 180.0
+        x = np.arctan2(np.sin(x), np.cos(x))
+    else:
+        x = reaching_data['features'][feature]
 
     # Gets the spike responses.
-    event_data = reaching_data['events'][event]
+    event_data = reaching_data['events'][event].reshape(-1)
 
-    def _get_spikecounts(n):
-        return np.asarray([
-            np.sum(np.all((
-                n >= e + 1e-3 * window_min,
-                n <= e + 1e-3 * window_max,
-            ), axis=0))
-            for e in event_data
-        ])
-    y = np.stack([_get_spikecounts(n) for n in spike_times]).transpose(1, 0)
+    # Gets the on and off times.
+    on_off = np.sort(np.concatenate([
+        event_data + window_min, event_data + window_max
+    ]))
+
+    # Checks that we haven't violated the order.
+    window_diff = window_max - window_min
+    for i in range(1, len(on_off), 2):
+        d = on_off[i] - on_off[i-1]
+        if abs(d - window_diff) > 1e-9:
+            raise ValueError('Samples were found that overlap! Make sure that '
+                             '`window_max` - `window_min` is small enough. '
+                             'Time difference is {:.3f}s, average is {:.3f}s.'
+                             .format(d, window_diff))
+
+    # Applies the transformation.
+    y = np.stack([
+        transformer(n, on_off) for n in spike_times
+    ]).transpose(1, 0)
 
     # Saves the dataset after processing it.
     with open(fpath, 'wb') as f:
         np.savez(f, x=x, y=y)
 
     return x, y
+
+
+def load_reaching_rates(event='goCueTime', feature='endpointOfReach',
+                        neuron='M1', window_min=0., window_max=500.,
+                        threshold=10., dir_name='reaching'):
+    '''Extracts the reach direction and spike rates from the reaching dataset.
+
+    Args:
+        event (str): Event to which to align each trial; :data:`goCueTime`,
+            :data:`targetOnTime` or :data:`rewardTime`.
+        feature (str): The feature to get; :data:`endpointOfReach` or
+            :data:`reward`.
+        neuron (str): The neuron response to use, either :data:`M1` or
+            :data:`PMd`.
+        window_min (double): The lower window value around the align queue to
+            get spike counts, in milliseconds.
+        window_max (double): The upper window value around the align queue to
+            get spike counts, in milliseconds.
+        threshold (double): The threshold for selecting high-firing neurons,
+            representing the minimum firing rate in Hz.
+        dir_name (str): Specifies the directory to which the data files
+            should be downloaded. This is concatenated with the user-set
+            data directory.
+
+    Returns:
+        tuple: The :data:`x` and :data:`y` features of the dataset.
+
+        * :data:`x`: Array with shape :data:`(samples, features)`
+        * :data:`y`: Array with shape :data:`(samples, neurons)`
+    '''
+
+    def _get_spike_rates(n, on_off):
+        arrs = np.split(n, n.searchsorted(on_off))
+        windows = [arrs[i] for i in range(1, len(arrs), 2)]
+        return np.asarray([len(w) for w in windows])
+
+    return _load_reaching_helper(
+        transformer=_get_spike_rates,
+        identifier='rates',
+        event=event,
+        feature=feature,
+        neuron=neuron,
+        window_min=window_min,
+        window_max=window_max,
+        threshold=threshold,
+        dir_name=dir_name,
+    )
+
+
+def load_reaching_deltas(event='goCueTime', feature='endpointOfReach',
+                         neuron='M1', window_min=0., window_max=500.,
+                         threshold=10., dir_name='reaching'):
+    '''Extracts the reach direction and spike deltas from the reaching dataset.
+
+    The first spike delta is the difference between the event onset minus the
+    min time and the first spike. The remaining spike deltas are the difference
+    between the time of the current spike and the time of the previous spike.
+    The last dimension of the :data:`y` data is a list of variable length,
+    since there are a variable number of spikes.
+
+    Args:
+        event (str): Event to which to align each trial; :data:`goCueTime`,
+            :data:`targetOnTime` or :data:`rewardTime`.
+        feature (str): The feature to get; :data:`endpointOfReach` or
+            :data:`reward`.
+        neuron (str): The neuron response to use, either :data:`M1` or
+            :data:`PMd`.
+        window_min (double): The lower window value around the align queue to
+            get spike counts, in milliseconds.
+        window_max (double): The upper window value around the align queue to
+            get spike counts, in milliseconds.
+        threshold (double): The threshold for selecting high-firing neurons,
+            representing the minimum firing rate in Hz.
+        dir_name (str): Specifies the directory to which the data files
+            should be downloaded. This is concatenated with the user-set
+            data directory.
+
+    Returns:
+        tuple: The :data:`x` and :data:`y` features of the dataset.
+
+        * :data:`x`: Array with shape :data:`(samples, features)`
+        * :data:`y`: Array with shape :data:`(samples, neurons, deltas)`
+    '''
+
+    def _get_spike_deltas(n, on_off):
+        arrs = np.split(n, n.searchsorted(on_off))
+        windows = [[on_off[i-1]] + arrs[i] for i in range(1, len(arrs), 2)]
+        deltas = [w[1:] - w[:-1] for w in windows]
+        return deltas
+
+    return _load_reaching_helper(
+        transformer=_get_spike_deltas,
+        identifier='deltas',
+        event=event,
+        feature=feature,
+        neuron=neuron,
+        window_min=window_min,
+        window_max=window_max,
+        threshold=threshold,
+        dir_name=dir_name,
+    )
