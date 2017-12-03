@@ -325,7 +325,8 @@ def load_neuropixels_times(location, cutoff=0.3, dir_name='neuropixels'):
     depths = [np.mean(i) for i in np.split(sorted_spike_depths, split_idxs)]
 
     def _get_range(lo, hi):
-        return [np.sort(t) for t, d in zip(times, depths) if lo < d <= hi]
+        return np.array([np.sort(t) for t, d in
+                         zip(times, depths) if lo < d <= hi])
 
     if location == 'striatum':
         data = _get_range(0, 1550)
