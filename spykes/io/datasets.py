@@ -3,6 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+import re
 import scipy.io
 import numpy as np
 import requests
@@ -43,6 +44,20 @@ def _load_file(fpath):
     else:
         raise ValueError('Invalid file type: {}'.format(fpath))
     return data
+
+
+def _arg_check(name, arg, valid_args):
+    '''Convenience function for doing argument cleaning and checking.'''
+
+    # Makes sure that the argument is valid.
+    if arg not in valid_args:
+        valid_args = list(valid_args)
+        formatted_args = ', '.join('"{}"'.format(i) for i in valid_args[:-1])
+        formatted_args += ' or "{}"'.format(valid_args[-1])
+        raise ValueError('Invalid {}: "{}". Expected {}.'
+                         .format(name, arg, formatted_args))
+
+    return arg
 
 
 def load_spikefinder_data(dir_name='spikefinder'):
@@ -221,6 +236,114 @@ def load_neuropixels_data(dir_name='neuropixels'):
     return file_dict
 
 
+def load_neuropixels_times(location, cutoff=0.3, dir_name='neuropixels'):
+    '''Extracts the neuropixel spike deltas.
+
+    This code is adopted from the Cortex Lab's Matlab implementation. This
+    method provides a simpler interface for loading that data by location.
+
+    Args:
+        location (str): One of :data:`striatum`, :data:`motor_ctx`,
+            :data:`thalamus`, :data:`hippocampus`, or :data:`visual_ctx`.
+        cutoff (double): The cutoff threshold for spike templates.
+        dir_name (str): Specifies the directory to which the data files
+            should be downloaded. This is concatenated with the user-set
+            data directory.
+
+    Returns:
+        list of arrays: each element contains the spike times for one cluster.
+    '''
+
+    # Cleans and validates arguments.
+    location = location.lower().replace('cortex', 'ctx')
+    _arg_check('location', location, ('striatum', 'motor_ctx', 'thalamus',
+                                      'hippocampus', 'visual_ctx'))
+
+    fname = 'processed_{}_{}.npy'.format(location, cutoff)
+    fpath = os.path.join(config.get_data_directory(), dir_name, fname)
+
+    # Loads a cached version, if one exists.
+    if os.path.exists(fpath):
+        return np.load(fpath)
+
+    # Parses the mode from the location.
+    mode = 'frontal' if location in ('striatum', 'motor_ctx') else 'posterior'
+
+    # Initializes the recording frequency.
+    frequency = 30000.0
+
+    # Loads the data normally.
+    data_dict = load_neuropixels_data(dir_name=dir_name)
+
+    def _load_key(name, ext='npy', squeeze=True):
+        key = '{}/{}.{}'.format(mode, name, ext)
+        return np.squeeze(data_dict[key]) if squeeze else data_dict[key]
+
+    # Loads data that is common to any of the analysis.
+    clusters = _load_key('spike_clusters')  # Number of clusters
+    spike_times = _load_key('spike_times') / frequency
+    spike_templates = _load_key('spike_templates')
+    templates = _load_key('templates')
+    winv = _load_key('whitening_mat_inv')
+    y_coords = _load_key('channel_positions')[:, 1]
+
+    # Performs time correction on the spike times if needed.
+    if mode == 'frontal':
+        time_correction = data_dict['timeCorrection.npy']
+        spike_times = spike_times * time_correction[0] + time_correction[1]
+
+    data = _load_key('cluster_groups', ext='csv', squeeze=False)
+
+    # Gets indices.
+    cids = np.array([x[0] for x in data])
+    cfg = np.array([x[1] for x in data])
+    cids, cfgs = (np.asarray(i) for i in zip(*data))
+    good_indices = np.in1d(clusters, cids[cfg == b'good'])
+
+    # Orders spikes by how many clusters they are in.
+    real_clusters = clusters[good_indices]
+    sort_idx = np.argsort(real_clusters)
+    sorted_clusters = real_clusters[sort_idx]
+    sorted_spikes = spike_times[good_indices][sort_idx]
+    sorted_spike_templates = spike_templates[good_indices][sort_idx]
+
+    # Gets the counts per cluster.
+    counts_per_cluster = np.bincount(real_clusters)
+
+    # Computes the depth for each spike.
+    templates_unw = np.array([np.dot(t, winv) for t in templates])
+    template_amps = np.ptp(templates_unw, axis=1)
+    template_thresholds = np.max(template_amps, axis=1, keepdims=True) * cutoff
+    template_amps[template_amps < template_thresholds] = 0
+    amp_sums = np.sum(template_amps, axis=1, keepdims=True)
+    template_depths = ((y_coords * template_amps) / amp_sums).sum(axis=1)
+    sorted_spike_depths = template_depths[sorted_spike_templates]
+
+    # Splits by cluster and computes the average cluster depth.
+    split_idxs = np.cumsum(counts_per_cluster[counts_per_cluster != 0])[:-1]
+    times = np.split(sorted_spikes, split_idxs)
+    depths = [np.mean(i) for i in np.split(sorted_spike_depths, split_idxs)]
+
+    def _get_range(lo, hi):
+        return [np.sort(t) for t, d in zip(times, depths) if lo < d <= hi]
+
+    if location == 'striatum':
+        data = _get_range(0, 1550)
+    elif location == 'motor_ctx':
+        data = _get_range(1550, 3840)
+    elif location == 'thalamus':
+        data = _get_range(0, 1634)
+    elif location == 'hippocampus':
+        data = _get_range(1634, 2797)
+    else:  # visual_ctx
+        data = _get_range(2797, 3840)
+
+    # Caches the data to avoid recomputation.
+    np.save(fpath, data)
+
+    return data
+
+
 def load_reaching_data(dir_name='reaching'):
     '''Downloads and returns data for the Reaching Dataset example.
 
@@ -277,15 +400,9 @@ def _load_reaching_helper(transformer, identifier, event, feature, neuron,
     features = list(reaching_data['features'].keys())
 
     # Checks the input arguments, throwing helpful error messages if needed.
-    if event not in events:
-        raise ValueError('Invalid align event: "{}". Must be one of {}.'
-                         .format(event, events))
-    if feature not in features:
-        raise ValueError('Invalid feature: "{}". Must be one of {}.'
-                         .format(feature, features))
-    if neuron not in ('M1', 'PMd'):
-        raise ValueError('Invalid neuron type: "{}". Must be either "M1" or '
-                         '"PMd".'.format(neuron))
+    _arg_check('align event', event, events)
+    _arg_check('feature', feature, features)
+    _arg_check('neuron type', neuron, ('M1', 'PMd'))
 
     neuron_key = 'neurons_{}'.format(neuron)
     spike_times = np.asarray([
