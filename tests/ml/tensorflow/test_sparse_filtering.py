@@ -12,7 +12,7 @@ from nose.tools import (
 
 import tensorflow as tf
 from tensorflow import keras as ks
-from tensorflow.examples.tutorials.mnist import input_data
+import tensorflow_datasets as tfds
 
 from spykes.ml.tensorflow.sparse_filtering import SparseFiltering
 from spykes.config import get_data_directory
@@ -22,9 +22,10 @@ NUM_TRAIN = 100
 
 
 def test_sparse_filtering():
-    mnist_path = os.path.join(get_data_directory(), 'mnist/')
-    mnist = input_data.read_data_sets(mnist_path, one_hot=False)
-    train_images = mnist.train.images[:NUM_TRAIN]
+    # mnist_path = os.path.join(get_data_directory(), 'mnist/')
+    # mnist = input_data.read_data_sets(mnist_path, one_hot=False)
+    # train_images = mnist.train.images[:NUM_TRAIN]
+    train_images = np.array(NUM_TRAIN, 28 * 28)
 
     # Creates a simple model.
     model = ks.models.Sequential([
