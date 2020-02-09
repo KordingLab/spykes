@@ -18,7 +18,7 @@ def sparse_filtering_loss(_, y_pred):
         scalar tensor: The sparse filtering loss.
     '''
     y = tf.reshape(y_pred, tf.stack([-1, tf.reduce_prod(y_pred.shape[1:])]))
-    l2_normed = tf.nn.l2_normalize(y, dim=1)
+    l2_normed = tf.nn.l2_normalize(y, axis=1)
     l1_norm = tf.norm(l2_normed, ord=1, axis=1)
     return tf.reduce_sum(l1_norm)
 
