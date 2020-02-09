@@ -30,7 +30,7 @@ def test_poisson_layer():
         PoissonLayer('invalid_type', 1)
 
     with assert_raises(AssertionError):
-        i = ks.layers.Input(shape=(1,2))
+        i = ks.layers.Input(shape=(1, 2))
         x = PoissonLayer('glm', 3, num_features=2)(i)
 
     # Loads the reaching dataset (with default parameters).
@@ -42,8 +42,3 @@ def test_poisson_layer():
         p = model.predict(x)
         h = model.fit(x, y, epochs=1)  # , verbose=0)
         assert_false(np.any(np.isnan(h.history['loss'])))
-
-        if model_type == 'gvm':
-            tmploc = '/tmp/{}'.format(uuid.uuid4)
-            model.save(tmploc)
-            os.remove(tmploc)
