@@ -11,11 +11,10 @@ from nose.tools import (
 
 from tempfile import TemporaryFile
 
-import tensorflow as tf
 from tensorflow import keras as ks
 
 from spykes.ml.tensorflow.poisson_models import PoissonLayer
-from spykes.io.datasets import load_reaching_xy
+from spykes.io.datasets import load_reaching_rates
 
 
 def _build_model(model_type, num_features, num_neurons):
@@ -35,7 +34,7 @@ def test_poisson_layer():
         x = PoissonLayer('glm', 3, num_features=2)(i)
 
     # Loads the reaching dataset (with default parameters).
-    x, y = load_reaching_xy()
+    x, y = load_reaching_rates()
     num_features, num_neurons = x.shape[1], y.shape[1]
 
     for model_type in ('gvm', 'glm'):
