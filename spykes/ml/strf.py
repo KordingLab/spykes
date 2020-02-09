@@ -53,7 +53,7 @@ class STRF(object):
             :data:`(patch_size, patch_size)` specifing the spatial basis.
         '''
         spatial_basis = list()
-        n_tiles = np.sqrt(self.n_spatial_basis)
+        n_tiles = int(np.sqrt(self.n_spatial_basis))
         n_pixels = self.patch_size
         centers = np.linspace(start=(-n_pixels / 2. +
                                      n_pixels / (n_tiles + 1.)),
@@ -61,8 +61,8 @@ class STRF(object):
                                     n_pixels / (n_tiles + 1.)),
                               num=n_tiles)
 
-        for y in range(n_tiles.astype(int)):
-            for x in range(n_tiles.astype(int)):
+        for y in range(n_tiles):
+            for x in range(n_tiles):
                 gaussian_mask = self.make_2d_gaussian(center=(centers[x],
                                                               centers[y]))
                 spatial_basis.append(gaussian_mask)

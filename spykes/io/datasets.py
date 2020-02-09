@@ -3,7 +3,6 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-import re
 import scipy.io
 import numpy as np
 import requests
@@ -303,7 +302,6 @@ def load_neuropixels_times(location, cutoff=0.3, dir_name='neuropixels'):
     # Orders spikes by how many clusters they are in.
     real_clusters = clusters[good_indices]
     sort_idx = np.argsort(real_clusters)
-    sorted_clusters = real_clusters[sort_idx]
     sorted_spikes = spike_times[good_indices][sort_idx]
     sorted_spike_templates = spike_templates[good_indices][sort_idx]
 

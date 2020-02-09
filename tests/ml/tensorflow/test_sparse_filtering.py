@@ -1,30 +1,20 @@
 from __future__ import absolute_import
 
-import os
-
 import numpy as np
 from nose.tools import (
     assert_raises,
-    assert_true,
-    assert_false,
     assert_equal,
 )
 
-import tensorflow as tf
 from tensorflow import keras as ks
-from tensorflow.examples.tutorials.mnist import input_data
-
 from spykes.ml.tensorflow.sparse_filtering import SparseFiltering
-from spykes.config import get_data_directory
 
 # Keeps the number of training images small to reduce testing time.
 NUM_TRAIN = 100
 
 
 def test_sparse_filtering():
-    mnist_path = os.path.join(get_data_directory(), 'mnist/')
-    mnist = input_data.read_data_sets(mnist_path, one_hot=False)
-    train_images = mnist.train.images[:NUM_TRAIN]
+    train_images = np.random.rand(NUM_TRAIN, 28 * 28)
 
     # Creates a simple model.
     model = ks.models.Sequential([
