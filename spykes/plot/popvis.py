@@ -79,7 +79,7 @@ class PopVis(object):
             'conditions': conditions,
             'data': defaultdict(list),
         }
-        
+
         if use_parallel:
             from joblib import Parallel, delayed
             psths = Parallel(n_jobs=-1)(delayed(neuron.get_psth)(
