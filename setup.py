@@ -38,6 +38,8 @@ if __name__ == "__main__":
             'matplotlib',
             'pandas',
             'requests',
+            'numba==0.48.0',
+            'joblib'
         ],
         extras_require={
             'deepdish': ['deepdish'],

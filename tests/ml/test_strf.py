@@ -33,7 +33,7 @@ def test_strf():
     strf_.visualize_gaussian_basis(spatial_basis)
 
     # Design temporal basis
-    time_points = np.linspace(-100., 100., 10.)
+    time_points = np.linspace(-100., 100., 10)
     centers = [-75., -50., -25., 0, 25., 50., 75.]
     width = 10.
     temporal_basis = strf_.make_raised_cosine_temporal_basis(
