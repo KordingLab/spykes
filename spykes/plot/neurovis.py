@@ -56,11 +56,11 @@ class NeuroVis(object):
             raster for each unique entry of :data:`df['conditions']`.
         '''
 
-        @numba.njit(nopython=True)
+        @numba.njit()
         def searchsorted_jit(_a, _v):
             return np.searchsorted(_a, _v)
 
-        @numba.njit(nopython=True)
+        @numba.njit()
         def numba_histogram(v, b):
             return np.histogram(v, b)
 
