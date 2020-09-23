@@ -1,5 +1,6 @@
 from __future__ import absolute_import
 
+import numba
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -55,6 +56,14 @@ class NeuroVis(object):
             raster for each unique entry of :data:`df['conditions']`.
         '''
 
+        @numba.njit(nopython=True)
+        def searchsorted_jit(_a, _v):
+            return np.searchsorted(_a, _v)
+
+        @numba.njit(nopython=True)
+        def numba_histogram(v, b):
+            return np.histogram(v, b)
+
         if not type(df) is dict:
             df = df.reset_index()
 
@@ -90,21 +99,26 @@ class NeuroVis(object):
 
             bin_template = 1e-3 * \
                 np.arange(window[0], window[1] + binsize, binsize)
-            for event_time in selected_events:
+
+            # consider only spikes within window
+            for event_time in selected_events.dropna():
+
                 bins = event_time + bin_template
 
-                # consider only spikes within window
-                searchsorted_idx = np.squeeze(np.searchsorted(self.spiketimes,
-                                              [event_time + 1e-3 *
-                                               window[0],
-                                               event_time + 1e-3 *
-                                               window[1]]))
+                # Skip histogram if this neuron has no spikes in window:
+                if (min(self.spiketimes) > (event_time + 1e-3 * window[1]) or  # 1st spike after end of window
+                        max(self.spiketimes) < (event_time + 1e-3 * window[0])  # last spike before start of window
+                ):
+                    spike_counts = np.zeros(len(bins)-1)
+                else:
+                    searchsorted_idx = np.squeeze(searchsorted_jit(self.spiketimes,#mmyros original np.searchsorted
+                                                  [event_time + 1e-3 *
+                                                   window[0],
+                                                   event_time + 1e-3 *
+                                                   window[1]]))
 
-                # bin the spikes into time bins
-
-                spike_counts = np.histogram(
-                    self.spiketimes[searchsorted_idx[0]:searchsorted_idx[1]],
-                    bins)[0]
+                    # bin the spikes into time bins
+                    spike_counts = numba_histogram(self.spiketimes[searchsorted_idx[0]:searchsorted_idx[1]], bins)[0]
 
                 raster.append(spike_counts)
 
@@ -117,6 +131,7 @@ class NeuroVis(object):
 
         # Return all the rasters
         return rasters
+
 
     def plot_raster(self, rasters, cond_id=None, cond_name=None, sortby=None,
                     sortorder='descend', cmap='Greys', has_title=True):
