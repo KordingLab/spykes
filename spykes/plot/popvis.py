@@ -62,6 +62,7 @@ class PopVis(object):
                 Default are the unique values in :data:`df['conditions']`.
             plot (bool): If set, automatically plot; otherwise, don't.
             colors (list): List of colors for heatmap (only if plot is True).
+            use_parallel (bool): If set, parallelize PSTH computation
 
         Returns:
             dict: With keys :data:`event`, :data:`conditions`, :data:`binsize`,
