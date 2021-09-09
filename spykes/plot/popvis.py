@@ -2,6 +2,8 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import warnings
+
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
@@ -96,7 +98,7 @@ class PopVis(object):
                     conditions=conditions,
                     window=window,
                     binsize=binsize,
-                    plot=False)  for neuron in self.neuron_list]
+                    plot=False) for neuron in self.neuron_list]
 
         for psth in psths:
             for cond_id in np.sort(list(psth['data'].keys())):
@@ -215,7 +217,7 @@ class PopVis(object):
                              conditions=None, cond_id=None, window=[-100, 500],
                              binsize=10, conditions_names=None,
                              event_name='event_onset', ylim=None,
-                             colors=DEFAULT_POPULATION_COLORS, show=False):
+                             colors=DEFAULT_POPULATION_COLORS, show=True):
         '''Plots population PSTH's.
 
         This involves two steps. First, it normalizes each neuron's PSTH across
@@ -327,6 +329,6 @@ class PopVis(object):
         elif normalize is None:
             norm_factors = np.ones([data.shape[0], 1])
         else:
-            raise ValueError('Invalid norm factors: {}'.format(norm_factors))
+            raise ValueError('Invalid norm factors: {}'.format(normalize))
 
         return data / norm_factors
