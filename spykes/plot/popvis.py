@@ -8,9 +8,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 from collections import defaultdict
-
-from fractions import gcd
-
+try:
+    from fractions import gcd
+except ImportError:
+    from math import gcd
 from .neurovis import NeuroVis
 from .. import utils
 from ..config import DEFAULT_POPULATION_COLORS

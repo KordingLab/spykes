@@ -19,12 +19,20 @@ class NeuroVis(object):
         name (str): The name of the visualization.
     '''
 
-    def __init__(self, spiketimes, name='neuron'):
+    def __init__(self, spiketimes=None, name='neuron', lfp=None, sampling_frequency: int = None):
         self.name = name
-        self.spiketimes = np.squeeze(np.sort(spiketimes))
-        n_seconds = (self.spiketimes[-1] - self.spiketimes[0])
-        n_spikes = np.size(spiketimes)
-        self.firingrate = (n_spikes / n_seconds)
+        if spiketimes is None and lfp is None:
+            raise ValueError('Either spiketimes or lfp should not be none!')
+        if spiketimes is None:
+            self.spiketimes = None
+            self.firingrate = None
+        else:
+            self.spiketimes = np.squeeze(np.sort(spiketimes))
+            n_seconds = (self.spiketimes[-1] - self.spiketimes[0])
+            n_spikes = np.size(spiketimes)
+            self.firingrate = (n_spikes / n_seconds)
+        self.sampling_frequency = sampling_frequency
+        self.lfp = lfp
 
     def get_raster(self, event=None, conditions=None, df=None,
                    window=[-100, 500], binsize=10, plot=True,
@@ -108,11 +116,12 @@ class NeuroVis(object):
                 bins = event_time + bin_template
 
                 # Skip histogram if this neuron has no spikes in window:
-                if (min(self.spiketimes) > (event_time + 1e-3 * window[1]) or  # 1st spike after end of window
-                        max(self.spiketimes) < (event_time + 1e-3 * window[0])  # last spike before start of window
+                if (self.lfp is None and
+                        (min(self.spiketimes) > (event_time + 1e-3 * window[1]) or  # 1st spike after end of window
+                         max(self.spiketimes) < (event_time + 1e-3 * window[0]))  # last spike before start of window
                 ):
-                    spike_counts = np.zeros(len(bins) - 1)
-                else:
+                    signal = np.zeros(len(bins) - 1)
+                elif self.spiketimes is not None:
                     from numba.typed import List
                     searchsorted_idx = np.squeeze(searchsorted_jit(self.spiketimes,  # mmyros original np.searchsorted
                                                                    List([event_time + 1e-3 *
@@ -121,11 +130,13 @@ class NeuroVis(object):
                                                                          window[1]])))
 
                     # bin the spikes into time bins
-                    spike_counts = numba_histogram(self.spiketimes[searchsorted_idx[0]:
-                                                                   searchsorted_idx[1]],
-                                                   bins)[0]
-
-                raster.append(spike_counts)
+                    signal = numba_histogram(self.spiketimes[searchsorted_idx[0]:
+                                                             searchsorted_idx[1]],
+                                             bins)[0]
+                else:
+                    signal = self.lfp[event_time + 1e-3 * window[1] * self.sampling_frequency:
+                                      event_time + 1e-3 * window[0] * self.sampling_frequency]
+                raster.append(signal)
 
             rasters['data'][cond_id] = np.array(raster)
 
@@ -137,7 +148,7 @@ class NeuroVis(object):
         # Return all the rasters
         return rasters
 
-    def plot_raster(self, rasters, cond_id=None, cond_name=None, sortby=None,
+    def plot_raster(self, rasters=None, cond_id=None, cond_name=None, sortby=None,
                     sortorder='descend', cmap='Greys', has_title=True):
         '''Plot a single raster.
 
@@ -211,7 +222,7 @@ class NeuroVis(object):
             else:
                 print('No trials for this condition!')
 
-    def get_psth(self, event=None, df=None, conditions=None, cond_id=None,
+    def get_psth(self, event=None, df=None, conditions=None, raster=None,
                  window=[-100, 500], binsize=10, plot=True, event_name=None,
                  conditions_names=None, ylim=None,
                  colors=DEFAULT_POPULATION_COLORS):
@@ -247,10 +258,11 @@ class NeuroVis(object):
 
         window = [np.floor(window[0] / binsize) * binsize,
                   np.ceil(window[1] / binsize) * binsize]
-        # Get all the rasters first
-        rasters = self.get_raster(event=event, df=df,
-                                  conditions=conditions,
-                                  window=window, binsize=binsize, plot=False)
+        if not self.rasters:
+            # Get all the rasters first
+            rasters = self.get_raster(event=event, df=df,
+                                      conditions=conditions,
+                                      window=window, binsize=binsize, plot=False)
 
         # Initialize PSTH
         psth = dict()
