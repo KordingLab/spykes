@@ -2,13 +2,16 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import warnings
+
 import numpy as np
 import matplotlib.pyplot as plt
 import copy
 from collections import defaultdict
-
-from fractions import gcd
-
+try:
+    from fractions import gcd
+except ImportError:
+    from math import gcd
 from .neurovis import NeuroVis
 from .. import utils
 from ..config import DEFAULT_POPULATION_COLORS
@@ -44,7 +47,7 @@ class PopVis(object):
 
     def get_all_psth(self, event=None, df=None, conditions=None,
                      window=[-100, 500], binsize=10, conditions_names=None,
-                     plot=True, colors=DEFAULT_PSTH_COLORS):
+                     plot=True, colors=DEFAULT_PSTH_COLORS, use_parallel=True):
         '''Iterates through all neurons and computes their PSTH's.
 
         Args:
@@ -62,6 +65,7 @@ class PopVis(object):
                 Default are the unique values in :data:`df['conditions']`.
             plot (bool): If set, automatically plot; otherwise, don't.
             colors (list): List of colors for heatmap (only if plot is True).
+            use_parallel (bool): If set, parallelize PSTH computation
 
         Returns:
             dict: With keys :data:`event`, :data:`conditions`, :data:`binsize`,
@@ -70,6 +74,7 @@ class PopVis(object):
             each :data:`cond_id` that correspond to the means for that
             condition.
         '''
+
         all_psth = {
             'window': window,
             'binsize': binsize,
@@ -78,17 +83,30 @@ class PopVis(object):
             'data': defaultdict(list),
         }
 
-        for i, neuron in enumerate(self.neuron_list):
-            psth = neuron.get_psth(
+        if use_parallel:
+            from joblib import Parallel, delayed
+            psths = Parallel(n_jobs=-1)(delayed(neuron.get_psth)(
                 event=event,
                 df=df,
                 conditions=conditions,
                 window=window,
                 binsize=binsize,
-                plot=False,
-            )
+                plot=False) for neuron in self.neuron_list)
+        else:
+            psths=[neuron.get_psth(
+                    event=event,
+                    df=df,
+                    conditions=conditions,
+                    window=window,
+                    binsize=binsize,
+                    plot=False) for neuron in self.neuron_list]
+
+        for psth in psths:
             for cond_id in np.sort(list(psth['data'].keys())):
-                all_psth['data'][cond_id].append(psth['data'][cond_id]['mean'])
+                all_psth['data'][cond_id].append(
+                    psth['data'][cond_id]['mean']
+                )
+
 
         for cond_id in np.sort(list(all_psth['data'].keys())):
             all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
@@ -203,7 +221,7 @@ class PopVis(object):
                              conditions=None, cond_id=None, window=[-100, 500],
                              binsize=10, conditions_names=None,
                              event_name='event_onset', ylim=None,
-                             colors=DEFAULT_POPULATION_COLORS, show=False):
+                             colors=DEFAULT_POPULATION_COLORS, show=True):
         '''Plots population PSTH's.
 
         This involves two steps. First, it normalizes each neuron's PSTH across
@@ -315,6 +333,6 @@ class PopVis(object):
         elif normalize is None:
             norm_factors = np.ones([data.shape[0], 1])
         else:
-            raise ValueError('Invalid norm factors: {}'.format(norm_factors))
+            raise ValueError('Invalid norm factors: {}'.format(normalize))
 
         return data / norm_factors
