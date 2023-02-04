@@ -1,8 +1,11 @@
 from __future__ import absolute_import
 
+from warnings import warn
+
 import matplotlib.pyplot as plt
 import numba
 import numpy as np
+from xarray import DataArray
 
 from .. import utils
 from ..config import DEFAULT_POPULATION_COLORS
@@ -19,7 +22,7 @@ class NeuroVis(object):
         name (str): The name of the visualization.
     '''
 
-    def __init__(self, spiketimes=None, name='neuron', lfp=None, sampling_frequency: int = None):
+    def __init__(self, spiketimes=None, name='neuron', lfp: DataArray = None):
         self.name = name
         if spiketimes is None and lfp is None:
             raise ValueError('Either spiketimes or lfp should not be none!')
@@ -31,7 +34,6 @@ class NeuroVis(object):
             n_seconds = (self.spiketimes[-1] - self.spiketimes[0])
             n_spikes = np.size(spiketimes)
             self.firingrate = (n_spikes / n_seconds)
-        self.sampling_frequency = sampling_frequency
         self.lfp = lfp
 
     def get_raster(self, event=None, conditions=None, df=None,
@@ -83,7 +85,7 @@ class NeuroVis(object):
         # Get a set of binary indicators for trials of interest
         if conditions:
             trials = dict()
-            for cond_id in np.sort(df[conditions].unique()):
+            for cond_id in (df[conditions].unique()):
                 trials[cond_id] = \
                     np.where((df[conditions] == cond_id).apply(
                         lambda x: (0, 1)[x]).values)[0]
@@ -111,6 +113,9 @@ class NeuroVis(object):
                            np.arange(window[0], window[1] + binsize, binsize)
 
             # consider only spikes within window
+            if self.lfp is not None and (window[1]/1000 + selected_events.max()) > self.lfp['Time'].values.max():
+                raise ValueError()
+
             for event_time in selected_events.dropna():
 
                 bins = event_time + bin_template
@@ -134,9 +139,17 @@ class NeuroVis(object):
                                                              searchsorted_idx[1]],
                                              bins)[0]
                 else:
-                    signal = self.lfp[event_time + 1e-3 * window[1] * self.sampling_frequency:
-                                      event_time + 1e-3 * window[0] * self.sampling_frequency]
+                    # raise error if sel hits edge
+                    if event_time+(window[1]/1000) > self.lfp['Time'].max().values:
+                        warn(f'Event time {event_time+(window[1]/1000)} is greater than recording span {self.lfp["Time"].max().values}')
+                    else:
+                        signal = self.lfp.sel({'Time': slice(event_time+window[0]/1000,  # Convert "window" to seconds
+                                                             event_time+window[1]/1000)}).data
+
                 raster.append(signal)
+            if raster and self.lfp is not None:
+                min_size = min([sig.shape[0] for sig in raster])
+                raster = [sig[:min_size] for sig in raster]
 
             rasters['data'][cond_id] = np.array(raster)
 
@@ -222,7 +235,7 @@ class NeuroVis(object):
             else:
                 print('No trials for this condition!')
 
-    def get_psth(self, event=None, df=None, conditions=None, raster=None,
+    def get_psth(self, event=None, df=None, conditions=None,
                  window=[-100, 500], binsize=10, plot=True, event_name=None,
                  conditions_names=None, ylim=None,
                  colors=DEFAULT_POPULATION_COLORS):
@@ -258,11 +271,11 @@ class NeuroVis(object):
 
         window = [np.floor(window[0] / binsize) * binsize,
                   np.ceil(window[1] / binsize) * binsize]
-        if not self.rasters:
-            # Get all the rasters first
-            rasters = self.get_raster(event=event, df=df,
-                                      conditions=conditions,
-                                      window=window, binsize=binsize, plot=False)
+
+        # Get all the rasters first
+        rasters = self.get_raster(event=event, df=df,
+                                  conditions=conditions,
+                                  window=window, binsize=binsize, plot=False)
 
         # Initialize PSTH
         psth = dict()

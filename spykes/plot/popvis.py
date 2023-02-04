@@ -103,7 +103,10 @@ class PopVis(object):
 
         for psth in psths:
             for cond_id in np.sort(list(psth['data'].keys())):
-                all_psth['data'][cond_id].append(psth['data'][cond_id]['mean'])
+                all_psth['data'][cond_id].append(
+                    psth['data'][cond_id]['mean']
+                )
+
 
         for cond_id in np.sort(list(all_psth['data'].keys())):
             all_psth['data'][cond_id] = np.stack(all_psth['data'][cond_id])
